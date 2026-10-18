@@ -77,7 +77,48 @@ Các quy tắc còn lại vẫn chạy khi chọn để báo lỗi.
 
 - Thông số lấy từ PC Part Dataset (MIT, cập nhật 3/2024). Socket CPU và chuẩn RAM của mainboard LGA1700 được suy ra từ tên.
 - Công suất VGA lấy theo thông số tham chiếu của NVIDIA/AMD/Intel cho từng chipset; bản OC của hãng có thể cao hơn 10–20 W.
-- **Đang ước lượng (BA tự ước lượng theo loại sản phẩm; muốn chỉnh riêng sản phẩm nào thì ghi vào `data/overrides.json`):**
-  - `case.max_gpu_length_mm`: ước theo loại vỏ (Mini ITX Tower 320, MicroATX Mini Tower 330, MicroATX Mid Tower 350, ATX Mid Tower 360, ATX Full Tower 400 mm).
-  - `cooler.sockets`: mặc định AM4/AM5/LGA1700/LGA1851; Noctua đuôi `i` chỉ Intel, đuôi `a` chỉ AMD.
-- Ví dụ ghi đè: `"NZXT H3 Flow": { "max_gpu_length_mm": 365 }`. Chạy lại `npm run import-data`, trường đã ghi đè tự hết là "ước lượng".
+- Bộ dữ liệu không có chiều dài VGA tối đa của case và socket tản nhiệt hỗ trợ. **15 case và 15 tản nhiệt đang bán đã được BA điền số đo hãng công bố** trong `data/overrides.json` (bảng dưới, kiểm tra 18/10/2026), nên không còn trường ước lượng.
+- Sản phẩm mới thêm sau này chưa có trong `overrides.json` sẽ quay về giá trị ước lượng (case theo loại vỏ: Mini ITX Tower 320, MicroATX Mini Tower 330, MicroATX Mid Tower 350, ATX Mid Tower 360, ATX Full Tower 400 mm; tản mặc định AM4/AM5/LGA1700/LGA1851) và hiện cảnh báo W5. Cách ghi đè: `"NZXT H3 Flow": { "max_gpu_length_mm": 365 }`, khóa là tên sản phẩm gốc, rồi chạy lại `npm run import-data`.
+- **LGA1851 dùng chung ngàm tản với LGA1700** (Intel giữ nguyên lỗ bắt tản). Tản hãng chỉ ghi LGA1700 vì ra đời trước Core Ultra 200 vẫn được tính là hỗ trợ LGA1851.
+
+### Số đo hãng công bố
+
+Chiều dài VGA tối đa của case (mm). Con số tính khi lắp đủ quạt mặc định trừ khi có ghi chú.
+
+| Case                            | VGA tối đa | Ghi chú                                   |
+| ------------------------------- | ---------- | ----------------------------------------- |
+| Zalman CUBIX                    | 260        | Không nhầm với CUBIX-G (280 mm)           |
+| Zalman i4                       | 320        |                                           |
+| Zalman Z7 NEO                   | 355        |                                           |
+| Montech AIR 100 LITE            | 330        |                                           |
+| Silverstone FARA H1M            | 320        | Khi không lắp quạt trước                  |
+| Antec C3 ARGB                   | 415        |                                           |
+| be quiet! Pure Base 501 Airflow | 368        |                                           |
+| Silverstone RV05B               | 312        | Hãng ghi 12,3 inch                        |
+| Lian Li LANCOOL 217             | 380        |                                           |
+| Silverstone SETA A1             | 350        |                                           |
+| Cougar Gemini M                 | 330        | Theo brochure của hãng                    |
+| be quiet! Light Base 600 LX     | 400        |                                           |
+| NZXT H7 Elite (2022)            | 400        | Khi không lắp quạt/két nước mặt trước     |
+| Cougar MX660-T RGB              | 350        | Bản Iron RGB / Mesh RGB-L là 410 mm, khác |
+| HYTE Y70 Silver Wolf            | 422        | VGA luôn lắp dựng đứng (riser có sẵn)     |
+
+Socket tản nhiệt hỗ trợ (chỉ ghi các socket web đang bán: AM4, AM5, LGA1700, LGA1851).
+
+| Tản nhiệt                                       | Socket                                     | Ghi chú                                                                                    |
+| ----------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ |
+| Deepcool THETA 20 PWM                           | **Không** (chỉ LGA115x/1200)               | Tản Intel đời cũ, không lắp được CPU nào web đang bán → nên thay sản phẩm khác             |
+| Cooler Master Hyper 212 EVO                     | **Không** (LGA775–2011, AM2–AM3+, FM1/FM2) | Bản EVO gốc; kit LGA1700/AM5 của hãng chỉ dành cho EVO V2 → nên thay bằng Hyper 212 EVO V2 |
+| Thermalright Burst Assassin 120 SE ARGB         | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| APNX AP1-V                                      | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
+| Thermalright Peerless Assassin 120 SE ARGB      | AM4, AM5, LGA1700, LGA1851                 | LGA1851 có trong bản V2                                                                    |
+| Thermalright Peerless Assassin 120 Digital ARGB | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| Jonsbo CR-1000 V2 Color                         | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| Mars Gaming MCPU-XT                             | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
+| Xilence M906                                    | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| GAMDIAS CHIONE E4                               | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| Thermalright Mjolnir Vision 360 ARGB            | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| Cooler Master Hyper H410R RGB                   | AM4, AM5, LGA1700, LGA1851                 | Bao bì mới (RR-H410-20PC-R1) mới kèm kit LGA1700/AM5                                       |
+| Enermax LIQMAX III 360 ARGB                     | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
+| Corsair iCUE LINK TITAN 360 RX RGB              | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
+| Cooler Master MasterLiquid 360 Ion              | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
