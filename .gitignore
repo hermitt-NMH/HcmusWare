@@ -1,0 +1,28 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+
+node_modules
+dist
+dist-ssr
+coverage
+
+# Biến môi trường chứa khóa thật – KHÔNG commit
+.env
+.env.local
+*.local
+
+# Bộ dữ liệu gốc rất nặng (~60.000 linh kiện), mỗi người tự tải
+data/raw/
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea
+.DS_Store
+
+# File tạm của Supabase CLI (có khóa local) – KHÔNG commit
+supabase/.temp/
+supabase/.branches/

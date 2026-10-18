@@ -1,0 +1,1773 @@
+[
+  {
+    "slug": "cpu",
+    "name": "AMD Ryzen 5 7600X",
+    "brand": "AMD",
+    "price": 4430000,
+    "stock": 6,
+    "specs": {
+      "socket": "AM5",
+      "tdp_w": 105,
+      "cores": 6,
+      "base_clock_ghz": 4.7,
+      "boost_clock_ghz": 5.3,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "AMD Ryzen 3 3200G",
+    "brand": "AMD",
+    "price": 1910000,
+    "stock": 29,
+    "specs": {
+      "socket": "AM4",
+      "tdp_w": 65,
+      "cores": 4,
+      "base_clock_ghz": 3.6,
+      "boost_clock_ghz": 4,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i3-14100F",
+    "brand": "Intel",
+    "price": 2340000,
+    "stock": 22,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 58,
+      "cores": 4,
+      "base_clock_ghz": 3.5,
+      "boost_clock_ghz": 4.7,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i5-12600KF",
+    "brand": "Intel",
+    "price": 3380000,
+    "stock": 28,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 125,
+      "cores": 10,
+      "base_clock_ghz": 3.7,
+      "boost_clock_ghz": 4.9,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i5-12400",
+    "brand": "Intel",
+    "price": 3730000,
+    "stock": 17,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 65,
+      "cores": 6,
+      "base_clock_ghz": 2.5,
+      "boost_clock_ghz": 4.4,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "AMD Ryzen 5 3600X",
+    "brand": "AMD",
+    "price": 4470000,
+    "stock": 28,
+    "specs": {
+      "socket": "AM4",
+      "tdp_w": 95,
+      "cores": 6,
+      "base_clock_ghz": 3.8,
+      "boost_clock_ghz": 4.4,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i5-13600KF",
+    "brand": "Intel",
+    "price": 5090000,
+    "stock": 7,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 125,
+      "cores": 14,
+      "base_clock_ghz": 3.5,
+      "boost_clock_ghz": 5.1,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i5-14500",
+    "brand": "Intel",
+    "price": 6190000,
+    "stock": 6,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 65,
+      "cores": 14,
+      "base_clock_ghz": 2.6,
+      "boost_clock_ghz": 5,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core Ultra 5 235",
+    "brand": "Intel",
+    "price": 6890000,
+    "stock": 30,
+    "specs": {
+      "socket": "LGA1851",
+      "tdp_w": 65,
+      "cores": 14,
+      "base_clock_ghz": 3.4,
+      "boost_clock_ghz": 5,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core Ultra 5 245KF",
+    "brand": "Intel",
+    "price": 7410000,
+    "stock": 12,
+    "specs": {
+      "socket": "LGA1851",
+      "tdp_w": 125,
+      "cores": 14,
+      "base_clock_ghz": 4.2,
+      "boost_clock_ghz": 5.2,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "AMD Ryzen 7 9700X",
+    "brand": "AMD",
+    "price": 7950000,
+    "stock": 27,
+    "specs": {
+      "socket": "AM5",
+      "tdp_w": 65,
+      "cores": 8,
+      "base_clock_ghz": 3.8,
+      "boost_clock_ghz": 5.5,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i9-12900F",
+    "brand": "Intel",
+    "price": 9360000,
+    "stock": 24,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 65,
+      "cores": 16,
+      "base_clock_ghz": 2.4,
+      "boost_clock_ghz": 5.1,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "AMD Ryzen 5 7600X3D",
+    "brand": "AMD",
+    "price": 11270000,
+    "stock": 9,
+    "specs": {
+      "socket": "AM5",
+      "tdp_w": 65,
+      "cores": 6,
+      "base_clock_ghz": 4.1,
+      "boost_clock_ghz": 4.7,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "Intel Core i9-13900F",
+    "brand": "Intel",
+    "price": 13430000,
+    "stock": 25,
+    "specs": {
+      "socket": "LGA1700",
+      "tdp_w": 65,
+      "cores": 24,
+      "base_clock_ghz": 2,
+      "boost_clock_ghz": 5.6,
+      "igpu": false
+    }
+  },
+  {
+    "slug": "cpu",
+    "name": "AMD Ryzen 9 9950X3D",
+    "brand": "AMD",
+    "price": 16900000,
+    "stock": 13,
+    "specs": {
+      "socket": "AM5",
+      "tdp_w": 170,
+      "cores": 16,
+      "base_clock_ghz": 4.3,
+      "boost_clock_ghz": 5.7,
+      "igpu": true
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Gigabyte A520M S2H",
+    "brand": "Gigabyte",
+    "price": 1900000,
+    "stock": 14,
+    "specs": {
+      "socket": "AM4",
+      "ram_type": "DDR4",
+      "form_factor": "Micro ATX",
+      "ram_slots": 2,
+      "max_ram_gb": 64
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "MSI B550M PRO-VDH WIFI",
+    "brand": "MSI",
+    "price": 2860000,
+    "stock": 9,
+    "specs": {
+      "socket": "AM4",
+      "ram_type": "DDR4",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 128
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Gigabyte B860M D3HP",
+    "brand": "Gigabyte",
+    "price": 3380000,
+    "stock": 22,
+    "specs": {
+      "socket": "LGA1851",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 256
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "MSI PRO B650M-P",
+    "brand": "MSI",
+    "price": 3900000,
+    "stock": 15,
+    "specs": {
+      "socket": "AM5",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Gigabyte B760 DS3H AX",
+    "brand": "Gigabyte",
+    "price": 4160000,
+    "stock": 18,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR5",
+      "form_factor": "ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "ASRock B760M Pro RS/D4 WiFi",
+    "brand": "ASRock",
+    "price": 4480000,
+    "stock": 7,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR4",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 128
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Asus PRIME B650M-K",
+    "brand": "Asus",
+    "price": 4900000,
+    "stock": 21,
+    "specs": {
+      "socket": "AM5",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 2,
+      "max_ram_gb": 96
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "MSI MAG B760M MORTAR WIFI II",
+    "brand": "MSI",
+    "price": 5200000,
+    "stock": 6,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Gigabyte B760M AORUS ELITE AX",
+    "brand": "Gigabyte",
+    "price": 5530000,
+    "stock": 24,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "ASRock B760M Steel Legend WiFi",
+    "brand": "ASRock",
+    "price": 6040000,
+    "stock": 26,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Asus TUF GAMING B650M-E",
+    "brand": "Asus",
+    "price": 6630000,
+    "stock": 12,
+    "specs": {
+      "socket": "AM5",
+      "ram_type": "DDR5",
+      "form_factor": "Micro ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "MSI MPG B650I EDGE WIFI",
+    "brand": "MSI",
+    "price": 7540000,
+    "stock": 13,
+    "specs": {
+      "socket": "AM5",
+      "ram_type": "DDR5",
+      "form_factor": "Mini ITX",
+      "ram_slots": 2,
+      "max_ram_gb": 128
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Asus ROG STRIX Z890-H GAMING WIFI",
+    "brand": "Asus",
+    "price": 8580000,
+    "stock": 8,
+    "specs": {
+      "socket": "LGA1851",
+      "ram_type": "DDR5",
+      "form_factor": "ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 256
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "Gigabyte Z690 AORUS PRO",
+    "brand": "Gigabyte",
+    "price": 10400000,
+    "stock": 6,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR5",
+      "form_factor": "ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "mainboard",
+    "name": "MSI MEG Z690 UNIFY",
+    "brand": "MSI",
+    "price": 13000000,
+    "stock": 14,
+    "specs": {
+      "socket": "LGA1700",
+      "ram_type": "DDR5",
+      "form_factor": "ATX",
+      "ram_slots": 4,
+      "max_ram_gb": 192
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Crucial Classic 8 GB (1x8GB) DDR5-5600",
+    "brand": "Crucial",
+    "price": 570000,
+    "stock": 10,
+    "specs": {
+      "ram_type": "DDR5",
+      "speed_mhz": 5600,
+      "modules": 1,
+      "capacity_gb": 8
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "G.Skill Aegis 16 GB (2x8GB) DDR4-3000",
+    "brand": "G.Skill",
+    "price": 960000,
+    "stock": 23,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3000,
+      "modules": 2,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Kingston FURY Beast 8 GB (1x8GB) DDR4-3600",
+    "brand": "Kingston",
+    "price": 1170000,
+    "stock": 16,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3600,
+      "modules": 1,
+      "capacity_gb": 8
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "G.Skill Trident Z RGB 16 GB (2x8GB) DDR4-3200",
+    "brand": "G.Skill",
+    "price": 1430000,
+    "stock": 13,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3200,
+      "modules": 2,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Kingston FURY Beast 16 GB (2x8GB) DDR5-6000",
+    "brand": "Kingston",
+    "price": 1770000,
+    "stock": 22,
+    "specs": {
+      "ram_type": "DDR5",
+      "speed_mhz": 6000,
+      "modules": 2,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "TEAMGROUP T-Force Vulcan Z 16 GB (1x16GB) DDR4-3600",
+    "brand": "TEAMGROUP",
+    "price": 2070000,
+    "stock": 23,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3600,
+      "modules": 1,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Patriot Viper Venom 32 GB (2x16GB) DDR5-6200",
+    "brand": "Patriot",
+    "price": 2340000,
+    "stock": 15,
+    "specs": {
+      "ram_type": "DDR5",
+      "speed_mhz": 6200,
+      "modules": 2,
+      "capacity_gb": 32
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Kingston Fury Renegade RGB 16 GB (2x8GB) DDR4-3200",
+    "brand": "Kingston",
+    "price": 2600000,
+    "stock": 13,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3200,
+      "modules": 2,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Corsair Vengeance RGB Pro 32 GB (2x16GB) DDR4-3600",
+    "brand": "Corsair",
+    "price": 2990000,
+    "stock": 12,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3600,
+      "modules": 2,
+      "capacity_gb": 32
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "G.Skill Trident Z5 Neo RGB 32 GB (2x16GB) DDR5-7200",
+    "brand": "G.Skill",
+    "price": 3510000,
+    "stock": 6,
+    "specs": {
+      "ram_type": "DDR5",
+      "speed_mhz": 7200,
+      "modules": 2,
+      "capacity_gb": 32
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "G.Skill Ripjaws 16 GB (2x8GB) DDR4-3000",
+    "brand": "G.Skill",
+    "price": 4010000,
+    "stock": 8,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3000,
+      "modules": 2,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "G.Skill Trident Z Royal 16 GB (2x8GB) DDR4-4000",
+    "brand": "G.Skill",
+    "price": 4390000,
+    "stock": 26,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 4000,
+      "modules": 2,
+      "capacity_gb": 16
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Kingston FURY Beast RGB 64 GB (2x32GB) DDR5-5200",
+    "brand": "Kingston",
+    "price": 5040000,
+    "stock": 18,
+    "specs": {
+      "ram_type": "DDR5",
+      "speed_mhz": 5200,
+      "modules": 2,
+      "capacity_gb": 64
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Corsair Vengeance RGB 64 GB (2x32GB) DDR5-6000",
+    "brand": "Corsair",
+    "price": 5980000,
+    "stock": 28,
+    "specs": {
+      "ram_type": "DDR5",
+      "speed_mhz": 6000,
+      "modules": 2,
+      "capacity_gb": 64
+    }
+  },
+  {
+    "slug": "ram",
+    "name": "Thermaltake TOUGHRAM XG RGB 32 GB (2x16GB) DDR4-3600",
+    "brand": "Thermaltake",
+    "price": 7800000,
+    "stock": 30,
+    "specs": {
+      "ram_type": "DDR4",
+      "speed_mhz": 3600,
+      "modules": 2,
+      "capacity_gb": 32
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "ASRock Radeon RX 6500 XT Phantom Gaming D OC 4GB",
+    "brand": "ASRock",
+    "price": 4160000,
+    "stock": 28,
+    "specs": {
+      "chipset": "Radeon RX 6500 XT",
+      "vram_gb": 4,
+      "length_mm": 240,
+      "tdp_w": 107
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Asus GeForce RTX 5060 PRIME 8GB",
+    "brand": "Asus",
+    "price": 7800000,
+    "stock": 20,
+    "specs": {
+      "chipset": "GeForce RTX 5060",
+      "vram_gb": 8,
+      "length_mm": 268,
+      "tdp_w": 145
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "MSI GeForce RTX 3060 VENTUS 2X OC 8GB",
+    "brand": "MSI",
+    "price": 9360000,
+    "stock": 21,
+    "specs": {
+      "chipset": "GeForce RTX 3060 8GB",
+      "vram_gb": 8,
+      "length_mm": 235,
+      "tdp_w": 170
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Zotac GeForce RTX 3060 GAMING Twin Edge OC 12GB",
+    "brand": "Zotac",
+    "price": 11180000,
+    "stock": 7,
+    "specs": {
+      "chipset": "GeForce RTX 3060 12GB",
+      "vram_gb": 12,
+      "length_mm": 224,
+      "tdp_w": 170
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "PNY GeForce RTX 4060 Ti VERTO 8GB",
+    "brand": "PNY",
+    "price": 13000000,
+    "stock": 26,
+    "specs": {
+      "chipset": "GeForce RTX 4060 Ti",
+      "vram_gb": 8,
+      "length_mm": 245,
+      "tdp_w": 165
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Asus GeForce RTX 5070 PRIME OC 12GB",
+    "brand": "Asus",
+    "price": 15340000,
+    "stock": 14,
+    "specs": {
+      "chipset": "GeForce RTX 5070",
+      "vram_gb": 12,
+      "length_mm": 306,
+      "tdp_w": 250
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Gigabyte GeForce RTX 5070 EAGLE OC SFF 12GB",
+    "brand": "Gigabyte",
+    "price": 17420000,
+    "stock": 20,
+    "specs": {
+      "chipset": "GeForce RTX 5070",
+      "vram_gb": 12,
+      "length_mm": 290,
+      "tdp_w": 250
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "PNY GeForce RTX 5070 Ti OC 16GB",
+    "brand": "PNY",
+    "price": 19500000,
+    "stock": 15,
+    "specs": {
+      "chipset": "GeForce RTX 5070 Ti",
+      "vram_gb": 16,
+      "length_mm": 300,
+      "tdp_w": 300
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Asus GeForce RTX 5070 Ti PRIME 16GB",
+    "brand": "Asus",
+    "price": 21580000,
+    "stock": 13,
+    "specs": {
+      "chipset": "GeForce RTX 5070 Ti",
+      "vram_gb": 16,
+      "length_mm": 306,
+      "tdp_w": 300
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "XFX Radeon RX 9070 XT Mercury OC Magnetic Air RGB V2 16GB",
+    "brand": "XFX",
+    "price": 23920000,
+    "stock": 21,
+    "specs": {
+      "chipset": "Radeon RX 9070 XT",
+      "vram_gb": 16,
+      "length_mm": 360,
+      "tdp_w": 304
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "ASRock Radeon RX 7900 XT Creator 20GB",
+    "brand": "ASRock",
+    "price": 26650000,
+    "stock": 29,
+    "specs": {
+      "chipset": "Radeon RX 7900 XT",
+      "vram_gb": 20,
+      "length_mm": 312,
+      "tdp_w": 315
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "MSI Radeon RX 6600 XT MECH 2X 8G OCV1 8GB",
+    "brand": "MSI",
+    "price": 31460000,
+    "stock": 14,
+    "specs": {
+      "chipset": "Radeon RX 6600 XT",
+      "vram_gb": 8,
+      "length_mm": 215,
+      "tdp_w": 160
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Gigabyte GeForce RTX 5080 WINDFORCE OC SFF 16GB",
+    "brand": "Gigabyte",
+    "price": 36400000,
+    "stock": 10,
+    "specs": {
+      "chipset": "GeForce RTX 5080",
+      "vram_gb": 16,
+      "length_mm": 304,
+      "tdp_w": 360
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "MSI GeForce RTX 3080 VENTUS 3X PLUS OC 10GB",
+    "brand": "MSI",
+    "price": 44660000,
+    "stock": 25,
+    "specs": {
+      "chipset": "GeForce RTX 3080 10GB",
+      "vram_gb": 10,
+      "length_mm": 305,
+      "tdp_w": 320
+    }
+  },
+  {
+    "slug": "vga",
+    "name": "Zotac GeForce RTX 3080 Ti AMP Extreme Holo 12GB",
+    "brand": "Zotac",
+    "price": 52000000,
+    "stock": 24,
+    "specs": {
+      "chipset": "GeForce RTX 3080 Ti",
+      "vram_gb": 12,
+      "length_mm": 356,
+      "tdp_w": 350
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Orico Y-20",
+    "brand": "Orico",
+    "price": 660000,
+    "stock": 22,
+    "specs": {
+      "capacity_gb": 512,
+      "interface": "SATA 6.0 Gb/s",
+      "form_factor": "2.5\""
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Silicon Power Silm S55",
+    "brand": "Silicon",
+    "price": 970000,
+    "stock": 28,
+    "specs": {
+      "capacity_gb": 480,
+      "interface": "SATA 6.0 Gb/s",
+      "form_factor": "2.5\""
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "TEAMGROUP MP33 PRO",
+    "brand": "TEAMGROUP",
+    "price": 1430000,
+    "stock": 28,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "M.2 PCIe 3.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "TEAMGROUP Z440 Lite",
+    "brand": "TEAMGROUP",
+    "price": 1610000,
+    "stock": 8,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "M.2 PCIe 4.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Verbatim Vi3000",
+    "brand": "Verbatim",
+    "price": 1850000,
+    "stock": 6,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "M.2 PCIe 3.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "ADATA XPG SX8100",
+    "brand": "ADATA",
+    "price": 2210000,
+    "stock": 14,
+    "specs": {
+      "capacity_gb": 512,
+      "interface": "M.2 PCIe 3.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Crucial P510",
+    "brand": "Crucial",
+    "price": 2600000,
+    "stock": 19,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "M.2 PCIe 5.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Patriot Viper PV553",
+    "brand": "Patriot",
+    "price": 2860000,
+    "stock": 16,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "M.2 PCIe 5.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Sabrent Rocket Q",
+    "brand": "Sabrent",
+    "price": 3250000,
+    "stock": 22,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "M.2 PCIe 3.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "MSI SPATIUM M480 PRO PLAY",
+    "brand": "MSI",
+    "price": 3740000,
+    "stock": 14,
+    "specs": {
+      "capacity_gb": 2000,
+      "interface": "M.2 PCIe 4.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Netac NV7000-t",
+    "brand": "Netac",
+    "price": 4240000,
+    "stock": 13,
+    "specs": {
+      "capacity_gb": 2000,
+      "interface": "M.2 PCIe 4.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Transcend 250S",
+    "brand": "Transcend",
+    "price": 4890000,
+    "stock": 16,
+    "specs": {
+      "capacity_gb": 2000,
+      "interface": "M.2 PCIe 4.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Samsung 9100 PRO",
+    "brand": "Samsung",
+    "price": 5980000,
+    "stock": 19,
+    "specs": {
+      "capacity_gb": 2000,
+      "interface": "M.2 PCIe 5.0 X4",
+      "form_factor": "M.2-2280"
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "ADATA Premier Pro SP900",
+    "brand": "ADATA",
+    "price": 7800000,
+    "stock": 26,
+    "specs": {
+      "capacity_gb": 256,
+      "interface": "SATA 6.0 Gb/s",
+      "form_factor": "2.5\""
+    }
+  },
+  {
+    "slug": "ssd",
+    "name": "Angelbird AV PRO MK3",
+    "brand": "Angelbird",
+    "price": 10400000,
+    "stock": 29,
+    "specs": {
+      "capacity_gb": 1000,
+      "interface": "SATA 6.0 Gb/s",
+      "form_factor": "2.5\""
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Thermaltake Smart",
+    "brand": "Thermaltake",
+    "price": 1040000,
+    "stock": 27,
+    "specs": {
+      "wattage_w": 500,
+      "efficiency": "80+",
+      "form_factor": "ATX",
+      "modular": "No"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "ASRock Challenger CL-750G",
+    "brand": "ASRock",
+    "price": 1820000,
+    "stock": 9,
+    "specs": {
+      "wattage_w": 750,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "No"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Cooler Master MWE Gold 850 - V2",
+    "brand": "Cooler Master",
+    "price": 2340000,
+    "stock": 7,
+    "specs": {
+      "wattage_w": 850,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Gigabyte UD850GM",
+    "brand": "Gigabyte",
+    "price": 2600000,
+    "stock": 8,
+    "specs": {
+      "wattage_w": 850,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "PC Power & Cooling Silencer MK III",
+    "brand": "PC",
+    "price": 3080000,
+    "stock": 9,
+    "specs": {
+      "wattage_w": 750,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Semi"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Silverstone SFX",
+    "brand": "Silverstone",
+    "price": 3310000,
+    "stock": 15,
+    "specs": {
+      "wattage_w": 500,
+      "efficiency": "80+ Gold",
+      "form_factor": "SFX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "ASRock Steel Legend SL-850GW",
+    "brand": "ASRock",
+    "price": 3510000,
+    "stock": 26,
+    "specs": {
+      "wattage_w": 850,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "ASRock Phantom Gaming PG-1000G",
+    "brand": "ASRock",
+    "price": 3900000,
+    "stock": 5,
+    "specs": {
+      "wattage_w": 1000,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "NZXT C1000 (2024)",
+    "brand": "NZXT",
+    "price": 4290000,
+    "stock": 29,
+    "specs": {
+      "wattage_w": 1000,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Antec NE1000G M ATX3.0",
+    "brand": "Antec",
+    "price": 4680000,
+    "stock": 23,
+    "specs": {
+      "wattage_w": 1000,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Corsair RM850x (2021)",
+    "brand": "Corsair",
+    "price": 5170000,
+    "stock": 27,
+    "specs": {
+      "wattage_w": 850,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Corsair RM850x (2018)",
+    "brand": "Corsair",
+    "price": 5450000,
+    "stock": 11,
+    "specs": {
+      "wattage_w": 850,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "Antec NE1300G M ATX3.0",
+    "brand": "Antec",
+    "price": 6150000,
+    "stock": 20,
+    "specs": {
+      "wattage_w": 1300,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "be quiet! Dark Power 13",
+    "brand": "be quiet!",
+    "price": 6950000,
+    "stock": 27,
+    "specs": {
+      "wattage_w": 1000,
+      "efficiency": "80+ Titanium",
+      "form_factor": "ATX",
+      "modular": "Full"
+    }
+  },
+  {
+    "slug": "psu",
+    "name": "SeaSonic G12 GC",
+    "brand": "SeaSonic",
+    "price": 8990000,
+    "stock": 25,
+    "specs": {
+      "wattage_w": 650,
+      "efficiency": "80+ Gold",
+      "form_factor": "ATX",
+      "modular": "No"
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Zalman CUBIX",
+    "brand": "Zalman",
+    "price": 990000,
+    "stock": 6,
+    "specs": {
+      "case_type": "MicroATX Mini Tower",
+      "form_factors": [
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 330,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Zalman i4",
+    "brand": "Zalman",
+    "price": 1560000,
+    "stock": 22,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Zalman Z7 NEO",
+    "brand": "Zalman",
+    "price": 1820000,
+    "stock": 26,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Montech AIR 100 LITE",
+    "brand": "Montech",
+    "price": 2080000,
+    "stock": 7,
+    "specs": {
+      "case_type": "MicroATX Mid Tower",
+      "form_factors": [
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 350,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Silverstone FARA H1M",
+    "brand": "Silverstone",
+    "price": 2220000,
+    "stock": 24,
+    "specs": {
+      "case_type": "MicroATX Mini Tower",
+      "form_factors": [
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 330,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Antec C3 ARGB",
+    "brand": "Antec",
+    "price": 2530000,
+    "stock": 21,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "be quiet! Pure Base 501 Airflow",
+    "brand": "be quiet!",
+    "price": 2780000,
+    "stock": 15,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Silverstone RV05B",
+    "brand": "Silverstone",
+    "price": 3030000,
+    "stock": 15,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Lian Li LANCOOL 217",
+    "brand": "Lian Li",
+    "price": 3320000,
+    "stock": 15,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Silverstone SETA A1",
+    "brand": "Silverstone",
+    "price": 3760000,
+    "stock": 27,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Cougar Gemini M",
+    "brand": "Cougar",
+    "price": 4150000,
+    "stock": 19,
+    "specs": {
+      "case_type": "MicroATX Mini Tower",
+      "form_factors": [
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 330,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "be quiet! Light Base 600 LX",
+    "brand": "be quiet!",
+    "price": 4680000,
+    "stock": 25,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "NZXT H7 Elite (2022)",
+    "brand": "NZXT",
+    "price": 5200000,
+    "stock": 21,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Cougar MX660-T RGB",
+    "brand": "Cougar",
+    "price": 6250000,
+    "stock": 16,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "case",
+    "name": "HYTE Y70 Silver Wolf",
+    "brand": "HYTE",
+    "price": 7800000,
+    "stock": 15,
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 360,
+      "estimated": [
+        "max_gpu_length_mm"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Deepcool THETA 20 PWM",
+    "brand": "Deepcool",
+    "price": 430000,
+    "stock": 23,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Burst Assassin 120 SE ARGB",
+    "brand": "Thermalright",
+    "price": 610000,
+    "stock": 15,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "APNX AP1-V",
+    "brand": "APNX",
+    "price": 780000,
+    "stock": 22,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Peerless Assassin 120 SE ARGB",
+    "brand": "Thermalright",
+    "price": 960000,
+    "stock": 8,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Peerless Assassin 120 Digital ARGB",
+    "brand": "Thermalright",
+    "price": 1190000,
+    "stock": 18,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Jonsbo CR-1000 V2 Color",
+    "brand": "Jonsbo",
+    "price": 1410000,
+    "stock": 11,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Mars Gaming MCPU-XT",
+    "brand": "Mars",
+    "price": 1730000,
+    "stock": 16,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Xilence M906",
+    "brand": "Xilence",
+    "price": 2000000,
+    "stock": 18,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "GAMDIAS CHIONE E4",
+    "brand": "GAMDIAS",
+    "price": 2470000,
+    "stock": 19,
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Mjolnir Vision 360 ARGB",
+    "brand": "Thermalright",
+    "price": 2770000,
+    "stock": 27,
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Cooler Master Hyper 212 EVO",
+    "brand": "Cooler Master",
+    "price": 3140000,
+    "stock": 23,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Cooler Master Hyper H410R RGB",
+    "brand": "Cooler Master",
+    "price": 3610000,
+    "stock": 6,
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Enermax LIQMAX III 360 ARGB",
+    "brand": "Enermax",
+    "price": 4290000,
+    "stock": 10,
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Corsair iCUE LINK TITAN 360 RX RGB",
+    "brand": "Corsair",
+    "price": 5200000,
+    "stock": 29,
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Cooler Master MasterLiquid 360 Ion",
+    "brand": "Cooler Master",
+    "price": 6500000,
+    "stock": 9,
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ],
+      "estimated": [
+        "sockets"
+      ]
+    }
+  }
+]
