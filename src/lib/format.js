@@ -1,5 +1,5 @@
-const vnd = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 })
-
+// Định dạng giá kiểu Việt Nam: 12.990.000 ₫ (dấu cách thường, không dùng NBSP của Intl).
+// Chưa có giá (null/undefined) thì hiện "Liên hệ" thay vì "0 ₫".
 export function formatPrice(value) {
-  return vnd.format(value ?? 0)
+  return value == null ? 'Liên hệ' : Number(value).toLocaleString('vi-VN') + ' ₫'
 }

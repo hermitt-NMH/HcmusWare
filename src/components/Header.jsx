@@ -4,21 +4,23 @@ import { getCategories } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 
 const navClass = ({ isActive }) =>
-  `block rounded-md px-3 py-2 text-sm font-medium ${
+  // flex + min-h-11: vùng bấm cao tối thiểu 44px; whitespace-nowrap: chữ không bị ngắt 2 dòng.
+  // Màn nhỏ dùng px-2 cho đủ chỗ ở 360px, từ sm trở lên mới px-3.
+  `flex min-h-11 items-center whitespace-nowrap rounded-md px-2 py-2 text-sm font-medium sm:px-3 ${
     isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
   }`
 
 export default function Header() {
   const [open, setOpen] = useState(false)
-  const { data: categories } = useAsync(getCategories)
+  const categories = useAsync(getCategories)
   const close = () => setOpen(false)
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3">
+      <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3">
         <button
           type="button"
-          className="rounded-md p-2 text-slate-600 hover:bg-slate-100 md:hidden"
+          className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 md:hidden"
           aria-label="Mở menu danh mục"
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -28,7 +30,11 @@ export default function Header() {
           </svg>
         </button>
 
-        <Link to="/" className="flex items-center gap-2 font-bold text-slate-900" onClick={close}>
+        <Link
+          to="/"
+          className="inline-flex min-h-11 shrink-0 items-center gap-2 whitespace-nowrap font-bold text-slate-900"
+          onClick={close}
+        >
           <img src="/logo.svg" alt="" width="28" height="28" />
           <span>PC Parts</span>
         </Link>
@@ -40,7 +46,7 @@ export default function Header() {
           <NavLink to="/gio-hang" className={navClass}>
             Giỏ hàng
           </NavLink>
-          <NavLink to="/dang-nhap" className={`${navClass({ isActive: false })} hidden sm:block`}>
+          <NavLink to="/dang-nhap" className={`${navClass({ isActive: false })} hidden sm:flex`}>
             Đăng nhập
           </NavLink>
         </nav>
@@ -49,7 +55,14 @@ export default function Header() {
       {/* Menu danh mục: thanh ngang trên máy tính, danh sách xổ xuống trên điện thoại */}
       <div className={`${open ? 'block' : 'hidden'} border-t border-slate-100 md:block`}>
         <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-2 md:flex-row md:overflow-x-auto">
-          {categories?.map((c) => (
+          {/* Đang tải: chữ nhỏ; lỗi: báo gọn một dòng. Giữ cùng chiều cao để không vỡ thanh menu */}
+          {categories.loading && (
+            <li className="flex min-h-11 items-center px-3 text-xs text-slate-400">Đang tải danh mục…</li>
+          )}
+          {categories.error && (
+            <li className="flex min-h-11 items-center px-3 text-xs text-red-600">Không tải được danh mục</li>
+          )}
+          {categories.data?.map((c) => (
             <li key={c.id} className="shrink-0">
               <NavLink to={`/danh-muc/${c.slug}`} className={navClass} onClick={close}>
                 {c.name}
