@@ -21,6 +21,8 @@ import { createClient } from '@supabase/supabase-js'
 const RAW_DIR = new URL('../data/raw/', import.meta.url)
 const OVERRIDES_FILE = new URL('../data/overrides.json', import.meta.url)
 const OUTPUT_FILE = new URL('../data/products.json', import.meta.url)
+// Ảnh sản phẩm do scripts/fetch-images.js tải về (tên sản phẩm → image_url)
+const IMAGES_FILE = new URL('../data/images.json', import.meta.url)
 const PER_CATEGORY = 15
 const USD_TO_VND = Number(process.env.USD_TO_VND || 26000)
 const DRY_RUN = process.argv.includes('--dry-run')
@@ -300,6 +302,7 @@ async function readJson(url) {
 
 async function buildProducts() {
   const overrides = existsSync(OVERRIDES_FILE) ? await readJson(OVERRIDES_FILE) : {}
+  const images = existsSync(IMAGES_FILE) ? await readJson(IMAGES_FILE) : {}
   const result = []
 
   for (const [slug, cfg] of Object.entries(CATEGORIES)) {
@@ -343,6 +346,7 @@ async function buildProducts() {
         brand: brand ?? brandOf(p.name),
         price: toVnd(p.price),
         stock: fakeStock(name),
+        image_url: images[name]?.image_url ?? null,
         specs,
       })
     }

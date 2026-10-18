@@ -24,6 +24,7 @@ npm run dev                    # mở http://localhost:5173
 | `npm run lint`        | Kiểm tra lỗi ESLint                             |
 | `npm test`            | Chạy unit test (Vitest)                         |
 | `npm run import-data` | Đẩy ~120 sản phẩm từ bộ dữ liệu mở lên Supabase |
+| `npm run fetch-images` | Tải ảnh thật cho sản phẩm còn thiếu ảnh          |
 
 ## Cơ sở dữ liệu local (Supabase chạy trên máy)
 
@@ -66,6 +67,12 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
 2. Thêm `SUPABASE_SERVICE_ROLE_KEY` vào `.env.local` (**chỉ dùng cho script, tuyệt đối không dùng trong `src/`**).
 3. Chạy thử `node --env-file=.env.local scripts/import-dataset.js --dry-run` – script ghi kết quả vào `data/products.json` và liệt kê thông số còn thiếu / đang ước lượng.
 4. BA bổ sung thông số thiếu trong `data/overrides.json` (khóa là tên sản phẩm gốc), rồi chạy `npm run import-data`.
+
+### Ảnh sản phẩm
+
+Ảnh thật của từng sản phẩm nằm trong `public/images/products/`, bảng tên → ảnh ở `data/images.json` (import-data tự điền `image_url` từ đây).
+Thêm sản phẩm mới thì chạy `npm run fetch-images` rồi `npm run import-data`. Ảnh sai: `npm run fetch-images -- --redo "Tên SP"` (thêm `--query "từ khóa"` nếu cần),
+`npm run fetch-images -- --sheet` tạo trang soát ảnh. Sản phẩm không có ảnh sẽ hiện ảnh minh họa của danh mục.
 
 Tải nhanh 8 file cần dùng (Git Bash):
 

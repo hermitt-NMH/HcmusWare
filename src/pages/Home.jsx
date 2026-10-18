@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import { getCategories, getProducts } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
+import { categoryBg, categoryImage } from '../lib/images'
 
 export default function Home() {
   const categories = useAsync(getCategories)
@@ -29,8 +30,17 @@ export default function Home() {
             <Link
               key={c.id}
               to={`/danh-muc/${c.slug}`}
-              className="rounded-xl border border-slate-200 bg-white p-4 text-center text-sm font-medium hover:border-blue-400 hover:text-blue-700"
+              className="group flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center text-sm font-medium hover:border-blue-400 hover:text-blue-700"
             >
+              <span
+                className={`flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${categoryBg(c.slug)}`}
+              >
+                <img
+                  src={categoryImage(c.slug)}
+                  alt=""
+                  className="h-14 w-14 transition duration-300 group-hover:scale-110"
+                />
+              </span>
               {c.name}
             </Link>
           ))}

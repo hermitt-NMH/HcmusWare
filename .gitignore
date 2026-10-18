@@ -15,6 +15,7 @@ coverage
 
 # Bộ dữ liệu gốc rất nặng (~60.000 linh kiện), mỗi người tự tải
 data/raw/
+data/images-preview.html
 
 # Editor
 .vscode/*

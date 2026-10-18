@@ -1,0 +1,561 @@
+{
+  "ADATA Premier Pro SP900": {
+    "image_url": "/images/products/ssd-adata-premier-pro-sp900.webp",
+    "source": "https://cybertrade.bg/image/catalog/adata/premier-pro-sp900/adata-premier-pro-sp900-64gb-3.jpg"
+  },
+  "ADATA XPG SX8100": {
+    "image_url": "/images/products/ssd-adata-xpg-sx8100.webp",
+    "source": "https://nvs.tn-cdn.net/2022/02/SSD-Adata-XPG-SX8100-2.jpg"
+  },
+  "AMD Ryzen 3 3200G": {
+    "image_url": "/images/products/cpu-amd-ryzen-3-3200g.webp",
+    "source": "https://down-my.img.susercontent.com/file/my-11134207-7r98r-lso1hxoeu86v0b"
+  },
+  "AMD Ryzen 5 3600X": {
+    "image_url": "/images/products/cpu-amd-ryzen-5-3600x.webp",
+    "source": "https://pcper.com/wp-content/uploads/2019/08/amd-ryzen-5-3600x-cpu.jpg"
+  },
+  "AMD Ryzen 5 7600": {
+    "image_url": "/images/products/cpu-amd-ryzen-5-7600.webp",
+    "source": "https://www.hwcooling.net/wp-content/uploads/2023/01/amd-ryzen-5-7600-01.jpg"
+  },
+  "AMD Ryzen 5 7600X": {
+    "image_url": "/images/products/cpu-amd-ryzen-5-7600x.webp",
+    "source": "https://www.pcworld.com/wp-content/uploads/2022/10/070A9375_9-1.jpg?resize=2048%2C1366&amp;quality=50&amp;strip=all"
+  },
+  "AMD Ryzen 5 7600X3D": {
+    "image_url": "/images/products/cpu-amd-ryzen-5-7600x3d.webp",
+    "source": "https://cdn.wccftech.com/wp-content/uploads/2024/09/DSC_0303-Custom-1920x1280.jpg"
+  },
+  "AMD Ryzen 7 9700X": {
+    "image_url": "/images/products/cpu-amd-ryzen-7-9700x.webp",
+    "source": "https://cdn.mos.cms.futurecdn.net/FeMqKmi3vJAwste8dj2QKg.jpg"
+  },
+  "AMD Ryzen 9 9950X3D": {
+    "image_url": "/images/products/cpu-amd-ryzen-9-9950x3d.webp",
+    "source": "https://platform.theverge.com/wp-content/uploads/sites/2/2025/03/twarren_amd_ryzen_9_9950X3D_1.jpg?quality=90&amp;strip=all&amp;crop=16.875%2C0%2C66.25%2C100&amp;w=2048"
+  },
+  "Angelbird AV PRO MK3": {
+    "image_url": "/images/products/ssd-angelbird-av-pro-mk3.webp",
+    "source": "https://www.picstop.co.uk/user/products/large/AVP1000MK3_1(1).jpg"
+  },
+  "Antec C3 ARGB": {
+    "image_url": "/images/products/case-antec-c3-argb.webp",
+    "source": "https://cdn.mwave.com.au/images/400/antec_c3_argb_black_constellation_series_mid_tower_atx_case_black_ac73930_15279.jpg"
+  },
+  "Antec NE1000G M ATX3.0": {
+    "image_url": "/images/products/psu-antec-ne1000g-m-atx3-0.webp",
+    "source": "https://www.antec.com/product/power/images/gallery-ne1000g_m_atx3-03.jpg"
+  },
+  "Antec NE1300G M ATX3.0": {
+    "image_url": "/images/products/psu-antec-ne1300g-m-atx3-0.webp",
+    "source": "https://raynel.co.za/wp-content/uploads/2026/02/Antec_NE1300G-M_wr_03a.jpg"
+  },
+  "APNX AP1-V": {
+    "image_url": "/images/products/cooler-apnx-ap1-v.webp",
+    "source": "https://www.overclockers.co.uk/blog/wp-content/uploads/2023/10/apnx-ap1-v-cooler-white-1.png",
+    "rejected": [
+      "https://www.static-src.com/wcsstore/Indraprastha/images/catalog/full/catalog-image/117/MTA-179469486/brd-132890_apnx-ap1-v-argb-cpu-air-cooler-fan-intel-amd_full01-54e553c0.jpg",
+      "https://down-ph.img.susercontent.com/file/ph-11134207-7r98v-lqijl40fmki7f2",
+      "https://down-sg.img.susercontent.com/file/sg-11134207-7rcdg-lrzg5ruylq2292"
+    ]
+  },
+  "ASRock B760M Pro RS/D4 WiFi": {
+    "image_url": "/images/products/mainboard-asrock-b760m-pro-rs-d4-wifi.webp",
+    "source": "https://www.asrock.com/mb/photo/B760M Pro RSD4 WiFi(L3).png"
+  },
+  "ASRock B760M Steel Legend WiFi": {
+    "image_url": "/images/products/mainboard-asrock-b760m-steel-legend-wifi.webp",
+    "source": "https://www.cclonline.com/images/avante/B760M-Steel-Legend_WiFi_box.jpg"
+  },
+  "ASRock Challenger CL-750G": {
+    "image_url": "/images/products/psu-asrock-challenger-cl-750g.webp",
+    "source": "https://i5.walmartimages.com/seo/ASRock-Challenger-CL-750G-750W-80-PLUS-GOLD-Certified-Non-Modular-Power-Supply-ATX3-1-PCIe5-1-Ready-Dual-Color-12V-2x6-Cable-5-Years-Warranty_a9b65d0c-0d98-4bd1-83a7-8478b057d8c3.01ad18168c23f9f0423a15341233647a.png"
+  },
+  "ASRock Phantom Gaming PG-1000G": {
+    "image_url": "/images/products/psu-asrock-phantom-gaming-pg-1000g.webp",
+    "source": "https://down-id.img.susercontent.com/file/sg-11134201-7rdxr-md1jequuf61a3a"
+  },
+  "ASRock Radeon RX 6500 XT Phantom Gaming D OC 4GB": {
+    "image_url": "/images/products/vga-asrock-radeon-rx-6500-xt-phantom-gaming-d-oc-4gb.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/05/92/90/LD0005929065_1.jpg"
+  },
+  "ASRock Radeon RX 7900 XT Creator 20GB": {
+    "image_url": "/images/products/vga-asrock-radeon-rx-7900-xt-creator-20gb.webp",
+    "source": "https://www.asrock.com/Graphics-Card/photo/Radeon RX 7900 XT Creator 20GB(L1).png"
+  },
+  "ASRock Steel Legend SL-850GW": {
+    "image_url": "/images/products/psu-asrock-steel-legend-sl-850gw.webp",
+    "source": "https://www.asrock.com/Power-Supply/photo/SL-850GW(L1).png"
+  },
+  "ASUS Dual GeForce RTX 4060 8GB": {
+    "image_url": "/images/products/vga-asus-dual-geforce-rtx-4060-8gb.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/06/04/66/LD0006046611.jpg"
+  },
+  "Asus GeForce RTX 5060 PRIME 8GB": {
+    "image_url": "/images/products/vga-asus-geforce-rtx-5060-prime-8gb.webp",
+    "source": "https://www.alktech.co/hs-fs/hubfs/ASUS Prime GeForce RTX 5060 OC Edition 8GB GDDR7/Packaging (Front).jpg?width=3840&amp;height=2160&amp;name=Packaging (Front).jpg"
+  },
+  "Asus GeForce RTX 5070 PRIME OC 12GB": {
+    "image_url": "/images/products/vga-asus-geforce-rtx-5070-prime-oc-12gb.webp",
+    "source": "https://thepcshop.co.za/wp-content/uploads/2025/05/Asus_PRIME-RTX5070-012G_wr_01a-720x720.jpg"
+  },
+  "Asus GeForce RTX 5070 Ti PRIME 16GB": {
+    "image_url": "/images/products/vga-asus-geforce-rtx-5070-ti-prime-16gb.webp",
+    "source": "https://sm.pcmag.com/t/pcmag_au/review/a/asus-prime/asus-prime-geforce-rtx-5070-ti-16gb-gddr7_3v59.1920.jpg"
+  },
+  "Asus PRIME B650M-K": {
+    "image_url": "/images/products/mainboard-asus-prime-b650m-k.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/06/04/45/LD0006044557.jpg"
+  },
+  "Asus ROG STRIX Z890-H GAMING WIFI": {
+    "image_url": "/images/products/mainboard-asus-rog-strix-z890-h-gaming-wifi.webp",
+    "source": "https://m.media-amazon.com/images/I/81Hj2CkiZfL._AC_SL1500_.jpg"
+  },
+  "Asus TUF GAMING B650M-E": {
+    "image_url": "/images/products/mainboard-asus-tuf-gaming-b650m-e.webp",
+    "source": "https://dlcdnwebimgs.asus.com/gain/fc0ae947-be9d-4533-b8f9-a2101fa86867/"
+  },
+  "be quiet! Dark Power 13": {
+    "image_url": "/images/products/psu-be-quiet-dark-power-13.webp",
+    "source": "https://hwbusters.com/wp-content/uploads/2023/05/be-quiet-Dark-Power-13-1000W.jpg"
+  },
+  "be quiet! Light Base 600 LX": {
+    "image_url": "/images/products/case-be-quiet-light-base-600-lx.webp",
+    "source": "https://m.media-amazon.com/images/I/61JUuBpqljL.jpg"
+  },
+  "be quiet! Pure Base 501 Airflow": {
+    "image_url": "/images/products/case-be-quiet-pure-base-501-airflow.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/06/18/69/LD0006186941.jpg"
+  },
+  "Cooler Master Hyper 212 EVO": {
+    "image_url": "/images/products/cooler-cooler-master-hyper-212-evo.webp",
+    "source": "https://a.storyblok.com/f/281110/f9ef3cd9eb/hyper-212-evo_02.png/m/960x0/smart"
+  },
+  "Cooler Master Hyper H410R RGB": {
+    "image_url": "/images/products/cooler-cooler-master-hyper-h410r-rgb.webp",
+    "source": "https://files.coolermaster.com/og-image/hyper-h410r-rgb-1200x630.jpg"
+  },
+  "Cooler Master MasterLiquid 360 Ion": {
+    "image_url": "/images/products/cooler-cooler-master-masterliquid-360-ion.webp",
+    "source": "https://img.evetech.co.za/repository/ProductImages/cooler-master-masterliquid-360-ion-argb-cooler-1800px-v1.webp"
+  },
+  "Cooler Master MWE Gold 850 - V2": {
+    "image_url": "/images/products/psu-cooler-master-mwe-gold-850-v2.webp",
+    "source": "https://m.media-amazon.com/images/I/81X1hRKY6ML._AC_SL1500_.jpg"
+  },
+  "Corsair iCUE LINK TITAN 360 RX RGB": {
+    "image_url": "/images/products/cooler-corsair-icue-link-titan-360-rx-rgb.webp",
+    "source": "https://assets.corsair.com/image/upload/c_pad,q_auto,h_1024,w_1024,f_auto/products/Liquid-Cooling/titan-rx-rgb/Gallery/CW-9061018-WW/CW-9061018-WW_01.webp"
+  },
+  "Corsair RM750e 750W": {
+    "image_url": "/images/products/psu-corsair-rm750e-750w.webp",
+    "source": "https://www.p1pc.com/wp-content/uploads/2025/01/Corsair-RM750e-750W-80-Gold-Fully-Modular-ATX-Power-Supply.jpg"
+  },
+  "Corsair RM850x (2018)": {
+    "image_url": "/images/products/psu-corsair-rm850x-2018.webp",
+    "source": "https://m.media-amazon.com/images/I/71dj+5GQwEL._AC_SL1500_.jpg"
+  },
+  "Corsair RM850x (2021)": {
+    "image_url": "/images/products/psu-corsair-rm850x-2021.webp",
+    "source": "https://m.media-amazon.com/images/I/81sPI+eyRvL._AC_SL1500_.jpg"
+  },
+  "Corsair Vengeance RGB 64 GB (2x32GB) DDR5-6000": {
+    "image_url": "/images/products/ram-corsair-vengeance-rgb-64-gb-2x32gb-ddr5-6000.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/05/96/95/LD0005969567_0005995858_0005995864_0006020951_0006031208_0006031211_0006031214.jpg"
+  },
+  "Corsair Vengeance RGB Pro 32 GB (2x16GB) DDR4-3600": {
+    "image_url": "/images/products/ram-corsair-vengeance-rgb-pro-32-gb-2x16gb-ddr4-3600.webp",
+    "source": "https://m.media-amazon.com/images/I/71e6YWJio-L._AC_.jpg"
+  },
+  "Cougar Gemini M": {
+    "image_url": "/images/products/case-cougar-gemini-m.webp",
+    "source": "https://cougargaming.com/_cgrwdr_/wwdpp/wp-content/uploads/2019/03/08.png"
+  },
+  "Cougar MX660-T RGB": {
+    "image_url": "/images/products/case-cougar-mx660-t-rgb.webp",
+    "source": "https://files.pccasegear.com/UserFiles/CGR-MX660-T-RGB-prod3.jpg"
+  },
+  "Crucial Classic 8 GB (1x8GB) DDR5-5600": {
+    "image_url": "/images/products/ram-crucial-classic-8-gb-1x8gb-ddr5-5600.webp",
+    "source": "https://m.media-amazon.com/images/I/819OdHGCicL.jpg",
+    "rejected": [
+      "https://down-ph.img.susercontent.com/file/ph-11134207-81ztk-mfc1phejm5fw58",
+      "https://static.ollo.it/img/catalog/2048x2048/crucial-8gb-1x8gb-ddr5-5600-cl-46-so-dimm-ram-notebook-speicher-memoria-5600-mhz-data-integrity-check-verifica-integrita-dati_1351943_905172.jpg",
+      "https://gaminggear.bg/thumbs/3/crucial-classic-black-8gb-1x8-tray-ddr5-so-dimm-5600-mhz-cl46-ram-pamet-main.webp",
+      "https://luckyfalconcomputers.com/wp-content/uploads/2025/09/crucial-ddr5-classic-desktop-gallery-image-2-performance.jpg"
+    ]
+  },
+  "Crucial P510": {
+    "image_url": "/images/products/ssd-crucial-p510.webp",
+    "source": "https://www.syntech.co.za/wp-content/uploads/2025/06/CT1000P510SSD8_Crucial-P510-1TB-M.2-Gen5-NVMe-3D-NAND-SSD_wr_01.jpg"
+  },
+  "Deepcool THETA 20 PWM": {
+    "image_url": "/images/products/cooler-deepcool-theta-20-pwm.webp",
+    "source": "https://www.spotlesshaus.com/wp-content/uploads/2026/05/13/1778653921/deepcool-theta-20-pwm-1700-cpu-cooler.webp"
+  },
+  "Enermax LIQMAX III 360 ARGB": {
+    "image_url": "/images/products/cooler-enermax-liqmax-iii-360-argb.webp",
+    "source": "https://www.enermax.com/archive/products/item/LiquidCooler/LIQMAX_III_ARGB/360/LIQMAX_III_ARGB_360_002.jpg"
+  },
+  "G.Skill Aegis 16 GB (2x8GB) DDR4-3000": {
+    "image_url": "/images/products/ram-g-skill-aegis-16-gb-2x8gb-ddr4-3000.webp",
+    "source": "https://down-sg.img.susercontent.com/file/a590f40ae8e3d29fc3fccb120b0b1c19"
+  },
+  "G.Skill Ripjaws 16 GB (2x8GB) DDR4-3000": {
+    "image_url": "/images/products/ram-g-skill-ripjaws-16-gb-2x8gb-ddr4-3000.webp",
+    "source": "https://img.pccomponentes.com/articles/16/169065/1.jpg"
+  },
+  "G.Skill Trident Z RGB 16 GB (2x8GB) DDR4-3200": {
+    "image_url": "/images/products/ram-g-skill-trident-z-rgb-16-gb-2x8gb-ddr4-3200.webp",
+    "source": "https://m.media-amazon.com/images/I/61l4EStxhnL._AC_SL1274_.jpg"
+  },
+  "G.Skill Trident Z Royal 16 GB (2x8GB) DDR4-4000": {
+    "image_url": "/images/products/ram-g-skill-trident-z-royal-16-gb-2x8gb-ddr4-4000.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/05/46/65/LD0005466576_2.jpg"
+  },
+  "G.Skill Trident Z5 Neo RGB 32 GB (2x16GB) DDR5-7200": {
+    "image_url": "/images/products/ram-g-skill-trident-z5-neo-rgb-32-gb-2x16gb-ddr5-7200.webp",
+    "source": "https://m.media-amazon.com/images/I/71OZOHC1VHL._AC_SL1500_.jpg"
+  },
+  "GAMDIAS CHIONE E4": {
+    "image_url": "/images/products/cooler-gamdias-chione-e4.webp",
+    "source": "https://img.terabyteshop.com.br/produto/g/water-cooler-gamdias-chione-e4-420-wh-argb-420mm-display-digital-intel-amd-pwm-branco_232225.jpg",
+    "rejected": [
+      "https://down-id.img.susercontent.com/file/id-11134207-81ztq-me78gulgsy6c50"
+    ]
+  },
+  "Gigabyte A520M S2H": {
+    "image_url": "/images/products/mainboard-gigabyte-a520m-s2h.webp",
+    "source": "https://static.gigabyte.com/StaticFile/Image/Global/004196ece76e641e591904a6b63f822b/Product/25827"
+  },
+  "Gigabyte B760 DS3H AX": {
+    "image_url": "/images/products/mainboard-gigabyte-b760-ds3h-ax.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/06/13/59/LD0006135909.jpg"
+  },
+  "Gigabyte B760M AORUS ELITE AX": {
+    "image_url": "/images/products/mainboard-gigabyte-b760m-aorus-elite-ax.webp",
+    "source": "https://static.gigabyte.com/StaticFile/Image/Global/4b196dffccfd71b8d0a3cffba011740f/Product/35683/Png"
+  },
+  "Gigabyte B860M D3HP": {
+    "image_url": "/images/products/mainboard-gigabyte-b860m-d3hp.webp",
+    "source": "https://www.binarylogic.com.bd/images/product_image/large-B860M-D3HP-01.png"
+  },
+  "Gigabyte GeForce RTX 5070 EAGLE OC SFF 12GB": {
+    "image_url": "/images/products/vga-gigabyte-geforce-rtx-5070-eagle-oc-sff-12gb.webp",
+    "source": "https://m.media-amazon.com/images/I/71Z23QPbk0L._AC_SL1500_.jpg"
+  },
+  "Gigabyte GeForce RTX 5080 WINDFORCE OC SFF 16GB": {
+    "image_url": "/images/products/vga-gigabyte-geforce-rtx-5080-windforce-oc-sff-16gb.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/06/20/53/LD0006205312.jpg"
+  },
+  "Gigabyte UD850GM": {
+    "image_url": "/images/products/psu-gigabyte-ud850gm.webp",
+    "source": "https://m.media-amazon.com/images/I/71L0MFTW30L._AC_SL1500_.jpg"
+  },
+  "Gigabyte Z690 AORUS PRO": {
+    "image_url": "/images/products/mainboard-gigabyte-z690-aorus-pro.webp",
+    "source": "https://files.pccasegear.com/images/1635318937-Z690-AORUS-PRO-thb.jpg"
+  },
+  "HYTE Y70 Silver Wolf": {
+    "image_url": "/images/products/case-hyte-y70-silver-wolf.webp",
+    "source": "https://files.pccasegear.com/images/CS-HYTE-Y70-SILVERWOLF-add4.jpg"
+  },
+  "Intel Core i3-14100F": {
+    "image_url": "/images/products/cpu-intel-core-i3-14100f.webp",
+    "source": "https://www.hwcooling.net/wp-content/uploads/2024/02/intel-core-i3-14100f-01.jpg"
+  },
+  "Intel Core i5-12400": {
+    "image_url": "/images/products/cpu-intel-core-i5-12400.webp",
+    "source": "https://sistemasrjd.com/6520-large_default/intel-core-i5-12400-s-1700-250ghz-6-core-18mb-smart-cache-processor-12th-generation.jpg"
+  },
+  "Intel Core i5-12600KF": {
+    "image_url": "/images/products/cpu-intel-core-i5-12600kf.webp",
+    "source": "https://aorus.az/image/cache/catalog/CPU-lar/Intel/Intel Core i5-12600KF 1-1000x1000.jpg"
+  },
+  "Intel Core i5-13600KF": {
+    "image_url": "/images/products/cpu-intel-core-i5-13600kf.webp",
+    "source": "https://tpucdn.com/cpu-specs/images/chips/2852-front.jpg"
+  },
+  "Intel Core i5-14500": {
+    "image_url": "/images/products/cpu-intel-core-i5-14500.webp",
+    "source": "https://www.ryans.com/storage/products/main/intel-core-i5-14th-gen-raptor-lake-14500-up-to-11707138812.webp"
+  },
+  "Intel Core i9-12900F": {
+    "image_url": "/images/products/cpu-intel-core-i9-12900f.webp",
+    "source": "https://i5.walmartimages.com/asr/b44d36ee-edc6-4169-94fe-97c5940065e3.c8cb2448da019d685039ad514245255f.jpeg"
+  },
+  "Intel Core i9-13900F": {
+    "image_url": "/images/products/cpu-intel-core-i9-13900f.webp",
+    "source": "https://assets.umart.com.au/newsite/images/202301/source_img/Intel-CPU-Intel-Core-i9-13900F-24-Core-LGA-1700-5-60GHz-CPU-Processor-2.jpg"
+  },
+  "Intel Core Ultra 5 235": {
+    "image_url": "/images/products/cpu-intel-core-ultra-5-235.webp",
+    "source": "https://www.notebookcheck.net/fileadmin/Notebooks/Intel/Core_Ultra_5_235/235_3.jpg"
+  },
+  "Intel Core Ultra 5 245KF": {
+    "image_url": "/images/products/cpu-intel-core-ultra-5-245kf.webp",
+    "source": "http://kccshop.vn/media/product/250-10156-cpu-intel-core-ultra-5-245kf-tray--4-2-ghz--up-to-5-2ghz--14-nh--n-14-lu---ng--24-mb-cache-_1_main.jpeg",
+    "rejected": [
+      "https://alfrensia.com/wp-content/uploads/2024/12/Intel-Core-Ultra-5-245KF-Tray-Processor.jpg"
+    ]
+  },
+  "Jonsbo CR-1000 V2 Color": {
+    "image_url": "/images/products/cooler-jonsbo-cr-1000-v2-color.webp",
+    "source": "https://images.khmer24.co/24-02-22/30175-jonsbo-cr1000-v2-color-cpu-cooler-1708575058-68732032-f.jpg"
+  },
+  "Kingston FURY Beast 16 GB (2x8GB) DDR5-6000": {
+    "image_url": "/images/products/ram-kingston-fury-beast-16-gb-2x8gb-ddr5-6000.webp",
+    "source": "https://m.media-amazon.com/images/I/51DVeR2F0lL._AC_SL1422_.jpg"
+  },
+  "Kingston FURY Beast 32GB (2x16GB) DDR5-6000": {
+    "image_url": "/images/products/ram-kingston-fury-beast-32gb-2x16gb-ddr5-6000.webp",
+    "source": "https://m.media-amazon.com/images/I/71UcVYxIL9L._AC_SL1500_.jpg"
+  },
+  "Kingston FURY Beast 8 GB (1x8GB) DDR4-3600": {
+    "image_url": "/images/products/ram-kingston-fury-beast-8-gb-1x8gb-ddr4-3600.webp",
+    "source": "https://dust2.gg/wp-content/uploads/2024/12/anyconvcom__2mrechuz_b0c772f4_thumbnail_4096-393706b7-63d5-4b23-ab86-ba8b08e9e626.png"
+  },
+  "Kingston FURY Beast RGB 64 GB (2x32GB) DDR5-5200": {
+    "image_url": "/images/products/ram-kingston-fury-beast-rgb-64-gb-2x32gb-ddr5-5200.webp",
+    "source": "https://m.media-amazon.com/images/I/717cPftxQgL._AC_.jpg",
+    "rejected": [
+      "https://kccshop.vn/media/product/250-4275-1.jpg"
+    ]
+  },
+  "Kingston Fury Renegade RGB 16 GB (2x8GB) DDR4-3200": {
+    "image_url": "/images/products/ram-kingston-fury-renegade-rgb-16-gb-2x8gb-ddr4-3200.webp",
+    "source": "https://m.media-amazon.com/images/I/61JX70ub-dL._AC_SL1500_.jpg"
+  },
+  "Lian Li LANCOOL 217": {
+    "image_url": "/images/products/case-lian-li-lancool-217.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/06/26/78/LD0006267822.jpg"
+  },
+  "Mars Gaming MCPU-XT": {
+    "image_url": "/images/products/cooler-mars-gaming-mcpu-xt.webp",
+    "source": "https://www.mhr.pt/files/products/1006110_1.jpg"
+  },
+  "Montech AIR 100 LITE": {
+    "image_url": "/images/products/case-montech-air-100-lite.webp",
+    "source": "https://ecommerce.datablitz.com.ph/cdn/shop/files/fbdfbfddbf_1024x.jpg?v=1721452720"
+  },
+  "MSI B550M PRO-VDH WIFI": {
+    "image_url": "/images/products/mainboard-msi-b550m-pro-vdh-wifi.webp",
+    "source": "https://m.media-amazon.com/images/I/91beeVTo4pL._AC_.jpg"
+  },
+  "MSI GeForce RTX 3060 VENTUS 2X OC 8GB": {
+    "image_url": "/images/products/vga-msi-geforce-rtx-3060-ventus-2x-oc-8gb.webp",
+    "source": "https://m.media-amazon.com/images/I/71tduSp8ooL._AC_.jpg"
+  },
+  "MSI GeForce RTX 3080 VENTUS 3X PLUS OC 10GB": {
+    "image_url": "/images/products/vga-msi-geforce-rtx-3080-ventus-3x-plus-oc-10gb.webp",
+    "source": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6480/6480306cv15d.jpg"
+  },
+  "MSI MAG B760M MORTAR WIFI II": {
+    "image_url": "/images/products/mainboard-msi-mag-b760m-mortar-wifi-ii.webp",
+    "source": "https://m.media-amazon.com/images/I/81vsEbgkIrL._AC_.jpg"
+  },
+  "MSI MEG Z690 UNIFY": {
+    "image_url": "/images/products/mainboard-msi-meg-z690-unify.webp",
+    "source": "https://asset.msi.com/resize/image/global/product/product_1635323934d417e55161d22868e276d5831530a2fc.png62405b38c58fe0f07fcef2367d8a9ba1/1024.png"
+  },
+  "MSI MPG B650I EDGE WIFI": {
+    "image_url": "/images/products/mainboard-msi-mpg-b650i-edge-wifi.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/05/98/50/LD0005985099.jpg"
+  },
+  "MSI PRO B650M-A WIFI": {
+    "image_url": "/images/products/mainboard-msi-pro-b650m-a-wifi.webp",
+    "source": "https://m.media-amazon.com/images/I/81UCyHa+BKL._AC_SL1500_.jpg"
+  },
+  "MSI PRO B650M-P": {
+    "image_url": "/images/products/mainboard-msi-pro-b650m-p.webp",
+    "source": "https://m.media-amazon.com/images/I/81vs4aOHAiL._AC_SL1500_.jpg"
+  },
+  "MSI Radeon RX 6600 XT MECH 2X 8G OCV1 8GB": {
+    "image_url": "/images/products/vga-msi-radeon-rx-6600-xt-mech-2x-8g-ocv1-8gb.webp",
+    "source": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6476/6476228_sd.jpg"
+  },
+  "MSI SPATIUM M480 PRO PLAY": {
+    "image_url": "/images/products/ssd-msi-spatium-m480-pro-play.webp",
+    "source": "https://m.media-amazon.com/images/I/71ZFhwpNRNL._AC_.jpg"
+  },
+  "Netac NV7000-t": {
+    "image_url": "/images/products/ssd-netac-nv7000-t.webp",
+    "source": "https://www.techporn.ph/wp-content/uploads/Netac-NV7000-T-SSD-Images-3.jpg"
+  },
+  "NZXT C1000 (2024)": {
+    "image_url": "/images/products/psu-nzxt-c1000-2024.webp",
+    "source": "https://brightstarcomp.com/cdn/shop/files/PSU-NZXT-PA-2G2BB-UK_e6b5aa1f-7f86-4a12-8041-f73150d3690a.png?v=1736157352",
+    "rejected": [
+      "https://www.incehesap.com/resim/icerik/67860bcd94fd7.webp"
+    ]
+  },
+  "NZXT H5 Flow": {
+    "image_url": "/images/products/case-nzxt-h5-flow.webp",
+    "source": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6522/6522034_sd.jpg"
+  },
+  "NZXT H7 Elite (2022)": {
+    "image_url": "/images/products/case-nzxt-h7-elite-2022.webp",
+    "source": "https://www.globalbrand.com.bd/image/cache/catalog/Casing/NZXT-H7-Elite-(CM-H71EB-01-Black)-Premium-Mid-Tower-Casing---Black-3-1200x1200.jpg",
+    "rejected": [
+      "https://ecommerce.datablitz.com.ph/cdn/shop/files/dfbzxxz_1024x.jpg?v=1726807053",
+      "https://down-ph.img.susercontent.com/file/ph-11134207-7r98v-lmr6wgx463ynb4",
+      "https://down-ph.img.susercontent.com/file/ph-11134207-7rasm-ma0ta53wtqmb48",
+      "https://ecommerce.datablitz.com.ph/cdn/shop/files/bdfbfdfbdxz_1024x.jpg?v=1726806497"
+    ]
+  },
+  "Orico Y-20": {
+    "image_url": "/images/products/ssd-orico-y-20.webp",
+    "source": "https://www.tnc.com.vn/uploads/product/sp2025/o-cung-ssd-gan-trong-orico-2.5-inch-sata-3.0-y20-512gb.jpg"
+  },
+  "Patriot Viper PV553": {
+    "image_url": "/images/products/ssd-patriot-viper-pv553.webp",
+    "source": "https://cdn.cs.1worldsync.com/8b/77/8b7717e1-9a7f-4bc0-a0bc-11e9c3e61f5c.jpg",
+    "rejected": [
+      "https://down-my.img.susercontent.com/file/sg-11134202-7rdw8-lxe4orb0poaw58"
+    ]
+  },
+  "Patriot Viper Venom 32 GB (2x16GB) DDR5-6200": {
+    "image_url": "/images/products/ram-patriot-viper-venom-32-gb-2x16gb-ddr5-6200.webp",
+    "source": "https://i5.walmartimages.com/seo/Patriot-Viper-Venom-32GB-2-x-16GB-288-Pin-PC-RAM-DDR5-6200-PC5-49600-Desktop-Memory-Model-PVV532G620C40K_de98db00-b6fc-4e89-86d6-b92ccf2288eb.17b200fb6b76ce8e73decf5c1b5875f4.webp?odnHeight=576&amp;odnWidth=576&amp;odnBg=FFFFFF",
+    "rejected": [
+      "https://static.wixstatic.com/media/9ad2fc_b77d362dbd6349f2b9d5ec88c240cae6~mv2.jpg/v1/fill/w_980,h_638,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/9ad2fc_b77d362dbd6349f2b9d5ec88c240cae6~mv2.jpg"
+    ]
+  },
+  "PC Power & Cooling Silencer MK III": {
+    "image_url": "/images/products/psu-pc-power-cooling-silencer-mk-iii.webp",
+    "source": "https://static.tweaktown.com/content/4/9/4978_01_pc_power_cooling_silencer_mk_iii_1200_watt_80_plus_platinum_power_supply_review.jpg"
+  },
+  "PNY GeForce RTX 4060 Ti VERTO 8GB": {
+    "image_url": "/images/products/vga-pny-geforce-rtx-4060-ti-verto-8gb.webp",
+    "source": "https://m.media-amazon.com/images/I/61m+5bCVxjL._AC_.jpg"
+  },
+  "PNY GeForce RTX 5070 Ti OC 16GB": {
+    "image_url": "/images/products/vga-pny-geforce-rtx-5070-ti-oc-16gb.webp",
+    "source": "https://techarc.pk/wp-content/uploads/2026/01/pny-geforce-rtx-5070-ti-16gb-rgb-oc-graphics-card-1-techarc.pk_.webp"
+  },
+  "Sabrent Rocket Q": {
+    "image_url": "/images/products/ssd-sabrent-rocket-q.webp",
+    "source": "https://www.windowscentral.com/sites/wpcentral.com/files/styles/large_wm_brb/public/field/image/2020/05/sabrent-rocket-q-nvme-ssd-module.jpg?itok=KgUx5UvS"
+  },
+  "Samsung 9100 PRO": {
+    "image_url": "/images/products/ssd-samsung-9100-pro.webp",
+    "source": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/40bd68d8-fe36-4d36-8ed7-6a6e0ce5dfc8.jpg"
+  },
+  "Samsung 990 EVO 1TB": {
+    "image_url": "/images/products/ssd-samsung-990-evo-1tb.webp",
+    "source": "https://pisces.bbystatic.com/image2/BestBuy_US/images/products/6571/6571723cv14d.jpg"
+  },
+  "SeaSonic G12 GC": {
+    "image_url": "/images/products/psu-seasonic-g12-gc.webp",
+    "source": "https://seasonic.com/wp-content/uploads/2024/04/G12-GC-650-PSU-box-1462x1080.webp"
+  },
+  "Silicon Power Silm S55": {
+    "image_url": "/images/products/ssd-silicon-power-silm-s55.webp",
+    "source": "https://static2.nordic.pictures/1139817-thickbox_default/silicon-power-ssd-sata-slim-s55-480gb.jpg"
+  },
+  "Silverstone FARA H1M": {
+    "image_url": "/images/products/case-silverstone-fara-h1m.webp",
+    "source": "https://cdn.mwave.com.au/images/400/silverstone_fara_h1m_pro_tempered_glass_argb_microatx_case_ac44374_4.jpg"
+  },
+  "Silverstone RV05B": {
+    "image_url": "/images/products/case-silverstone-rv05b.webp",
+    "source": "https://c1.neweggimages.com/productimage/nb640/11-163-259-08.jpg"
+  },
+  "Silverstone SETA A1": {
+    "image_url": "/images/products/case-silverstone-seta-a1.webp",
+    "source": "https://www.ctens.com/image/cache/catalog/Computer Cases/SST-SEA1TB-G /SST-SEA1TB-G at ctens (5)-600x800.jpg"
+  },
+  "Silverstone SFX": {
+    "image_url": "/images/products/psu-silverstone-sfx.webp",
+    "source": "https://assets.umart.com.au/newsite/images/202209/source_img/Power-Supply-PSU-SilverStone-650W-80-Gold-SFX-Power-Supply-SST-SX650-G-7.jpg"
+  },
+  "TEAMGROUP MP33 PRO": {
+    "image_url": "/images/products/ssd-teamgroup-mp33-pro.webp",
+    "source": "https://www.ryans.com/storage/products/main/team-mp33-pro-512gb-m2-2280-nvme-pcie-gen-30-x4-11720695088.webp"
+  },
+  "TEAMGROUP T-Force Vulcan Z 16 GB (1x16GB) DDR4-3600": {
+    "image_url": "/images/products/ram-teamgroup-t-force-vulcan-z-16-gb-1x16gb-ddr4-3600.webp",
+    "source": "https://dh9cuahs6ezpz.cloudfront.net/images/products/bb/ta_93637.png",
+    "rejected": [
+      "https://halinhcomputer.vn/uploads/images/web-halinh-new/linh-kien-le/ram/team-vulcan-z-16gb.png",
+      "https://duyhungcomputer.vn/media/product/194-1.png",
+      "https://down-ph.img.susercontent.com/file/ph-11134207-7rasj-m5572vrf893ufd"
+    ]
+  },
+  "TEAMGROUP Z440 Lite": {
+    "image_url": "/images/products/ssd-teamgroup-z440-lite.webp",
+    "source": "https://www.techtradecenter.si/modules/uploader/uploads/s_product/pictures/main/teamgroup-500gb-ssd-z440-lite-m.2-0.jpg",
+    "rejected": [
+      "https://down-sg.img.susercontent.com/file/ph-11134207-7rasa-m8k7ecorzq019e"
+    ]
+  },
+  "Thermalright Burst Assassin 120 SE ARGB": {
+    "image_url": "/images/products/cooler-thermalright-burst-assassin-120-se-argb.webp",
+    "source": "https://thermalright.com/wp-content/uploads/2024/07/4-10.jpg"
+  },
+  "Thermalright Mjolnir Vision 360 ARGB": {
+    "image_url": "/images/products/cooler-thermalright-mjolnir-vision-360-argb.webp",
+    "source": "https://files.pccasegear.com/images/MJOLNIR-VISION-360-ARGB-360-BK-add3.jpg"
+  },
+  "Thermalright Peerless Assassin 120 Digital ARGB": {
+    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-digital-argb.webp",
+    "source": "https://rbtechngames.com/wp-content/uploads/2025/09/rbtech_thermalright_peerless_assassin_120_digital_argb_white.jpg"
+  },
+  "Thermalright Peerless Assassin 120 SE": {
+    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-se.webp",
+    "source": "https://m.media-amazon.com/images/I/71sEMx7F+TL._SL1500_.jpg"
+  },
+  "Thermalright Peerless Assassin 120 SE ARGB": {
+    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-se-argb.webp",
+    "source": "https://m.media-amazon.com/images/I/71D8v9lw4hL._SL1500_.jpg"
+  },
+  "Thermaltake Smart": {
+    "image_url": "/images/products/psu-thermaltake-smart.webp",
+    "source": "https://images-na.ssl-images-amazon.com/images/I/61v6z9wYWyL.jpg"
+  },
+  "Thermaltake TOUGHRAM XG RGB 32 GB (2x16GB) DDR4-3600": {
+    "image_url": "/images/products/ram-thermaltake-toughram-xg-rgb-32-gb-2x16gb-ddr4-3600.webp",
+    "source": "https://mt-tecno.com/wp-content/uploads/2024/03/xg_3_1_1-600x600.jpg"
+  },
+  "Transcend 250S": {
+    "image_url": "/images/products/ssd-transcend-250s.webp",
+    "source": "https://www.ucc.com.bd/image/cache/catalog/ssd/transcend/Transcend 250S /11-1100x1100.jpg"
+  },
+  "Verbatim Vi3000": {
+    "image_url": "/images/products/ssd-verbatim-vi3000.webp",
+    "source": "https://www.verbatim-europe.com/files/products/vi3000-ssd/49374-vi3000-512gb-hor-shadow.png"
+  },
+  "XFX Radeon RX 9070 XT Mercury OC Magnetic Air RGB V2 16GB": {
+    "image_url": "/images/products/vga-xfx-radeon-rx-9070-xt-mercury-oc-magnetic-air-rgb-v2-16gb.webp",
+    "source": "https://m.media-amazon.com/images/I/61c71quJnlL._AC_SL1500_.jpg"
+  },
+  "Xilence M906": {
+    "image_url": "/images/products/cooler-xilence-m906.webp",
+    "source": "https://m.media-amazon.com/images/I/81etqORf1ML._SL1500_.jpg"
+  },
+  "Zalman CUBIX": {
+    "image_url": "/images/products/case-zalman-cubix.webp",
+    "source": "https://zalmanusa.com/cdn/shop/files/01-cubix-g-bw-front_800x.jpg?v=1782321966",
+    "rejected": [
+      "https://c1.neweggimages.com/productimage/nb1280/ABW9S2502031BP5057F.jpg",
+      "https://images-na.ssl-images-amazon.com/images/I/81d3CfwoEbL.jpg"
+    ]
+  },
+  "Zalman i4": {
+    "image_url": "/images/products/case-zalman-i4.webp",
+    "source": "https://zalmanusa.com/cdn/shop/files/6_x_Fans_Pre-installed_-_White_-_Zalman_Ultimate_PC_Cases_Cooling_Solutions-2662021_1024x.jpg?v=1724453206"
+  },
+  "Zalman Z7 NEO": {
+    "image_url": "/images/products/case-zalman-z7-neo.webp",
+    "source": "https://media.ldlc.com/r1600/ld/products/00/05/25/11/LD0005251181_2.jpg"
+  },
+  "Zotac GeForce RTX 3060 GAMING Twin Edge OC 12GB": {
+    "image_url": "/images/products/vga-zotac-geforce-rtx-3060-gaming-twin-edge-oc-12gb.webp",
+    "source": "https://c1.neweggimages.com/ProductImageCompressAll1280/14-500-508-V04.jpg"
+  },
+  "Zotac GeForce RTX 3080 Ti AMP Extreme Holo 12GB": {
+    "image_url": "/images/products/vga-zotac-geforce-rtx-3080-ti-amp-extreme-holo-12gb.webp",
+    "source": "https://c1.neweggimages.com/productimage/nb640/14-500-527-V06.jpg"
+  }
+}

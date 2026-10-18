@@ -5,6 +5,7 @@
     "brand": "AMD",
     "price": 4430000,
     "stock": 6,
+    "image_url": "/images/products/cpu-amd-ryzen-5-7600x.webp",
     "specs": {
       "socket": "AM5",
       "tdp_w": 105,
@@ -20,6 +21,7 @@
     "brand": "AMD",
     "price": 1910000,
     "stock": 29,
+    "image_url": "/images/products/cpu-amd-ryzen-3-3200g.webp",
     "specs": {
       "socket": "AM4",
       "tdp_w": 65,
@@ -35,6 +37,7 @@
     "brand": "Intel",
     "price": 2340000,
     "stock": 22,
+    "image_url": "/images/products/cpu-intel-core-i3-14100f.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 58,
@@ -50,6 +53,7 @@
     "brand": "Intel",
     "price": 3380000,
     "stock": 28,
+    "image_url": "/images/products/cpu-intel-core-i5-12600kf.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 125,
@@ -65,6 +69,7 @@
     "brand": "Intel",
     "price": 3730000,
     "stock": 17,
+    "image_url": "/images/products/cpu-intel-core-i5-12400.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 65,
@@ -80,6 +85,7 @@
     "brand": "AMD",
     "price": 4470000,
     "stock": 28,
+    "image_url": "/images/products/cpu-amd-ryzen-5-3600x.webp",
     "specs": {
       "socket": "AM4",
       "tdp_w": 95,
@@ -95,6 +101,7 @@
     "brand": "Intel",
     "price": 5090000,
     "stock": 7,
+    "image_url": "/images/products/cpu-intel-core-i5-13600kf.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 125,
@@ -110,6 +117,7 @@
     "brand": "Intel",
     "price": 6190000,
     "stock": 6,
+    "image_url": "/images/products/cpu-intel-core-i5-14500.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 65,
@@ -125,6 +133,7 @@
     "brand": "Intel",
     "price": 6890000,
     "stock": 30,
+    "image_url": "/images/products/cpu-intel-core-ultra-5-235.webp",
     "specs": {
       "socket": "LGA1851",
       "tdp_w": 65,
@@ -140,6 +149,7 @@
     "brand": "Intel",
     "price": 7410000,
     "stock": 12,
+    "image_url": "/images/products/cpu-intel-core-ultra-5-245kf.webp",
     "specs": {
       "socket": "LGA1851",
       "tdp_w": 125,
@@ -155,6 +165,7 @@
     "brand": "AMD",
     "price": 7950000,
     "stock": 27,
+    "image_url": "/images/products/cpu-amd-ryzen-7-9700x.webp",
     "specs": {
       "socket": "AM5",
       "tdp_w": 65,
@@ -170,6 +181,7 @@
     "brand": "Intel",
     "price": 9360000,
     "stock": 24,
+    "image_url": "/images/products/cpu-intel-core-i9-12900f.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 65,
@@ -185,6 +197,7 @@
     "brand": "AMD",
     "price": 11270000,
     "stock": 9,
+    "image_url": "/images/products/cpu-amd-ryzen-5-7600x3d.webp",
     "specs": {
       "socket": "AM5",
       "tdp_w": 65,
@@ -200,6 +213,7 @@
     "brand": "Intel",
     "price": 13430000,
     "stock": 25,
+    "image_url": "/images/products/cpu-intel-core-i9-13900f.webp",
     "specs": {
       "socket": "LGA1700",
       "tdp_w": 65,
@@ -215,6 +229,7 @@
     "brand": "AMD",
     "price": 16900000,
     "stock": 13,
+    "image_url": "/images/products/cpu-amd-ryzen-9-9950x3d.webp",
     "specs": {
       "socket": "AM5",
       "tdp_w": 170,
@@ -230,6 +245,7 @@
     "brand": "Gigabyte",
     "price": 1900000,
     "stock": 14,
+    "image_url": "/images/products/mainboard-gigabyte-a520m-s2h.webp",
     "specs": {
       "socket": "AM4",
       "ram_type": "DDR4",
@@ -244,6 +260,7 @@
     "brand": "MSI",
     "price": 2860000,
     "stock": 9,
+    "image_url": "/images/products/mainboard-msi-b550m-pro-vdh-wifi.webp",
     "specs": {
       "socket": "AM4",
       "ram_type": "DDR4",
@@ -258,6 +275,7 @@
     "brand": "Gigabyte",
     "price": 3380000,
     "stock": 22,
+    "image_url": "/images/products/mainboard-gigabyte-b860m-d3hp.webp",
     "specs": {
       "socket": "LGA1851",
       "ram_type": "DDR5",
@@ -272,6 +290,7 @@
     "brand": "MSI",
     "price": 3900000,
     "stock": 15,
+    "image_url": "/images/products/mainboard-msi-pro-b650m-p.webp",
     "specs": {
       "socket": "AM5",
       "ram_type": "DDR5",
@@ -286,6 +305,7 @@
     "brand": "Gigabyte",
     "price": 4160000,
     "stock": 18,
+    "image_url": "/images/products/mainboard-gigabyte-b760-ds3h-ax.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR5",
@@ -300,6 +320,7 @@
     "brand": "ASRock",
     "price": 4480000,
     "stock": 7,
+    "image_url": "/images/products/mainboard-asrock-b760m-pro-rs-d4-wifi.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR4",
@@ -314,6 +335,7 @@
     "brand": "Asus",
     "price": 4900000,
     "stock": 21,
+    "image_url": "/images/products/mainboard-asus-prime-b650m-k.webp",
     "specs": {
       "socket": "AM5",
       "ram_type": "DDR5",
@@ -328,6 +350,7 @@
     "brand": "MSI",
     "price": 5200000,
     "stock": 6,
+    "image_url": "/images/products/mainboard-msi-mag-b760m-mortar-wifi-ii.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR5",
@@ -342,6 +365,7 @@
     "brand": "Gigabyte",
     "price": 5530000,
     "stock": 24,
+    "image_url": "/images/products/mainboard-gigabyte-b760m-aorus-elite-ax.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR5",
@@ -356,6 +380,7 @@
     "brand": "ASRock",
     "price": 6040000,
     "stock": 26,
+    "image_url": "/images/products/mainboard-asrock-b760m-steel-legend-wifi.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR5",
@@ -370,6 +395,7 @@
     "brand": "Asus",
     "price": 6630000,
     "stock": 12,
+    "image_url": "/images/products/mainboard-asus-tuf-gaming-b650m-e.webp",
     "specs": {
       "socket": "AM5",
       "ram_type": "DDR5",
@@ -384,6 +410,7 @@
     "brand": "MSI",
     "price": 7540000,
     "stock": 13,
+    "image_url": "/images/products/mainboard-msi-mpg-b650i-edge-wifi.webp",
     "specs": {
       "socket": "AM5",
       "ram_type": "DDR5",
@@ -398,6 +425,7 @@
     "brand": "Asus",
     "price": 8580000,
     "stock": 8,
+    "image_url": "/images/products/mainboard-asus-rog-strix-z890-h-gaming-wifi.webp",
     "specs": {
       "socket": "LGA1851",
       "ram_type": "DDR5",
@@ -412,6 +440,7 @@
     "brand": "Gigabyte",
     "price": 10400000,
     "stock": 6,
+    "image_url": "/images/products/mainboard-gigabyte-z690-aorus-pro.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR5",
@@ -426,6 +455,7 @@
     "brand": "MSI",
     "price": 13000000,
     "stock": 14,
+    "image_url": "/images/products/mainboard-msi-meg-z690-unify.webp",
     "specs": {
       "socket": "LGA1700",
       "ram_type": "DDR5",
@@ -440,6 +470,7 @@
     "brand": "Crucial",
     "price": 570000,
     "stock": 10,
+    "image_url": "/images/products/ram-crucial-classic-8-gb-1x8gb-ddr5-5600.webp",
     "specs": {
       "ram_type": "DDR5",
       "speed_mhz": 5600,
@@ -453,6 +484,7 @@
     "brand": "G.Skill",
     "price": 960000,
     "stock": 23,
+    "image_url": "/images/products/ram-g-skill-aegis-16-gb-2x8gb-ddr4-3000.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3000,
@@ -466,6 +498,7 @@
     "brand": "Kingston",
     "price": 1170000,
     "stock": 16,
+    "image_url": "/images/products/ram-kingston-fury-beast-8-gb-1x8gb-ddr4-3600.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3600,
@@ -479,6 +512,7 @@
     "brand": "G.Skill",
     "price": 1430000,
     "stock": 13,
+    "image_url": "/images/products/ram-g-skill-trident-z-rgb-16-gb-2x8gb-ddr4-3200.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3200,
@@ -492,6 +526,7 @@
     "brand": "Kingston",
     "price": 1770000,
     "stock": 22,
+    "image_url": "/images/products/ram-kingston-fury-beast-16-gb-2x8gb-ddr5-6000.webp",
     "specs": {
       "ram_type": "DDR5",
       "speed_mhz": 6000,
@@ -505,6 +540,7 @@
     "brand": "TEAMGROUP",
     "price": 2070000,
     "stock": 23,
+    "image_url": "/images/products/ram-teamgroup-t-force-vulcan-z-16-gb-1x16gb-ddr4-3600.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3600,
@@ -518,6 +554,7 @@
     "brand": "Patriot",
     "price": 2340000,
     "stock": 15,
+    "image_url": "/images/products/ram-patriot-viper-venom-32-gb-2x16gb-ddr5-6200.webp",
     "specs": {
       "ram_type": "DDR5",
       "speed_mhz": 6200,
@@ -531,6 +568,7 @@
     "brand": "Kingston",
     "price": 2600000,
     "stock": 13,
+    "image_url": "/images/products/ram-kingston-fury-renegade-rgb-16-gb-2x8gb-ddr4-3200.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3200,
@@ -544,6 +582,7 @@
     "brand": "Corsair",
     "price": 2990000,
     "stock": 12,
+    "image_url": "/images/products/ram-corsair-vengeance-rgb-pro-32-gb-2x16gb-ddr4-3600.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3600,
@@ -557,6 +596,7 @@
     "brand": "G.Skill",
     "price": 3510000,
     "stock": 6,
+    "image_url": "/images/products/ram-g-skill-trident-z5-neo-rgb-32-gb-2x16gb-ddr5-7200.webp",
     "specs": {
       "ram_type": "DDR5",
       "speed_mhz": 7200,
@@ -570,6 +610,7 @@
     "brand": "G.Skill",
     "price": 4010000,
     "stock": 8,
+    "image_url": "/images/products/ram-g-skill-ripjaws-16-gb-2x8gb-ddr4-3000.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3000,
@@ -583,6 +624,7 @@
     "brand": "G.Skill",
     "price": 4390000,
     "stock": 26,
+    "image_url": "/images/products/ram-g-skill-trident-z-royal-16-gb-2x8gb-ddr4-4000.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 4000,
@@ -596,6 +638,7 @@
     "brand": "Kingston",
     "price": 5040000,
     "stock": 18,
+    "image_url": "/images/products/ram-kingston-fury-beast-rgb-64-gb-2x32gb-ddr5-5200.webp",
     "specs": {
       "ram_type": "DDR5",
       "speed_mhz": 5200,
@@ -609,6 +652,7 @@
     "brand": "Corsair",
     "price": 5980000,
     "stock": 28,
+    "image_url": "/images/products/ram-corsair-vengeance-rgb-64-gb-2x32gb-ddr5-6000.webp",
     "specs": {
       "ram_type": "DDR5",
       "speed_mhz": 6000,
@@ -622,6 +666,7 @@
     "brand": "Thermaltake",
     "price": 7800000,
     "stock": 30,
+    "image_url": "/images/products/ram-thermaltake-toughram-xg-rgb-32-gb-2x16gb-ddr4-3600.webp",
     "specs": {
       "ram_type": "DDR4",
       "speed_mhz": 3600,
@@ -635,6 +680,7 @@
     "brand": "ASRock",
     "price": 4160000,
     "stock": 28,
+    "image_url": "/images/products/vga-asrock-radeon-rx-6500-xt-phantom-gaming-d-oc-4gb.webp",
     "specs": {
       "chipset": "Radeon RX 6500 XT",
       "vram_gb": 4,
@@ -648,6 +694,7 @@
     "brand": "Asus",
     "price": 7800000,
     "stock": 20,
+    "image_url": "/images/products/vga-asus-geforce-rtx-5060-prime-8gb.webp",
     "specs": {
       "chipset": "GeForce RTX 5060",
       "vram_gb": 8,
@@ -661,6 +708,7 @@
     "brand": "MSI",
     "price": 9360000,
     "stock": 21,
+    "image_url": "/images/products/vga-msi-geforce-rtx-3060-ventus-2x-oc-8gb.webp",
     "specs": {
       "chipset": "GeForce RTX 3060 8GB",
       "vram_gb": 8,
@@ -674,6 +722,7 @@
     "brand": "Zotac",
     "price": 11180000,
     "stock": 7,
+    "image_url": "/images/products/vga-zotac-geforce-rtx-3060-gaming-twin-edge-oc-12gb.webp",
     "specs": {
       "chipset": "GeForce RTX 3060 12GB",
       "vram_gb": 12,
@@ -687,6 +736,7 @@
     "brand": "PNY",
     "price": 13000000,
     "stock": 26,
+    "image_url": "/images/products/vga-pny-geforce-rtx-4060-ti-verto-8gb.webp",
     "specs": {
       "chipset": "GeForce RTX 4060 Ti",
       "vram_gb": 8,
@@ -700,6 +750,7 @@
     "brand": "Asus",
     "price": 15340000,
     "stock": 14,
+    "image_url": "/images/products/vga-asus-geforce-rtx-5070-prime-oc-12gb.webp",
     "specs": {
       "chipset": "GeForce RTX 5070",
       "vram_gb": 12,
@@ -713,6 +764,7 @@
     "brand": "Gigabyte",
     "price": 17420000,
     "stock": 20,
+    "image_url": "/images/products/vga-gigabyte-geforce-rtx-5070-eagle-oc-sff-12gb.webp",
     "specs": {
       "chipset": "GeForce RTX 5070",
       "vram_gb": 12,
@@ -726,6 +778,7 @@
     "brand": "PNY",
     "price": 19500000,
     "stock": 15,
+    "image_url": "/images/products/vga-pny-geforce-rtx-5070-ti-oc-16gb.webp",
     "specs": {
       "chipset": "GeForce RTX 5070 Ti",
       "vram_gb": 16,
@@ -739,6 +792,7 @@
     "brand": "Asus",
     "price": 21580000,
     "stock": 13,
+    "image_url": "/images/products/vga-asus-geforce-rtx-5070-ti-prime-16gb.webp",
     "specs": {
       "chipset": "GeForce RTX 5070 Ti",
       "vram_gb": 16,
@@ -752,6 +806,7 @@
     "brand": "XFX",
     "price": 23920000,
     "stock": 21,
+    "image_url": "/images/products/vga-xfx-radeon-rx-9070-xt-mercury-oc-magnetic-air-rgb-v2-16gb.webp",
     "specs": {
       "chipset": "Radeon RX 9070 XT",
       "vram_gb": 16,
@@ -765,6 +820,7 @@
     "brand": "ASRock",
     "price": 26650000,
     "stock": 29,
+    "image_url": "/images/products/vga-asrock-radeon-rx-7900-xt-creator-20gb.webp",
     "specs": {
       "chipset": "Radeon RX 7900 XT",
       "vram_gb": 20,
@@ -778,6 +834,7 @@
     "brand": "MSI",
     "price": 31460000,
     "stock": 14,
+    "image_url": "/images/products/vga-msi-radeon-rx-6600-xt-mech-2x-8g-ocv1-8gb.webp",
     "specs": {
       "chipset": "Radeon RX 6600 XT",
       "vram_gb": 8,
@@ -791,6 +848,7 @@
     "brand": "Gigabyte",
     "price": 36400000,
     "stock": 10,
+    "image_url": "/images/products/vga-gigabyte-geforce-rtx-5080-windforce-oc-sff-16gb.webp",
     "specs": {
       "chipset": "GeForce RTX 5080",
       "vram_gb": 16,
@@ -804,6 +862,7 @@
     "brand": "MSI",
     "price": 44660000,
     "stock": 25,
+    "image_url": "/images/products/vga-msi-geforce-rtx-3080-ventus-3x-plus-oc-10gb.webp",
     "specs": {
       "chipset": "GeForce RTX 3080 10GB",
       "vram_gb": 10,
@@ -817,6 +876,7 @@
     "brand": "Zotac",
     "price": 52000000,
     "stock": 24,
+    "image_url": "/images/products/vga-zotac-geforce-rtx-3080-ti-amp-extreme-holo-12gb.webp",
     "specs": {
       "chipset": "GeForce RTX 3080 Ti",
       "vram_gb": 12,
@@ -830,6 +890,7 @@
     "brand": "Orico",
     "price": 660000,
     "stock": 22,
+    "image_url": "/images/products/ssd-orico-y-20.webp",
     "specs": {
       "capacity_gb": 512,
       "interface": "SATA 6.0 Gb/s",
@@ -842,6 +903,7 @@
     "brand": "Silicon",
     "price": 970000,
     "stock": 28,
+    "image_url": "/images/products/ssd-silicon-power-silm-s55.webp",
     "specs": {
       "capacity_gb": 480,
       "interface": "SATA 6.0 Gb/s",
@@ -854,6 +916,7 @@
     "brand": "TEAMGROUP",
     "price": 1430000,
     "stock": 28,
+    "image_url": "/images/products/ssd-teamgroup-mp33-pro.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "M.2 PCIe 3.0 X4",
@@ -866,6 +929,7 @@
     "brand": "TEAMGROUP",
     "price": 1610000,
     "stock": 8,
+    "image_url": "/images/products/ssd-teamgroup-z440-lite.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "M.2 PCIe 4.0 X4",
@@ -878,6 +942,7 @@
     "brand": "Verbatim",
     "price": 1850000,
     "stock": 6,
+    "image_url": "/images/products/ssd-verbatim-vi3000.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "M.2 PCIe 3.0 X4",
@@ -890,6 +955,7 @@
     "brand": "ADATA",
     "price": 2210000,
     "stock": 14,
+    "image_url": "/images/products/ssd-adata-xpg-sx8100.webp",
     "specs": {
       "capacity_gb": 512,
       "interface": "M.2 PCIe 3.0 X4",
@@ -902,6 +968,7 @@
     "brand": "Crucial",
     "price": 2600000,
     "stock": 19,
+    "image_url": "/images/products/ssd-crucial-p510.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "M.2 PCIe 5.0 X4",
@@ -914,6 +981,7 @@
     "brand": "Patriot",
     "price": 2860000,
     "stock": 16,
+    "image_url": "/images/products/ssd-patriot-viper-pv553.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "M.2 PCIe 5.0 X4",
@@ -926,6 +994,7 @@
     "brand": "Sabrent",
     "price": 3250000,
     "stock": 22,
+    "image_url": "/images/products/ssd-sabrent-rocket-q.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "M.2 PCIe 3.0 X4",
@@ -938,6 +1007,7 @@
     "brand": "MSI",
     "price": 3740000,
     "stock": 14,
+    "image_url": "/images/products/ssd-msi-spatium-m480-pro-play.webp",
     "specs": {
       "capacity_gb": 2000,
       "interface": "M.2 PCIe 4.0 X4",
@@ -950,6 +1020,7 @@
     "brand": "Netac",
     "price": 4240000,
     "stock": 13,
+    "image_url": "/images/products/ssd-netac-nv7000-t.webp",
     "specs": {
       "capacity_gb": 2000,
       "interface": "M.2 PCIe 4.0 X4",
@@ -962,6 +1033,7 @@
     "brand": "Transcend",
     "price": 4890000,
     "stock": 16,
+    "image_url": "/images/products/ssd-transcend-250s.webp",
     "specs": {
       "capacity_gb": 2000,
       "interface": "M.2 PCIe 4.0 X4",
@@ -974,6 +1046,7 @@
     "brand": "Samsung",
     "price": 5980000,
     "stock": 19,
+    "image_url": "/images/products/ssd-samsung-9100-pro.webp",
     "specs": {
       "capacity_gb": 2000,
       "interface": "M.2 PCIe 5.0 X4",
@@ -986,6 +1059,7 @@
     "brand": "ADATA",
     "price": 7800000,
     "stock": 26,
+    "image_url": "/images/products/ssd-adata-premier-pro-sp900.webp",
     "specs": {
       "capacity_gb": 256,
       "interface": "SATA 6.0 Gb/s",
@@ -998,6 +1072,7 @@
     "brand": "Angelbird",
     "price": 10400000,
     "stock": 29,
+    "image_url": "/images/products/ssd-angelbird-av-pro-mk3.webp",
     "specs": {
       "capacity_gb": 1000,
       "interface": "SATA 6.0 Gb/s",
@@ -1010,6 +1085,7 @@
     "brand": "Thermaltake",
     "price": 1040000,
     "stock": 27,
+    "image_url": "/images/products/psu-thermaltake-smart.webp",
     "specs": {
       "wattage_w": 500,
       "efficiency": "80+",
@@ -1023,6 +1099,7 @@
     "brand": "ASRock",
     "price": 1820000,
     "stock": 9,
+    "image_url": "/images/products/psu-asrock-challenger-cl-750g.webp",
     "specs": {
       "wattage_w": 750,
       "efficiency": "80+ Gold",
@@ -1036,6 +1113,7 @@
     "brand": "Cooler Master",
     "price": 2340000,
     "stock": 7,
+    "image_url": "/images/products/psu-cooler-master-mwe-gold-850-v2.webp",
     "specs": {
       "wattage_w": 850,
       "efficiency": "80+ Gold",
@@ -1049,6 +1127,7 @@
     "brand": "Gigabyte",
     "price": 2600000,
     "stock": 8,
+    "image_url": "/images/products/psu-gigabyte-ud850gm.webp",
     "specs": {
       "wattage_w": 850,
       "efficiency": "80+ Gold",
@@ -1062,6 +1141,7 @@
     "brand": "PC",
     "price": 3080000,
     "stock": 9,
+    "image_url": "/images/products/psu-pc-power-cooling-silencer-mk-iii.webp",
     "specs": {
       "wattage_w": 750,
       "efficiency": "80+ Gold",
@@ -1075,6 +1155,7 @@
     "brand": "Silverstone",
     "price": 3310000,
     "stock": 15,
+    "image_url": "/images/products/psu-silverstone-sfx.webp",
     "specs": {
       "wattage_w": 500,
       "efficiency": "80+ Gold",
@@ -1088,6 +1169,7 @@
     "brand": "ASRock",
     "price": 3510000,
     "stock": 26,
+    "image_url": "/images/products/psu-asrock-steel-legend-sl-850gw.webp",
     "specs": {
       "wattage_w": 850,
       "efficiency": "80+ Gold",
@@ -1101,6 +1183,7 @@
     "brand": "ASRock",
     "price": 3900000,
     "stock": 5,
+    "image_url": "/images/products/psu-asrock-phantom-gaming-pg-1000g.webp",
     "specs": {
       "wattage_w": 1000,
       "efficiency": "80+ Gold",
@@ -1114,6 +1197,7 @@
     "brand": "NZXT",
     "price": 4290000,
     "stock": 29,
+    "image_url": "/images/products/psu-nzxt-c1000-2024.webp",
     "specs": {
       "wattage_w": 1000,
       "efficiency": "80+ Gold",
@@ -1127,6 +1211,7 @@
     "brand": "Antec",
     "price": 4680000,
     "stock": 23,
+    "image_url": "/images/products/psu-antec-ne1000g-m-atx3-0.webp",
     "specs": {
       "wattage_w": 1000,
       "efficiency": "80+ Gold",
@@ -1140,6 +1225,7 @@
     "brand": "Corsair",
     "price": 5170000,
     "stock": 27,
+    "image_url": "/images/products/psu-corsair-rm850x-2021.webp",
     "specs": {
       "wattage_w": 850,
       "efficiency": "80+ Gold",
@@ -1153,6 +1239,7 @@
     "brand": "Corsair",
     "price": 5450000,
     "stock": 11,
+    "image_url": "/images/products/psu-corsair-rm850x-2018.webp",
     "specs": {
       "wattage_w": 850,
       "efficiency": "80+ Gold",
@@ -1166,6 +1253,7 @@
     "brand": "Antec",
     "price": 6150000,
     "stock": 20,
+    "image_url": "/images/products/psu-antec-ne1300g-m-atx3-0.webp",
     "specs": {
       "wattage_w": 1300,
       "efficiency": "80+ Gold",
@@ -1179,6 +1267,7 @@
     "brand": "be quiet!",
     "price": 6950000,
     "stock": 27,
+    "image_url": "/images/products/psu-be-quiet-dark-power-13.webp",
     "specs": {
       "wattage_w": 1000,
       "efficiency": "80+ Titanium",
@@ -1192,6 +1281,7 @@
     "brand": "SeaSonic",
     "price": 8990000,
     "stock": 25,
+    "image_url": "/images/products/psu-seasonic-g12-gc.webp",
     "specs": {
       "wattage_w": 650,
       "efficiency": "80+ Gold",
@@ -1205,6 +1295,7 @@
     "brand": "Zalman",
     "price": 990000,
     "stock": 6,
+    "image_url": "/images/products/case-zalman-cubix.webp",
     "specs": {
       "case_type": "MicroATX Mini Tower",
       "form_factors": [
@@ -1223,6 +1314,7 @@
     "brand": "Zalman",
     "price": 1560000,
     "stock": 22,
+    "image_url": "/images/products/case-zalman-i4.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1242,6 +1334,7 @@
     "brand": "Zalman",
     "price": 1820000,
     "stock": 26,
+    "image_url": "/images/products/case-zalman-z7-neo.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1261,6 +1354,7 @@
     "brand": "Montech",
     "price": 2080000,
     "stock": 7,
+    "image_url": "/images/products/case-montech-air-100-lite.webp",
     "specs": {
       "case_type": "MicroATX Mid Tower",
       "form_factors": [
@@ -1279,6 +1373,7 @@
     "brand": "Silverstone",
     "price": 2220000,
     "stock": 24,
+    "image_url": "/images/products/case-silverstone-fara-h1m.webp",
     "specs": {
       "case_type": "MicroATX Mini Tower",
       "form_factors": [
@@ -1297,6 +1392,7 @@
     "brand": "Antec",
     "price": 2530000,
     "stock": 21,
+    "image_url": "/images/products/case-antec-c3-argb.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1316,6 +1412,7 @@
     "brand": "be quiet!",
     "price": 2780000,
     "stock": 15,
+    "image_url": "/images/products/case-be-quiet-pure-base-501-airflow.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1335,6 +1432,7 @@
     "brand": "Silverstone",
     "price": 3030000,
     "stock": 15,
+    "image_url": "/images/products/case-silverstone-rv05b.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1354,6 +1452,7 @@
     "brand": "Lian Li",
     "price": 3320000,
     "stock": 15,
+    "image_url": "/images/products/case-lian-li-lancool-217.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1373,6 +1472,7 @@
     "brand": "Silverstone",
     "price": 3760000,
     "stock": 27,
+    "image_url": "/images/products/case-silverstone-seta-a1.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1392,6 +1492,7 @@
     "brand": "Cougar",
     "price": 4150000,
     "stock": 19,
+    "image_url": "/images/products/case-cougar-gemini-m.webp",
     "specs": {
       "case_type": "MicroATX Mini Tower",
       "form_factors": [
@@ -1410,6 +1511,7 @@
     "brand": "be quiet!",
     "price": 4680000,
     "stock": 25,
+    "image_url": "/images/products/case-be-quiet-light-base-600-lx.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1429,6 +1531,7 @@
     "brand": "NZXT",
     "price": 5200000,
     "stock": 21,
+    "image_url": "/images/products/case-nzxt-h7-elite-2022.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1448,6 +1551,7 @@
     "brand": "Cougar",
     "price": 6250000,
     "stock": 16,
+    "image_url": "/images/products/case-cougar-mx660-t-rgb.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1467,6 +1571,7 @@
     "brand": "HYTE",
     "price": 7800000,
     "stock": 15,
+    "image_url": "/images/products/case-hyte-y70-silver-wolf.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1486,6 +1591,7 @@
     "brand": "Deepcool",
     "price": 430000,
     "stock": 23,
+    "image_url": "/images/products/cooler-deepcool-theta-20-pwm.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1505,6 +1611,7 @@
     "brand": "Thermalright",
     "price": 610000,
     "stock": 15,
+    "image_url": "/images/products/cooler-thermalright-burst-assassin-120-se-argb.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1524,6 +1631,7 @@
     "brand": "APNX",
     "price": 780000,
     "stock": 22,
+    "image_url": "/images/products/cooler-apnx-ap1-v.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1543,6 +1651,7 @@
     "brand": "Thermalright",
     "price": 960000,
     "stock": 8,
+    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-se-argb.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1562,6 +1671,7 @@
     "brand": "Thermalright",
     "price": 1190000,
     "stock": 18,
+    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-digital-argb.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1581,6 +1691,7 @@
     "brand": "Jonsbo",
     "price": 1410000,
     "stock": 11,
+    "image_url": "/images/products/cooler-jonsbo-cr-1000-v2-color.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1600,6 +1711,7 @@
     "brand": "Mars",
     "price": 1730000,
     "stock": 16,
+    "image_url": "/images/products/cooler-mars-gaming-mcpu-xt.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1619,6 +1731,7 @@
     "brand": "Xilence",
     "price": 2000000,
     "stock": 18,
+    "image_url": "/images/products/cooler-xilence-m906.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1638,6 +1751,7 @@
     "brand": "GAMDIAS",
     "price": 2470000,
     "stock": 19,
+    "image_url": "/images/products/cooler-gamdias-chione-e4.webp",
     "specs": {
       "cooler_type": "liquid",
       "radiator_mm": 360,
@@ -1658,6 +1772,7 @@
     "brand": "Thermalright",
     "price": 2770000,
     "stock": 27,
+    "image_url": "/images/products/cooler-thermalright-mjolnir-vision-360-argb.webp",
     "specs": {
       "cooler_type": "liquid",
       "radiator_mm": 360,
@@ -1678,6 +1793,7 @@
     "brand": "Cooler Master",
     "price": 3140000,
     "stock": 23,
+    "image_url": "/images/products/cooler-cooler-master-hyper-212-evo.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1697,6 +1813,7 @@
     "brand": "Cooler Master",
     "price": 3610000,
     "stock": 6,
+    "image_url": "/images/products/cooler-cooler-master-hyper-h410r-rgb.webp",
     "specs": {
       "cooler_type": "air",
       "sockets": [
@@ -1716,6 +1833,7 @@
     "brand": "Enermax",
     "price": 4290000,
     "stock": 10,
+    "image_url": "/images/products/cooler-enermax-liqmax-iii-360-argb.webp",
     "specs": {
       "cooler_type": "liquid",
       "radiator_mm": 360,
@@ -1736,6 +1854,7 @@
     "brand": "Corsair",
     "price": 5200000,
     "stock": 29,
+    "image_url": "/images/products/cooler-corsair-icue-link-titan-360-rx-rgb.webp",
     "specs": {
       "cooler_type": "liquid",
       "radiator_mm": 360,
@@ -1756,6 +1875,7 @@
     "brand": "Cooler Master",
     "price": 6500000,
     "stock": 9,
+    "image_url": "/images/products/cooler-cooler-master-masterliquid-360-ion.webp",
     "specs": {
       "cooler_type": "liquid",
       "radiator_mm": 360,
