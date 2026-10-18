@@ -1291,6 +1291,23 @@
   },
   {
     "slug": "case",
+    "name": "Lian Li LANCOOL 217",
+    "brand": "Lian Li",
+    "price": 3320000,
+    "stock": 15,
+    "image_url": "/images/products/case-lian-li-lancool-217.webp",
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 380
+    }
+  },
+  {
+    "slug": "case",
     "name": "Zalman CUBIX",
     "brand": "Zalman",
     "price": 990000,
@@ -1302,50 +1319,7 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 330,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Zalman i4",
-    "brand": "Zalman",
-    "price": 1560000,
-    "stock": 22,
-    "image_url": "/images/products/case-zalman-i4.webp",
-    "specs": {
-      "case_type": "ATX Mid Tower",
-      "form_factors": [
-        "ATX",
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Zalman Z7 NEO",
-    "brand": "Zalman",
-    "price": 1820000,
-    "stock": 26,
-    "image_url": "/images/products/case-zalman-z7-neo.webp",
-    "specs": {
-      "case_type": "ATX Mid Tower",
-      "form_factors": [
-        "ATX",
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 260
     }
   },
   {
@@ -1361,49 +1335,7 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 350,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Silverstone FARA H1M",
-    "brand": "Silverstone",
-    "price": 2220000,
-    "stock": 24,
-    "image_url": "/images/products/case-silverstone-fara-h1m.webp",
-    "specs": {
-      "case_type": "MicroATX Mini Tower",
-      "form_factors": [
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 330,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Antec C3 ARGB",
-    "brand": "Antec",
-    "price": 2530000,
-    "stock": 21,
-    "image_url": "/images/products/case-antec-c3-argb.webp",
-    "specs": {
-      "case_type": "ATX Mid Tower",
-      "form_factors": [
-        "ATX",
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 330
     }
   },
   {
@@ -1420,89 +1352,7 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Silverstone RV05B",
-    "brand": "Silverstone",
-    "price": 3030000,
-    "stock": 15,
-    "image_url": "/images/products/case-silverstone-rv05b.webp",
-    "specs": {
-      "case_type": "ATX Mid Tower",
-      "form_factors": [
-        "ATX",
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Lian Li LANCOOL 217",
-    "brand": "Lian Li",
-    "price": 3320000,
-    "stock": 15,
-    "image_url": "/images/products/case-lian-li-lancool-217.webp",
-    "specs": {
-      "case_type": "ATX Mid Tower",
-      "form_factors": [
-        "ATX",
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Silverstone SETA A1",
-    "brand": "Silverstone",
-    "price": 3760000,
-    "stock": 27,
-    "image_url": "/images/products/case-silverstone-seta-a1.webp",
-    "specs": {
-      "case_type": "ATX Mid Tower",
-      "form_factors": [
-        "ATX",
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
-    }
-  },
-  {
-    "slug": "case",
-    "name": "Cougar Gemini M",
-    "brand": "Cougar",
-    "price": 4150000,
-    "stock": 19,
-    "image_url": "/images/products/case-cougar-gemini-m.webp",
-    "specs": {
-      "case_type": "MicroATX Mini Tower",
-      "form_factors": [
-        "Micro ATX",
-        "Mini ITX"
-      ],
-      "max_gpu_length_mm": 330,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 368
     }
   },
   {
@@ -1519,19 +1369,16 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 400
     }
   },
   {
     "slug": "case",
-    "name": "NZXT H7 Elite (2022)",
-    "brand": "NZXT",
-    "price": 5200000,
+    "name": "Antec C3 ARGB",
+    "brand": "Antec",
+    "price": 2530000,
     "stock": 21,
-    "image_url": "/images/products/case-nzxt-h7-elite-2022.webp",
+    "image_url": "/images/products/case-antec-c3-argb.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1539,19 +1386,16 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 415
     }
   },
   {
     "slug": "case",
-    "name": "Cougar MX660-T RGB",
-    "brand": "Cougar",
-    "price": 6250000,
-    "stock": 16,
-    "image_url": "/images/products/case-cougar-mx660-t-rgb.webp",
+    "name": "Zalman i4",
+    "brand": "Zalman",
+    "price": 1560000,
+    "stock": 22,
+    "image_url": "/images/products/case-zalman-i4.webp",
     "specs": {
       "case_type": "ATX Mid Tower",
       "form_factors": [
@@ -1559,10 +1403,40 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 320
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Silverstone FARA H1M",
+    "brand": "Silverstone",
+    "price": 2220000,
+    "stock": 24,
+    "image_url": "/images/products/case-silverstone-fara-h1m.webp",
+    "specs": {
+      "case_type": "MicroATX Mini Tower",
+      "form_factors": [
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 320
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Zalman Z7 NEO",
+    "brand": "Zalman",
+    "price": 1820000,
+    "stock": 26,
+    "image_url": "/images/products/case-zalman-z7-neo.webp",
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 355
     }
   },
   {
@@ -1579,70 +1453,91 @@
         "Micro ATX",
         "Mini ITX"
       ],
-      "max_gpu_length_mm": 360,
-      "estimated": [
-        "max_gpu_length_mm"
-      ]
+      "max_gpu_length_mm": 422
     }
   },
   {
-    "slug": "cooler",
-    "name": "Deepcool THETA 20 PWM",
-    "brand": "Deepcool",
-    "price": 430000,
-    "stock": 23,
-    "image_url": "/images/products/cooler-deepcool-theta-20-pwm.webp",
+    "slug": "case",
+    "name": "NZXT H7 Elite (2022)",
+    "brand": "NZXT",
+    "price": 5200000,
+    "stock": 21,
+    "image_url": "/images/products/case-nzxt-h7-elite-2022.webp",
     "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
       ],
-      "estimated": [
-        "sockets"
-      ]
+      "max_gpu_length_mm": 400
     }
   },
   {
-    "slug": "cooler",
-    "name": "Thermalright Burst Assassin 120 SE ARGB",
-    "brand": "Thermalright",
-    "price": 610000,
+    "slug": "case",
+    "name": "Cougar Gemini M",
+    "brand": "Cougar",
+    "price": 4150000,
+    "stock": 19,
+    "image_url": "/images/products/case-cougar-gemini-m.webp",
+    "specs": {
+      "case_type": "MicroATX Mini Tower",
+      "form_factors": [
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 330
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Silverstone SETA A1",
+    "brand": "Silverstone",
+    "price": 3760000,
+    "stock": 27,
+    "image_url": "/images/products/case-silverstone-seta-a1.webp",
+    "specs": {
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
+      ],
+      "max_gpu_length_mm": 350
+    }
+  },
+  {
+    "slug": "case",
+    "name": "Silverstone RV05B",
+    "brand": "Silverstone",
+    "price": 3030000,
     "stock": 15,
-    "image_url": "/images/products/cooler-thermalright-burst-assassin-120-se-argb.webp",
+    "image_url": "/images/products/case-silverstone-rv05b.webp",
     "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
       ],
-      "estimated": [
-        "sockets"
-      ]
+      "max_gpu_length_mm": 312
     }
   },
   {
-    "slug": "cooler",
-    "name": "APNX AP1-V",
-    "brand": "APNX",
-    "price": 780000,
-    "stock": 22,
-    "image_url": "/images/products/cooler-apnx-ap1-v.webp",
+    "slug": "case",
+    "name": "Cougar MX660-T RGB",
+    "brand": "Cougar",
+    "price": 6250000,
+    "stock": 16,
+    "image_url": "/images/products/case-cougar-mx660-t-rgb.webp",
     "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
+      "case_type": "ATX Mid Tower",
+      "form_factors": [
+        "ATX",
+        "Micro ATX",
+        "Mini ITX"
       ],
-      "estimated": [
-        "sockets"
-      ]
+      "max_gpu_length_mm": 350
     }
   },
   {
@@ -1659,192 +1554,6 @@
         "AM5",
         "LGA1700",
         "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Thermalright Peerless Assassin 120 Digital ARGB",
-    "brand": "Thermalright",
-    "price": 1190000,
-    "stock": 18,
-    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-digital-argb.webp",
-    "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Jonsbo CR-1000 V2 Color",
-    "brand": "Jonsbo",
-    "price": 1410000,
-    "stock": 11,
-    "image_url": "/images/products/cooler-jonsbo-cr-1000-v2-color.webp",
-    "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Mars Gaming MCPU-XT",
-    "brand": "Mars",
-    "price": 1730000,
-    "stock": 16,
-    "image_url": "/images/products/cooler-mars-gaming-mcpu-xt.webp",
-    "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Xilence M906",
-    "brand": "Xilence",
-    "price": 2000000,
-    "stock": 18,
-    "image_url": "/images/products/cooler-xilence-m906.webp",
-    "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "GAMDIAS CHIONE E4",
-    "brand": "GAMDIAS",
-    "price": 2470000,
-    "stock": 19,
-    "image_url": "/images/products/cooler-gamdias-chione-e4.webp",
-    "specs": {
-      "cooler_type": "liquid",
-      "radiator_mm": 360,
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Thermalright Mjolnir Vision 360 ARGB",
-    "brand": "Thermalright",
-    "price": 2770000,
-    "stock": 27,
-    "image_url": "/images/products/cooler-thermalright-mjolnir-vision-360-argb.webp",
-    "specs": {
-      "cooler_type": "liquid",
-      "radiator_mm": 360,
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Cooler Master Hyper 212 EVO",
-    "brand": "Cooler Master",
-    "price": 3140000,
-    "stock": 23,
-    "image_url": "/images/products/cooler-cooler-master-hyper-212-evo.webp",
-    "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Cooler Master Hyper H410R RGB",
-    "brand": "Cooler Master",
-    "price": 3610000,
-    "stock": 6,
-    "image_url": "/images/products/cooler-cooler-master-hyper-h410r-rgb.webp",
-    "specs": {
-      "cooler_type": "air",
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
-      ]
-    }
-  },
-  {
-    "slug": "cooler",
-    "name": "Enermax LIQMAX III 360 ARGB",
-    "brand": "Enermax",
-    "price": 4290000,
-    "stock": 10,
-    "image_url": "/images/products/cooler-enermax-liqmax-iii-360-argb.webp",
-    "specs": {
-      "cooler_type": "liquid",
-      "radiator_mm": 360,
-      "sockets": [
-        "AM4",
-        "AM5",
-        "LGA1700",
-        "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
       ]
     }
   },
@@ -1863,9 +1572,136 @@
         "AM5",
         "LGA1700",
         "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Peerless Assassin 120 Digital ARGB",
+    "brand": "Thermalright",
+    "price": 1190000,
+    "stock": 18,
+    "image_url": "/images/products/cooler-thermalright-peerless-assassin-120-digital-argb.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Burst Assassin 120 SE ARGB",
+    "brand": "Thermalright",
+    "price": 610000,
+    "stock": 15,
+    "image_url": "/images/products/cooler-thermalright-burst-assassin-120-se-argb.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Cooler Master Hyper 212 EVO",
+    "brand": "Cooler Master",
+    "price": 3140000,
+    "stock": 23,
+    "image_url": "/images/products/cooler-cooler-master-hyper-212-evo.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "LGA775",
+        "LGA1150",
+        "LGA1155",
+        "LGA1156",
+        "LGA1366",
+        "LGA2011",
+        "AM2",
+        "AM2+",
+        "AM3",
+        "AM3+",
+        "FM1",
+        "FM2",
+        "FM2+"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Thermalright Mjolnir Vision 360 ARGB",
+    "brand": "Thermalright",
+    "price": 2770000,
+    "stock": 27,
+    "image_url": "/images/products/cooler-thermalright-mjolnir-vision-360-argb.webp",
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "APNX AP1-V",
+    "brand": "APNX",
+    "price": 780000,
+    "stock": 22,
+    "image_url": "/images/products/cooler-apnx-ap1-v.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Deepcool THETA 20 PWM",
+    "brand": "Deepcool",
+    "price": 430000,
+    "stock": 23,
+    "image_url": "/images/products/cooler-deepcool-theta-20-pwm.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "LGA1150",
+        "LGA1151",
+        "LGA1155",
+        "LGA1156",
+        "LGA1200"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Cooler Master Hyper H410R RGB",
+    "brand": "Cooler Master",
+    "price": 3610000,
+    "stock": 6,
+    "image_url": "/images/products/cooler-cooler-master-hyper-h410r-rgb.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
       ]
     }
   },
@@ -1884,9 +1720,93 @@
         "AM5",
         "LGA1700",
         "LGA1851"
-      ],
-      "estimated": [
-        "sockets"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Enermax LIQMAX III 360 ARGB",
+    "brand": "Enermax",
+    "price": 4290000,
+    "stock": 10,
+    "image_url": "/images/products/cooler-enermax-liqmax-iii-360-argb.webp",
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Jonsbo CR-1000 V2 Color",
+    "brand": "Jonsbo",
+    "price": 1410000,
+    "stock": 11,
+    "image_url": "/images/products/cooler-jonsbo-cr-1000-v2-color.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Mars Gaming MCPU-XT",
+    "brand": "Mars",
+    "price": 1730000,
+    "stock": 16,
+    "image_url": "/images/products/cooler-mars-gaming-mcpu-xt.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "GAMDIAS CHIONE E4",
+    "brand": "GAMDIAS",
+    "price": 2470000,
+    "stock": 19,
+    "image_url": "/images/products/cooler-gamdias-chione-e4.webp",
+    "specs": {
+      "cooler_type": "liquid",
+      "radiator_mm": 360,
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
+      ]
+    }
+  },
+  {
+    "slug": "cooler",
+    "name": "Xilence M906",
+    "brand": "Xilence",
+    "price": 2000000,
+    "stock": 18,
+    "image_url": "/images/products/cooler-xilence-m906.webp",
+    "specs": {
+      "cooler_type": "air",
+      "sockets": [
+        "AM4",
+        "AM5",
+        "LGA1700",
+        "LGA1851"
       ]
     }
   }
