@@ -43,14 +43,15 @@ export default function Header() {
   const close = () => setOpen(false)
 
   // Đã đăng nhập: hiện tên (từ cuối của họ tên, vd "Nguyễn Văn An" → "An") và dẫn tới trang tài khoản.
-  const firstName = profile?.full_name?.trim().split(/s+/).pop()
+  const firstName = profile?.full_name?.trim().split(/\s+/).pop()
   const account = user
     ? { to: '/tai-khoan', label: firstName || 'Tài khoản' }
     : { to: '/dang-nhap', label: 'Đăng nhập' }
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-3">
+      {/* px-3 ở điện thoại: px-4 làm thanh này rộng 364px, tràn màn 360px (BUG-05) */}
+      <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4">
         <button
           type="button"
           className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 md:hidden"

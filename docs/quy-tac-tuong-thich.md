@@ -105,23 +105,24 @@ Chiều dài VGA tối đa của case (mm). Con số tính khi lắp đủ quạ
 
 Socket tản nhiệt hỗ trợ (chỉ ghi các socket web đang bán: AM4, AM5, LGA1700, LGA1851).
 
-| Tản nhiệt                                       | Socket                     | Ghi chú                                                        |
-| ----------------------------------------------- | -------------------------- | -------------------------------------------------------------- |
-| ARCTIC Freezer 36                               | AM4, AM5, LGA1700, LGA1851 | Thay Deepcool THETA 20 PWM (19/10/2026), theo arctic.de        |
-| Cooler Master Hyper 212 Halo                    | AM4, AM5, LGA1700, LGA1851 | Thay Hyper 212 EVO bản gốc (19/10/2026), theo coolermaster.com |
-| Thermalright Burst Assassin 120 SE ARGB         | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| APNX AP1-V                                      | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
-| Thermalright Peerless Assassin 120 SE ARGB      | AM4, AM5, LGA1700, LGA1851 | LGA1851 có trong bản V2                                        |
-| Thermalright Peerless Assassin 120 Digital ARGB | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| Jonsbo CR-1000 V2 Color                         | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| Mars Gaming MCPU-XT                             | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
-| Xilence M906                                    | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| GAMDIAS CHIONE E4                               | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| Thermalright Mjolnir Vision 360 ARGB            | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| Cooler Master Hyper H410R RGB                   | AM4, AM5, LGA1700, LGA1851 | Bao bì mới (RR-H410-20PC-R1) mới kèm kit LGA1700/AM5           |
-| Enermax LIQMAX III 360 ARGB                     | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
-| Corsair iCUE LINK TITAN 360 RX RGB              | AM4, AM5, LGA1700, LGA1851 |                                                                |
-| Cooler Master MasterLiquid 360 Ion              | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
+| Tản nhiệt                                        | Socket                     | Ghi chú                                                               |
+| ------------------------------------------------ | -------------------------- | --------------------------------------------------------------------- |
+| ARCTIC Freezer 36                                | AM4, AM5, LGA1700, LGA1851 | Thay Deepcool THETA 20 PWM (19/10/2026), theo arctic.de               |
+| Cooler Master Hyper 212 Halo                     | AM4, AM5, LGA1700, LGA1851 | Thay Hyper 212 EVO bản gốc (19/10/2026), theo coolermaster.com        |
+| Thermalright Burst Assassin 120 SE ARGB          | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| APNX AP1-V                                       | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                                      |
+| Thermalright Peerless Assassin 120 SE ARGB       | AM4, AM5, LGA1700, LGA1851 | LGA1851 có trong bản V2                                               |
+| Thermalright Peerless Assassin 120 Digital ARGB  | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| Jonsbo CR-1000 V2 Color                          | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| Mars Gaming MCPU-XT                              | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                                      |
+| Xilence M906                                     | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| GAMDIAS CHIONE E4                                | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| Thermalright Mjolnir Vision 360 ARGB             | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| Cooler Master Hyper H410R RGB                    | AM4, AM5, LGA1700, LGA1851 | Bao bì mới (RR-H410-20PC-R1) mới kèm kit LGA1700/AM5                  |
+| Enermax LIQMAX III 360 ARGB                      | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                                      |
+| Corsair iCUE LINK TITAN 360 RX RGB               | AM4, AM5, LGA1700, LGA1851 |                                                                       |
+| Cooler Master MasterLiquid 360 Ion               | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                                      |
+| Thermalright Peerless Assassin 120 SE (mẫu seed) | AM4, AM5, LGA1700, LGA1851 | Sản phẩm mẫu trong seed.sql; bổ sung LGA1851 ngày 19/10/2026 (BUG-03) |
 
 Deepcool THETA 20 PWM (chỉ LGA115x/1200) và Cooler Master Hyper 212 EVO bản gốc (LGA775–2011, AM2–AM3+) không lắp được CPU nào web bán nên đã bỏ khỏi danh sách ngày 19/10/2026.
 

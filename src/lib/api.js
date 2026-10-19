@@ -42,7 +42,8 @@ export async function getProducts({ categorySlug, limit } = {}) {
 // Chi tiết một sản phẩm. id sai hoặc không tồn tại thì trả null (để trang hiện 404).
 export async function getProductById(id) {
   // id trên URL không phải số (vd /san-pham/abc) thì khỏi gọi DB – Postgres sẽ báo lỗi kiểu dữ liệu.
-  if (!/^\d+$/.test(String(id))) return null
+  // id quá lớn (vượt kiểu bigint, vd /san-pham/99999999999999999999) cũng không tồn tại → 404.
+  if (!/^\d+$/.test(String(id)) || !Number.isSafeInteger(Number(id))) return null
   const { data, error } = await supabase
     .from('products')
     .select(
