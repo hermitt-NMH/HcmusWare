@@ -38,3 +38,32 @@ export async function getProducts({ categorySlug, limit } = {}) {
   if (error) throw error
   return data
 }
+
+// Chi tiết một sản phẩm. id sai hoặc không tồn tại thì trả null (để trang hiện 404).
+export async function getProductById(id) {
+  // id trên URL không phải số (vd /san-pham/abc) thì khỏi gọi DB – Postgres sẽ báo lỗi kiểu dữ liệu.
+  if (!/^\d+$/.test(String(id))) return null
+  const { data, error } = await supabase
+    .from('products')
+    .select(
+      'id, name, brand, price, stock, image_url, datasheet_url, description, specs, categories(slug, name)',
+    )
+    .eq('id', id)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// Sản phẩm cùng danh mục (trừ chính nó) cho mục "Sản phẩm tương tự".
+export async function getRelatedProducts({ categorySlug, excludeId, limit = 4 }) {
+  const { data, error } = await supabase
+    .from('products')
+    .select('id, name, brand, price, stock, image_url, specs, categories!inner(slug, name)')
+    .eq('categories.slug', categorySlug)
+    .neq('id', excludeId)
+    .gt('stock', 0)
+    .order('id', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  return data
+}
