@@ -23,6 +23,9 @@ const OVERRIDES_FILE = new URL('../data/overrides.json', import.meta.url)
 const OUTPUT_FILE = new URL('../data/products.json', import.meta.url)
 // Ảnh sản phẩm do scripts/fetch-images.js tải về (tên sản phẩm → image_url)
 const IMAGES_FILE = new URL('../data/images.json', import.meta.url)
+// Link datasheet / trang thông số CHÍNH HÃNG do BA tra và kiểm tra (tên sản phẩm → URL).
+// Không có trang hãng thì không ghi, web sẽ hiện "Chưa có datasheet".
+const DATASHEETS_FILE = new URL('../data/datasheets.json', import.meta.url)
 const PER_CATEGORY = 15
 const USD_TO_VND = Number(process.env.USD_TO_VND || 26000)
 const DRY_RUN = process.argv.includes('--dry-run')
@@ -148,6 +151,9 @@ const MULTI_WORD_BRANDS = [
   'Fractal Design',
   'be quiet!',
   'Super Flower',
+  'Silicon Power',
+  'PC Power & Cooling',
+  'Mars Gaming',
 ]
 const brandOf = (name) =>
   MULTI_WORD_BRANDS.find((b) => name.startsWith(b + ' ')) ?? name.split(' ')[0]
@@ -300,9 +306,12 @@ async function readJson(url) {
   return JSON.parse(await readFile(url, 'utf8'))
 }
 
+const readDatasheets = async () => (existsSync(DATASHEETS_FILE) ? readJson(DATASHEETS_FILE) : {})
+
 async function buildProducts() {
   const overrides = existsSync(OVERRIDES_FILE) ? await readJson(OVERRIDES_FILE) : {}
   const images = existsSync(IMAGES_FILE) ? await readJson(IMAGES_FILE) : {}
+  const datasheets = await readDatasheets()
   const result = []
 
   for (const [slug, cfg] of Object.entries(CATEGORIES)) {
@@ -347,6 +356,7 @@ async function buildProducts() {
         price: toVnd(p.price),
         stock: fakeStock(name),
         image_url: images[name]?.image_url ?? null,
+        datasheet_url: datasheets[name] ?? null,
         specs,
       })
     }
@@ -401,6 +411,15 @@ async function upload(products) {
     .from('products')
     .upsert(rows, { onConflict: 'category_id,name' })
   if (upsertError) throw upsertError
+
+  // Sản phẩm mẫu trong seed.sql không đi qua bước chọn ở trên → cập nhật datasheet theo tên.
+  const imported = new Set(rows.map((r) => r.name))
+  const datasheets = await readDatasheets()
+  for (const [name, datasheet_url] of Object.entries(datasheets)) {
+    if (imported.has(name)) continue
+    const { error } = await supabase.from('products').update({ datasheet_url }).eq('name', name)
+    if (error) throw error
+  }
 }
 
 async function main() {
