@@ -87,7 +87,7 @@ export default function Login({ mode = 'login' }) {
         <p className="mt-1 text-sm text-slate-500">
           {isRegister
             ? 'Lưu cấu hình, theo dõi giá và đặt hàng nhanh hơn.'
-            : 'Chào mừng bạn quay lại PC Parts.'}
+            : 'Chào mừng bạn quay lại HcmusWare.'}
         </p>
 
         <button

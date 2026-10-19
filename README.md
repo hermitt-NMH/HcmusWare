@@ -1,4 +1,4 @@
-# PC Parts Web
+# HcmusWare
 
 Website bán linh kiện máy tính có công cụ **Build PC** tự kiểm tra tương thích.
 Đồ án nhóm 8 – Nhập môn CNTT (19/10 – 21/11/2026).
@@ -10,8 +10,8 @@ Website bán linh kiện máy tính có công cụ **Build PC** tự kiểm tra 
 Cần cài: [Node.js LTS](https://nodejs.org), [Git](https://git-scm.com), VS Code (mở dự án sẽ được nhắc cài bộ extension chung).
 
 ```powershell
-git clone https://github.com/<nhom>/pc-parts-web.git
-cd pc-parts-web
+git clone https://github.com/hermitt-NMH/HcmusWare.git
+cd HcmusWare
 copy .env.example .env.local   # rồi điền khóa Kiến trúc sư gửi trong nhóm chat
 npm install
 npm run dev                    # mở http://localhost:5173
@@ -41,7 +41,7 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
 - Chép **API URL** và **Publishable / anon key** từ `db:status` vào `.env.local`, rồi chạy `npm run dev`.
 - Studio (xem/sửa bảng như pgAdmin): http://127.0.0.1:54323
 - Kết nối PostgreSQL bằng pgAdmin/DBeaver: `postgresql://postgres:postgres@127.0.0.1:54322/postgres`
-- Tài khoản admin local: `admin@pcparts.local` / `admin123`
+- Tài khoản admin local: `admin@HcmusWare.local` / `admin123`
 - `npm run db:reset` xóa sạch DB local, chạy lại migrations + seed. `npm run db:stop` tắt (dữ liệu vẫn giữ).
 
 **Đổi schema:** không sửa file migration cũ đã merge. Tạo file mới bằng
