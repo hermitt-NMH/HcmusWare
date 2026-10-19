@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 import ProductGrid from '../components/ProductGrid'
 import ProductFilters from '../components/ProductFilters'
@@ -93,13 +93,10 @@ export default function Products() {
 
       {/* Thanh công cụ: tìm kiếm + sắp xếp (+ nút bộ lọc trên điện thoại) */}
       <div className="mb-4 flex flex-wrap gap-2">
-        <input
-          type="search"
+        <SearchInput
           value={filters.q}
-          onChange={(e) => onSearch(e.target.value)}
+          onChange={onSearch}
           placeholder={slug ? `Tìm trong ${title}...` : 'Tìm sản phẩm theo tên...'}
-          aria-label="Tìm sản phẩm theo tên"
-          className="h-11 min-w-0 flex-1 basis-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none sm:basis-auto"
         />
         <button
           type="button"
@@ -167,5 +164,37 @@ export default function Products() {
         </section>
       </div>
     </div>
+  )
+}
+
+// Ô tìm kiếm có state riêng (draft) thay vì lấy thẳng giá trị từ URL.
+// Lý do: React Router cập nhật URL trong startTransition (chậm hơn một nhịp), nếu ô nhập
+// đọc giá trị từ URL thì gõ tiếng Việt bằng Telex/VNI có thể bị nhảy chữ hoặc mất dấu.
+function SearchInput({ value, onChange, placeholder }) {
+  const [draft, setDraft] = useState(value)
+  // Giá trị mình vừa đẩy lên URL, để phân biệt với thay đổi đến từ nơi khác.
+  const pushed = useRef(value)
+
+  // URL đổi từ nơi khác (ô tìm ở Header, nút "Xóa tìm kiếm", bấm Back) → cập nhật ô nhập.
+  useEffect(() => {
+    if (value !== pushed.current) {
+      pushed.current = value
+      setDraft(value)
+    }
+  }, [value])
+
+  return (
+    <input
+      type="search"
+      value={draft}
+      onChange={(e) => {
+        setDraft(e.target.value)
+        pushed.current = e.target.value
+        onChange(e.target.value)
+      }}
+      placeholder={placeholder}
+      aria-label="Tìm sản phẩm theo tên"
+      className="h-11 min-w-0 flex-1 basis-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none sm:basis-auto"
+    />
   )
 }

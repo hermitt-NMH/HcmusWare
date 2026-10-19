@@ -1,11 +1,12 @@
 import ProductCard from './ProductCard'
 
 // Lưới sản phẩm dùng chung, xử lý luôn trạng thái đang tải / lỗi / rỗng.
-export default function ProductGrid({ products, loading, error }) {
+// skeletonCount: số ô xám khi đang tải (nên bằng số sản phẩm sẽ hiện để trang không bị giật).
+export default function ProductGrid({ products, loading, error, skeletonCount = 8 }) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {Array.from({ length: 8 }, (_, i) => (
+        {Array.from({ length: skeletonCount }, (_, i) => (
           <div key={i} className="aspect-[3/4] animate-pulse rounded-xl bg-slate-200" />
         ))}
       </div>
