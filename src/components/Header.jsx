@@ -43,7 +43,7 @@ export default function Header() {
   const close = () => setOpen(false)
 
   // Đã đăng nhập: hiện tên (từ cuối của họ tên, vd "Nguyễn Văn An" → "An") và dẫn tới trang tài khoản.
-  const firstName = profile?.full_name?.trim().split(/s+/).pop()
+  const firstName = profile?.full_name?.trim().split(/\s+/).pop()
   const account = user
     ? { to: '/tai-khoan', label: firstName || 'Tài khoản' }
     : { to: '/dang-nhap', label: 'Đăng nhập' }
