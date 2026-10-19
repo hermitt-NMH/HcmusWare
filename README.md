@@ -53,7 +53,13 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
 2. Đẩy schema: `npx supabase login`, `npx supabase link --project-ref <mã-project>`, rồi `npx supabase db push`.
 3. Chạy phần danh mục + sản phẩm mẫu của `supabase/seed.sql` trong SQL Editor (**bỏ khối tài khoản admin local**), tạo admin thật theo hướng dẫn trong file.
 4. Đặt `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` của project online trên Vercel.
-5. Bật đăng nhập Google: **Authentication → Providers → Google** (làm ở Tuần 3).
+5. Bật đăng nhập Google (Tuần 3):
+   - [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → **Create OAuth client ID** (Web application).
+     Ô *Authorized redirect URIs* điền `https://<mã-project>.supabase.co/auth/v1/callback`.
+   - Supabase → **Authentication → Providers → Google**: bật, dán Client ID và Client Secret.
+   - Supabase → **Authentication → URL Configuration**: *Site URL* là link Vercel chính; *Redirect URLs* thêm
+     `http://localhost:5173/**` và `https://*-<tên-nhóm-vercel>.vercel.app/**` (để link preview của Pull Request cũng đăng nhập được).
+   - Local chưa cấu hình Google nên nút "Tiếp tục với Google" sẽ báo "chưa được bật" — dùng email để thử.
 
 ## Lỗi thường gặp
 

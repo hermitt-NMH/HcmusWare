@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { getCategories } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
+import { useAuth } from '../hooks/useAuth'
 
 const navClass = ({ isActive }) =>
   // flex + min-h-11: vùng bấm cao tối thiểu 44px; whitespace-nowrap: chữ không bị ngắt 2 dòng.
@@ -13,7 +14,14 @@ const navClass = ({ isActive }) =>
 export default function Header() {
   const [open, setOpen] = useState(false)
   const categories = useAsync(getCategories)
+  const { user, profile } = useAuth()
   const close = () => setOpen(false)
+
+  // Đã đăng nhập: hiện tên (từ cuối của họ tên, vd "Nguyễn Văn An" → "An") và dẫn tới trang tài khoản.
+  const firstName = profile?.full_name?.trim().split(/s+/).pop()
+  const account = user
+    ? { to: '/tai-khoan', label: firstName || 'Tài khoản' }
+    : { to: '/dang-nhap', label: 'Đăng nhập' }
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-white">
@@ -46,8 +54,8 @@ export default function Header() {
           <NavLink to="/gio-hang" className={navClass}>
             Giỏ hàng
           </NavLink>
-          <NavLink to="/dang-nhap" className={`${navClass({ isActive: false })} hidden sm:flex`}>
-            Đăng nhập
+          <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 sm:flex`}>
+            <span className="truncate">{account.label}</span>
           </NavLink>
         </nav>
       </div>
@@ -70,8 +78,8 @@ export default function Header() {
             </li>
           ))}
           <li className="sm:hidden">
-            <NavLink to="/dang-nhap" className={navClass} onClick={close}>
-              Đăng nhập
+            <NavLink to={account.to} className={navClass} onClick={close}>
+              {account.label}
             </NavLink>
           </li>
         </ul>
