@@ -113,29 +113,27 @@ describe('checkCompatibility – test plan TC01–TC20', () => {
       }),
     )
     expect(rules(r.errors)).toEqual(['R5'])
-    expect(rules(r.warnings)).toContain('W5')
   })
 
-  it('TC08: R6 biên – VGA 360 mm vừa case 360 mm', () => {
+  it('TC08: R6 biên – VGA 312 mm vừa case 312 mm', () => {
     const r = checkCompatibility(
       build({
-        case: p('Zalman i4'),
-        vga: p('XFX Radeon RX 9070 XT Mercury OC Magnetic Air RGB V2 16GB'),
+        case: p('Silverstone RV05B'),
+        vga: p('ASRock Radeon RX 7900 XT Creator 20GB'),
       }),
     )
     expect(r.errors).toEqual([])
-    expect(r.totalPowerW).toBe(469)
+    expect(r.totalPowerW).toBe(480)
     expect(r.recommendedPsuW).toBe(650)
-    expect(rules(r.warnings)).toEqual(['W5'])
+    expect(r.warnings).toEqual([])
   })
 
-  it('TC09: R6 – VGA 356 mm trong case 330 mm', () => {
+  it('TC09: R6 – VGA 356 mm trong case 260 mm', () => {
     const r = checkCompatibility(
       build({ case: p('Zalman CUBIX'), vga: p('Zotac GeForce RTX 3080 Ti AMP Extreme Holo 12GB') }),
     )
     expect(rules(r.errors)).toEqual(['R6'])
-    expect(r.errors[0].message).toBe('VGA dài 356 mm, case chỉ chứa tối đa 330 mm')
-    expect(rules(r.warnings)).toContain('W5')
+    expect(r.errors[0].message).toBe('VGA dài 356 mm, case chỉ chứa tối đa 260 mm')
   })
 
   it('TC10: R7 – tản nhiệt không hỗ trợ LGA1851', () => {
@@ -197,8 +195,7 @@ describe('checkCompatibility – test plan TC01–TC20', () => {
       build({ case: p('Zalman CUBIX'), cooler: p('Thermalright Mjolnir Vision 360 ARGB') }),
     )
     expect(r.errors).toEqual([])
-    expect(rules(r.warnings)).toContain('W4')
-    expect(rules(r.warnings)).toContain('W5')
+    expect(rules(r.warnings)).toEqual(['W4'])
   })
 
   it('TC17: W5 – VGA thiếu chiều dài thì bỏ qua R6, chỉ cảnh báo', () => {
