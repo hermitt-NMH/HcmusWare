@@ -1,4 +1,4 @@
-# PC Parts Web
+# HcmusWare
 
 Website bán linh kiện máy tính có công cụ **Build PC** tự kiểm tra tương thích.
 Đồ án nhóm 8 – Nhập môn CNTT (19/10 – 21/11/2026).

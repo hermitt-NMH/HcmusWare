@@ -69,7 +69,7 @@ export default function Header() {
           onClick={close}
         >
           <img src="/logo.svg" alt="" width="28" height="28" />
-          <span>PC Parts</span>
+          <span>HcmusWare</span>
         </Link>
 
         <SearchForm className="mx-2 hidden max-w-md flex-1 md:block" />
