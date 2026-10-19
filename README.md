@@ -5,6 +5,8 @@ Website bán linh kiện máy tính có công cụ **Build PC** tự kiểm tra 
 
 **Công nghệ:** React (Vite) · Tailwind CSS v4 · Supabase (database, đăng nhập, lưu ảnh) · Chart.js · Vitest · deploy Vercel.
 
+**Demo:** https://hcmusware.vercel.app
+
 ## Chạy dự án trên máy
 
 Cần cài: [Node.js LTS](https://nodejs.org), [Git](https://git-scm.com), VS Code (mở dự án sẽ được nhắc cài bộ extension chung).
@@ -57,7 +59,7 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
    - [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → **Create OAuth client ID** (Web application).
      Ô *Authorized redirect URIs* điền `https://<mã-project>.supabase.co/auth/v1/callback`.
    - Supabase → **Authentication → Providers → Google**: bật, dán Client ID và Client Secret.
-   - Supabase → **Authentication → URL Configuration**: *Site URL* là link Vercel chính; *Redirect URLs* thêm
+   - Supabase → **Authentication → URL Configuration**: *Site URL* là `https://hcmusware.vercel.app`; *Redirect URLs* thêm
      `http://localhost:5173/**` và `https://*-<tên-nhóm-vercel>.vercel.app/**` (để link preview của Pull Request cũng đăng nhập được).
    - Local chưa cấu hình Google nên nút "Tiếp tục với Google" sẽ báo "chưa được bật" — dùng email để thử.
 
