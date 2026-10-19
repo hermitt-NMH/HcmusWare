@@ -2,12 +2,7 @@ import { useState } from 'react'
 import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { authErrorMessage } from '../lib/authErrors'
-
-// Chỉ cho quay về đường dẫn trong web (bắt đầu bằng "/", không phải "//")
-// để kẻ xấu không gửi link ?next=https://trang-gia.com lừa người dùng.
-function safeNext(value) {
-  return value && value.startsWith('/') && !value.startsWith('//') ? value : '/'
-}
+import { safeNext } from '../lib/safeNext'
 
 const inputClass =
   'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
