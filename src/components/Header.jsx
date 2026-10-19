@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { getCategories } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 
@@ -9,6 +9,31 @@ const navClass = ({ isActive }) =>
   `flex min-h-11 items-center whitespace-nowrap rounded-md px-2 py-2 text-sm font-medium sm:px-3 ${
     isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
   }`
+
+// Ô tìm kiếm: gõ tên rồi Enter → sang /san-pham?q=...
+function SearchForm({ className = '', onDone }) {
+  const [q, setQ] = useState('')
+  const navigate = useNavigate()
+  const submit = (e) => {
+    e.preventDefault()
+    const text = q.trim()
+    navigate(text ? `/san-pham?q=${encodeURIComponent(text)}` : '/san-pham')
+    setQ('')
+    onDone?.()
+  }
+  return (
+    <form role="search" onSubmit={submit} className={className}>
+      <input
+        type="search"
+        value={q}
+        onChange={(e) => setQ(e.target.value)}
+        placeholder="Tìm CPU, VGA, RAM..."
+        aria-label="Tìm sản phẩm"
+        className="h-11 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm focus:border-blue-500 focus:bg-white focus:outline-none"
+      />
+    </form>
+  )
+}
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -39,6 +64,8 @@ export default function Header() {
           <span>PC Parts</span>
         </Link>
 
+        <SearchForm className="mx-2 hidden max-w-md flex-1 md:block" />
+
         <nav className="ml-auto flex items-center gap-1">
           <NavLink to="/build-pc" className={navClass}>
             Build PC
@@ -54,6 +81,7 @@ export default function Header() {
 
       {/* Menu danh mục: thanh ngang trên máy tính, danh sách xổ xuống trên điện thoại */}
       <div className={`${open ? 'block' : 'hidden'} border-t border-slate-100 md:block`}>
+        <SearchForm className="mx-auto max-w-6xl px-4 pt-3 md:hidden" onDone={close} />
         <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-2 md:flex-row md:overflow-x-auto">
           {/* Đang tải: chữ nhỏ; lỗi: báo gọn một dòng. Giữ cùng chiều cao để không vỡ thanh menu */}
           {categories.loading && (
