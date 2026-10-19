@@ -111,10 +111,10 @@ function DetailView({ product }) {
                 href={datasheet_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                download
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-300 bg-white px-5 font-medium text-slate-700 hover:bg-slate-50"
               >
-                Tải datasheet
+                {/* Có hãng cho file PDF, có hãng chỉ có trang thông số trên web → ghi đúng để khách không bất ngờ */}
+                {/\.pdf($|\?)/i.test(datasheet_url) ? 'Tải datasheet (PDF)' : 'Xem thông số hãng ↗'}
               </a>
             ) : (
               <span className="inline-flex h-12 items-center justify-center rounded-lg border border-dashed border-slate-300 px-5 text-sm text-slate-400">
