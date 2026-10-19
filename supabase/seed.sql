@@ -39,12 +39,12 @@ on conflict (category_id, name) do update set image_url = excluded.image_url;
 --          where id = (select id from auth.users where email = '<email admin>');
 
 -- ---------- Tài khoản admin local (CHỈ dùng trên máy, không chạy trên online) ----------
--- Đăng nhập: admin@pcparts.local / admin123
+-- Đăng nhập: admin@HcmusWare.local / admin123 (Supabase lưu email chữ thường)
 do $$
 declare
   v_id uuid := gen_random_uuid();
 begin
-  if exists (select 1 from auth.users where email = 'admin@pcparts.local') then
+  if exists (select 1 from auth.users where email = 'admin@hcmusware.local') then
     return;
   end if;
 
@@ -54,7 +54,7 @@ begin
     confirmation_token, recovery_token, email_change_token_new, email_change
   ) values (
     '00000000-0000-0000-0000-000000000000', v_id, 'authenticated', 'authenticated',
-    'admin@pcparts.local', extensions.crypt('admin123', extensions.gen_salt('bf')), now(),
+    'admin@hcmusware.local', extensions.crypt('admin123', extensions.gen_salt('bf')), now(),
     '{"provider":"email","providers":["email"]}', '{"full_name":"Quản trị viên"}', now(), now(),
     '', '', '', ''
   );
@@ -62,7 +62,7 @@ begin
   insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
   values (
     gen_random_uuid(), v_id::text, v_id,
-    jsonb_build_object('sub', v_id::text, 'email', 'admin@pcparts.local', 'email_verified', true),
+    jsonb_build_object('sub', v_id::text, 'email', 'admin@hcmusware.local', 'email_verified', true),
     'email', now(), now(), now()
   );
 
