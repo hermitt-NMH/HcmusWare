@@ -60,6 +60,13 @@
       "https://down-sg.img.susercontent.com/file/sg-11134207-7rcdg-lrzg5ruylq2292"
     ]
   },
+  "ARCTIC Freezer 36": {
+    "image_url": "/images/products/cooler-arctic-freezer-36.webp",
+    "source": "https://files.pccasegear.com/images/ACFRE00121A-thumb.jpg",
+    "rejected": [
+      "https://cdn.mos.cms.futurecdn.net/YpK4BKAsksRso4cXhVmmrW.jpg"
+    ]
+  },
   "ASRock B760M Pro RS/D4 WiFi": {
     "image_url": "/images/products/mainboard-asrock-b760m-pro-rs-d4-wifi.webp",
     "source": "https://www.asrock.com/mb/photo/B760M Pro RSD4 WiFi(L3).png"
@@ -131,6 +138,10 @@
   "Cooler Master Hyper 212 EVO": {
     "image_url": "/images/products/cooler-cooler-master-hyper-212-evo.webp",
     "source": "https://a.storyblok.com/f/281110/f9ef3cd9eb/hyper-212-evo_02.png/m/960x0/smart"
+  },
+  "Cooler Master Hyper 212 Halo": {
+    "image_url": "/images/products/cooler-cooler-master-hyper-212-halo.webp",
+    "source": "https://files.coolermaster.com/og-image/hyper-212-halo-black-1200x630.jpg"
   },
   "Cooler Master Hyper H410R RGB": {
     "image_url": "/images/products/cooler-cooler-master-hyper-h410r-rgb.webp",

@@ -105,20 +105,31 @@ Chiều dài VGA tối đa của case (mm). Con số tính khi lắp đủ quạ
 
 Socket tản nhiệt hỗ trợ (chỉ ghi các socket web đang bán: AM4, AM5, LGA1700, LGA1851).
 
-| Tản nhiệt                                       | Socket                                     | Ghi chú                                                                                    |
-| ----------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| Deepcool THETA 20 PWM                           | **Không** (chỉ LGA115x/1200)               | Tản Intel đời cũ, không lắp được CPU nào web đang bán → nên thay sản phẩm khác             |
-| Cooler Master Hyper 212 EVO                     | **Không** (LGA775–2011, AM2–AM3+, FM1/FM2) | Bản EVO gốc; kit LGA1700/AM5 của hãng chỉ dành cho EVO V2 → nên thay bằng Hyper 212 EVO V2 |
-| Thermalright Burst Assassin 120 SE ARGB         | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| APNX AP1-V                                      | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
-| Thermalright Peerless Assassin 120 SE ARGB      | AM4, AM5, LGA1700, LGA1851                 | LGA1851 có trong bản V2                                                                    |
-| Thermalright Peerless Assassin 120 Digital ARGB | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| Jonsbo CR-1000 V2 Color                         | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| Mars Gaming MCPU-XT                             | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
-| Xilence M906                                    | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| GAMDIAS CHIONE E4                               | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| Thermalright Mjolnir Vision 360 ARGB            | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| Cooler Master Hyper H410R RGB                   | AM4, AM5, LGA1700, LGA1851                 | Bao bì mới (RR-H410-20PC-R1) mới kèm kit LGA1700/AM5                                       |
-| Enermax LIQMAX III 360 ARGB                     | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
-| Corsair iCUE LINK TITAN 360 RX RGB              | AM4, AM5, LGA1700, LGA1851                 |                                                                                            |
-| Cooler Master MasterLiquid 360 Ion              | AM4, AM5, LGA1700, LGA1851                 | Hãng ghi LGA1700                                                                           |
+| Tản nhiệt                                       | Socket                     | Ghi chú                                                        |
+| ----------------------------------------------- | -------------------------- | -------------------------------------------------------------- |
+| ARCTIC Freezer 36                               | AM4, AM5, LGA1700, LGA1851 | Thay Deepcool THETA 20 PWM (19/10/2026), theo arctic.de        |
+| Cooler Master Hyper 212 Halo                    | AM4, AM5, LGA1700, LGA1851 | Thay Hyper 212 EVO bản gốc (19/10/2026), theo coolermaster.com |
+| Thermalright Burst Assassin 120 SE ARGB         | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| APNX AP1-V                                      | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
+| Thermalright Peerless Assassin 120 SE ARGB      | AM4, AM5, LGA1700, LGA1851 | LGA1851 có trong bản V2                                        |
+| Thermalright Peerless Assassin 120 Digital ARGB | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| Jonsbo CR-1000 V2 Color                         | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| Mars Gaming MCPU-XT                             | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
+| Xilence M906                                    | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| GAMDIAS CHIONE E4                               | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| Thermalright Mjolnir Vision 360 ARGB            | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| Cooler Master Hyper H410R RGB                   | AM4, AM5, LGA1700, LGA1851 | Bao bì mới (RR-H410-20PC-R1) mới kèm kit LGA1700/AM5           |
+| Enermax LIQMAX III 360 ARGB                     | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
+| Corsair iCUE LINK TITAN 360 RX RGB              | AM4, AM5, LGA1700, LGA1851 |                                                                |
+| Cooler Master MasterLiquid 360 Ion              | AM4, AM5, LGA1700, LGA1851 | Hãng ghi LGA1700                                               |
+
+Deepcool THETA 20 PWM (chỉ LGA115x/1200) và Cooler Master Hyper 212 EVO bản gốc (LGA775–2011, AM2–AM3+) không lắp được CPU nào web bán nên đã bỏ khỏi danh sách ngày 19/10/2026.
+
+## Datasheet
+
+Link "Tải datasheet" ở trang chi tiết lấy từ `data/datasheets.json` (tên sản phẩm → link). Chỉ ghi link **trên web chính hãng**, đã mở thử và thấy đúng model; ưu tiên file PDF thông số, không có thì dùng trang thông số của hãng. Không lấy link trang bán lẻ, không tự đoán link.
+
+- RAM và SSD: tên trong bộ dữ liệu không ghi mã kit, nên khi không xác định được đúng mã thì dùng trang dòng sản phẩm của hãng (có bảng thông số mọi dung lượng/bus).
+- CPU AMD Ryzen 3000 (3200G, 3600X): AMD đã chuyển trang thông số sang trang hỗ trợ, link trỏ tới đó.
+- XFX RX 9070 XT Mercury OC Magnetic Air RGB: trang hãng không ghi "V2", cần BA đối chiếu lại tên trong bộ dữ liệu.
+- Chưa có datasheet (hãng không có trang chính thức hoặc đã gỡ): G.Skill Ripjaws 16 GB DDR4-3000 (dữ liệu không ghi là Ripjaws V hay 4), Antec NE1000G/NE1300G M ATX3.0 (link PDF trên web Antec bị hỏng, trang hãng chỉ còn bản ATX 3.1), Zalman CUBIX, Zalman i4, APNX AP1-V, Cooler Master Hyper H410R RGB (đã ngừng bán).

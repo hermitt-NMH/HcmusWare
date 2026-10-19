@@ -17,7 +17,7 @@
   "Cougar MX660-T RGB": { "max_gpu_length_mm": 350 },
   "HYTE Y70 Silver Wolf": { "max_gpu_length_mm": 422 },
 
-  "Deepcool THETA 20 PWM": { "sockets": ["LGA1150", "LGA1151", "LGA1155", "LGA1156", "LGA1200"] },
+  "ARCTIC Freezer 36": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
   "Thermalright Burst Assassin 120 SE ARGB": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
   "APNX AP1-V": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
   "Thermalright Peerless Assassin 120 SE ARGB": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
@@ -29,22 +29,8 @@
   "Xilence M906": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
   "GAMDIAS CHIONE E4": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
   "Thermalright Mjolnir Vision 360 ARGB": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
-  "Cooler Master Hyper 212 EVO": {
-    "sockets": [
-      "LGA775",
-      "LGA1150",
-      "LGA1155",
-      "LGA1156",
-      "LGA1366",
-      "LGA2011",
-      "AM2",
-      "AM2+",
-      "AM3",
-      "AM3+",
-      "FM1",
-      "FM2",
-      "FM2+"
-    ]
+  "Cooler Master Hyper 212 Halo": {
+    "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"]
   },
   "Cooler Master Hyper H410R RGB": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
   "Enermax LIQMAX III 360 ARGB": { "sockets": ["AM4", "AM5", "LGA1700", "LGA1851"] },
