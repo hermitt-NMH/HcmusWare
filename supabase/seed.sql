@@ -28,7 +28,7 @@ from (values
   ('ssd',       'Samsung 990 EVO 1TB',           'Samsung',  2190000,  25, '{"capacity_gb":1000,"interface":"M.2 PCIe 4.0 x4","form_factor":"M.2-2280"}', '/images/products/ssd-samsung-990-evo-1tb.webp'),
   ('psu',       'Corsair RM750e 750W',           'Corsair',  2790000,  12, '{"wattage_w":750,"efficiency":"80+ Gold","form_factor":"ATX","modular":"Full"}', '/images/products/psu-corsair-rm750e-750w.webp'),
   ('case',      'NZXT H5 Flow',                  'NZXT',     2290000,   8, '{"case_type":"ATX Mid Tower","form_factors":["ATX","Micro ATX","Mini ITX"],"max_gpu_length_mm":365}', '/images/products/case-nzxt-h5-flow.webp'),
-  ('cooler',    'Thermalright Peerless Assassin 120 SE', 'Thermalright', 990000, 18, '{"sockets":["AM4","AM5","LGA1700"],"radiator_mm":null,"max_tdp_w":245}', '/images/products/cooler-thermalright-peerless-assassin-120-se.webp')
+  ('cooler',    'Thermalright Peerless Assassin 120 SE', 'Thermalright', 990000, 18, '{"sockets":["AM4","AM5","LGA1700","LGA1851"],"radiator_mm":null,"max_tdp_w":245}', '/images/products/cooler-thermalright-peerless-assassin-120-se.webp')
 ) as p(slug, name, brand, price, stock, specs, image_url)
 join public.categories c on c.slug = p.slug
 on conflict (category_id, name) do update set image_url = excluded.image_url;

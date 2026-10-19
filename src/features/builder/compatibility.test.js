@@ -41,7 +41,7 @@ const B0 = {
   },
   cooler: {
     name: 'Thermalright Peerless Assassin 120 SE',
-    specs: { sockets: ['AM4', 'AM5', 'LGA1700'], radiator_mm: null },
+    specs: { sockets: ['AM4', 'AM5', 'LGA1700', 'LGA1851'], radiator_mm: null },
   },
 }
 
@@ -136,11 +136,24 @@ describe('checkCompatibility – test plan TC01–TC20', () => {
     expect(r.errors[0].message).toBe('VGA dài 356 mm, case chỉ chứa tối đa 260 mm')
   })
 
+  // Mọi tản đang bán đều hỗ trợ đủ 4 socket nên ca "không đạt" dùng tản giả chỉ lắp được AMD.
   it('TC10: R7 – tản nhiệt không hỗ trợ LGA1851', () => {
+    const r = checkCompatibility(
+      build({
+        cpu: p('Intel Core Ultra 5 235'),
+        mainboard: p('Gigabyte B860M D3HP'),
+        cooler: { name: 'Tản giả chỉ hỗ trợ AMD', specs: { sockets: ['AM4', 'AM5'] } },
+      }),
+    )
+    expect(rules(r.errors)).toEqual(['R7'])
+    expect(r.errors[0].message).toBe('Tản nhiệt không hỗ trợ socket LGA1851')
+  })
+
+  it('TC10b: R7 – tản mẫu B0 lắp được LGA1851 (chung ngàm LGA1700)', () => {
     const r = checkCompatibility(
       build({ cpu: p('Intel Core Ultra 5 235'), mainboard: p('Gigabyte B860M D3HP') }),
     )
-    expect(rules(r.errors)).toEqual(['R7'])
+    expect(r.errors).toEqual([])
   })
 
   it('TC11: R8 – nguồn 500 W không đủ cho 525 W', () => {
