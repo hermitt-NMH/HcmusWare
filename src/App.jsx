@@ -6,6 +6,8 @@ import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import ComingSoon from './pages/ComingSoon'
 import NotFound from './pages/NotFound'
+import Login from './pages/Login'
+import Account from './pages/Account'
 
 export default function App() {
   return (
@@ -20,7 +22,10 @@ export default function App() {
           {/* Các trang dưới đây làm ở Tuần 4–5 */}
           <Route path="/build-pc" element={<ComingSoon title="Build PC" />} />
           <Route path="/gio-hang" element={<ComingSoon title="Giỏ hàng" />} />
-          <Route path="/dang-nhap" element={<ComingSoon title="Đăng nhập" />} />
+          {/* key khác nhau để chuyển qua lại đăng nhập ↔ đăng ký thì form được làm mới */}
+          <Route path="/dang-nhap" element={<Login key="login" mode="login" />} />
+          <Route path="/dang-ky" element={<Login key="register" mode="register" />} />
+          <Route path="/tai-khoan" element={<Account />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
