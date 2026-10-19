@@ -163,7 +163,7 @@ function RelatedProducts({ categorySlug, excludeId }) {
   return (
     <section>
       <h2 className="mb-3 text-lg font-semibold">Sản phẩm tương tự</h2>
-      <ProductGrid {...related} products={related.data} />
+      <ProductGrid {...related} products={related.data} skeletonCount={4} />
     </section>
   )
 }
