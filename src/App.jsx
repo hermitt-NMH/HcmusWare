@@ -19,13 +19,13 @@ export default function App() {
           <Route path="/san-pham" element={<Products />} />
           <Route path="/danh-muc/:slug" element={<Products />} />
           <Route path="/san-pham/:id" element={<ProductDetail />} />
-          {/* Các trang dưới đây làm ở Tuần 4–5 */}
-          <Route path="/build-pc" element={<ComingSoon title="Build PC" />} />
-          <Route path="/gio-hang" element={<ComingSoon title="Giỏ hàng" />} />
           {/* key khác nhau để chuyển qua lại đăng nhập ↔ đăng ký thì form được làm mới */}
           <Route path="/dang-nhap" element={<Login key="login" mode="login" />} />
           <Route path="/dang-ky" element={<Login key="register" mode="register" />} />
           <Route path="/tai-khoan" element={<Account />} />
+          {/* Các trang dưới đây làm ở Tuần 4–5 */}
+          <Route path="/build-pc" element={<ComingSoon title="Build PC" />} />
+          <Route path="/gio-hang" element={<ComingSoon title="Giỏ hàng" />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
