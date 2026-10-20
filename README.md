@@ -19,14 +19,15 @@ npm install
 npm run dev                    # mở http://localhost:5173
 ```
 
-| Lệnh                  | Tác dụng                                        |
-| --------------------- | ----------------------------------------------- |
-| `npm run dev`         | Chạy web ở chế độ phát triển                    |
-| `npm run build`       | Build bản production vào `dist/`                |
-| `npm run lint`        | Kiểm tra lỗi ESLint                             |
-| `npm test`            | Chạy unit test (Vitest)                         |
-| `npm run import-data` | Đẩy ~120 sản phẩm từ bộ dữ liệu mở lên Supabase |
-| `npm run fetch-images` | Tải ảnh thật cho sản phẩm còn thiếu ảnh          |
+| Lệnh                   | Tác dụng                                                       |
+| ---------------------- | -------------------------------------------------------------- |
+| `npm run dev`          | Chạy web ở chế độ phát triển                                   |
+| `npm run build`        | Build bản production vào `dist/`                               |
+| `npm run lint`         | Kiểm tra lỗi ESLint                                            |
+| `npm test`             | Chạy unit test (Vitest)                                        |
+| `npm run test:ui`      | Kiểm thử giao diện UI01–UI09 (cần `npm run preview` đang chạy) |
+| `npm run import-data`  | Đẩy ~120 sản phẩm từ bộ dữ liệu mở lên Supabase                |
+| `npm run fetch-images` | Tải ảnh thật cho sản phẩm còn thiếu ảnh                        |
 
 ## Cơ sở dữ liệu local (Supabase chạy trên máy)
 
@@ -57,9 +58,9 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
 4. Đặt `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` của project online trên Vercel.
 5. Bật đăng nhập Google (Tuần 3):
    - [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → **Create OAuth client ID** (Web application).
-     Ô *Authorized redirect URIs* điền `https://<mã-project>.supabase.co/auth/v1/callback`.
+     Ô _Authorized redirect URIs_ điền `https://<mã-project>.supabase.co/auth/v1/callback`.
    - Supabase → **Authentication → Providers → Google**: bật, dán Client ID và Client Secret.
-   - Supabase → **Authentication → URL Configuration**: *Site URL* là `https://hcmusware.vercel.app`; *Redirect URLs* thêm
+   - Supabase → **Authentication → URL Configuration**: _Site URL_ là `https://hcmusware.vercel.app`; _Redirect URLs_ thêm
      `http://localhost:5173/**` và `https://*-<tên-nhóm-vercel>.vercel.app/**` (để link preview của Pull Request cũng đăng nhập được).
    - Local chưa cấu hình Google nên nút "Tiếp tục với Google" sẽ báo "chưa được bật" — dùng email để thử.
 
@@ -100,7 +101,7 @@ Lưu ý: `.env.local` phải lưu dạng UTF-8 **không BOM** (VS Code: góc dư
 
 ```
 data/              bộ dữ liệu (raw/ không commit), overrides.json do BA bổ sung
-scripts/           script chạy trên máy: import dữ liệu, sinh lịch sử giá
+scripts/           script chạy trên máy: import dữ liệu, sinh lịch sử giá, kiểm thử giao diện
 supabase/          config.toml, migrations/ (bảng + RLS), seed.sql (danh mục, dữ liệu mẫu)
 src/lib/           kết nối Supabase, hàm truy vấn (api.js), định dạng giá
 src/hooks/         hook dùng chung (useAsync)

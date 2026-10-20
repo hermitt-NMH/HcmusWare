@@ -122,10 +122,10 @@ export default function Builder() {
         </p>
       </div>
 
-      {/* Máy tính: bảng 8 dòng + tổng kết bên phải */}
-      <div className="hidden gap-4 md:grid lg:grid-cols-[1fr_320px] lg:items-start">
+      {/* Máy tính: bảng 8 dòng + tổng kết bên phải (từ 1280 px; nhỏ hơn thì nằm dưới bảng) */}
+      <div className="hidden gap-4 md:grid xl:grid-cols-[1fr_320px] xl:items-start">
         <DesktopTable {...shared} />
-        <div className="lg:sticky lg:top-36">{summary}</div>
+        <div className="xl:sticky xl:top-36">{summary}</div>
       </div>
 
       {/* Điện thoại: từng bước */}
@@ -195,7 +195,11 @@ function SelectedPart({ slug, product }) {
         >
           {product.name}
         </Link>
-        {summary && <span className="block truncate text-xs text-slate-500">{summary}</span>}
+        {summary && (
+          <span title={summary} className="block truncate text-xs text-slate-500">
+            {summary}
+          </span>
+        )}
         {product.stock <= 0 && (
           <span className="block text-xs font-medium text-red-600">Hết hàng</span>
         )}
@@ -231,7 +235,7 @@ function DesktopTable({ all, build, ramQty, statusOf, onSelect, onRemove, onRamQ
   return (
     <>
       <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
-        <table className="w-full text-sm">
+        <table className="w-full table-fixed text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
             <tr>
               <th className="w-44 px-4 py-3 font-medium">Linh kiện</th>
