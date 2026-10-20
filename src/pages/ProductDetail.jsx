@@ -1,4 +1,7 @@
+import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
+import { useCart } from '../hooks/useCart'
+import { maxQty } from '../features/cart/cart'
 import ProductGrid from '../components/ProductGrid'
 import NotFound from './NotFound'
 import { getProductById, getRelatedProducts } from '../lib/api'
@@ -97,15 +100,7 @@ function DetailView({ product }) {
           {description && <p className="text-sm leading-relaxed text-slate-600">{description}</p>}
 
           <div className="flex flex-col gap-2 sm:flex-row">
-            {/* Giỏ hàng làm ở Tuần 4 (Dev3) – tạm khóa nút */}
-            <button
-              type="button"
-              disabled
-              title="Giỏ hàng sẽ có ở Tuần 4"
-              className="h-12 flex-1 rounded-lg bg-blue-600 px-5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              {outOfStock ? 'Hết hàng' : 'Thêm vào giỏ (sắp có)'}
-            </button>
+            <AddToCartButton product={product} />
             {datasheet_url ? (
               <a
                 href={datasheet_url}
@@ -149,6 +144,61 @@ function DetailView({ product }) {
       </section>
 
       {slug && <RelatedProducts categorySlug={slug} excludeId={id} />}
+    </div>
+  )
+}
+
+// Thêm 1 sản phẩm vào giỏ; đã đủ số lượng tối đa (theo tồn kho) thì khóa nút.
+function AddToCartButton({ product }) {
+  const { items, addItem } = useCart()
+  const [added, setAdded] = useState(false)
+  const inCart = items.find((it) => it.id === product.id)?.qty ?? 0
+  const full = inCart >= maxQty(product)
+  const outOfStock = product.stock <= 0
+
+  // Báo "Đã thêm" trong 2 giây rồi trở lại bình thường.
+  useEffect(() => {
+    if (!added) return
+    const t = setTimeout(() => setAdded(false), 2000)
+    return () => clearTimeout(t)
+  }, [added])
+
+  if (outOfStock || full) {
+    return (
+      <div className="flex flex-1 flex-col gap-1">
+        <button
+          type="button"
+          disabled
+          className="h-12 rounded-lg bg-blue-600 px-5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {outOfStock ? 'Hết hàng' : 'Đã đủ số lượng trong giỏ'}
+        </button>
+        {!outOfStock && (
+          <Link to="/gio-hang" className="text-center text-sm text-blue-700 hover:underline">
+            Xem giỏ hàng ({inCart})
+          </Link>
+        )}
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-1 flex-col gap-1">
+      <button
+        type="button"
+        onClick={() => {
+          addItem(product)
+          setAdded(true)
+        }}
+        className="h-12 rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700"
+      >
+        {added ? '✓ Đã thêm vào giỏ' : 'Thêm vào giỏ'}
+      </button>
+      {inCart > 0 && (
+        <Link to="/gio-hang" className="text-center text-sm text-blue-700 hover:underline">
+          Trong giỏ: {inCart} · Xem giỏ hàng
+        </Link>
+      )}
     </div>
   )
 }

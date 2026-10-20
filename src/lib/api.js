@@ -55,6 +55,18 @@ export async function getProductById(id) {
   return data
 }
 
+// Nhiều sản phẩm theo danh sách id (trang giỏ hàng lấy giá, tồn kho mới nhất).
+// id không còn trên DB thì đơn giản là không có trong kết quả.
+export async function getProductsByIds(ids) {
+  if (!ids.length) return []
+  const { data, error } = await supabase
+    .from('products')
+    .select('id, name, brand, price, stock, image_url, categories(slug)')
+    .in('id', ids)
+  if (error) throw error
+  return data
+}
+
 // Sản phẩm cùng danh mục (trừ chính nó) cho mục "Sản phẩm tương tự".
 export async function getRelatedProducts({ categorySlug, excludeId, limit = 4 }) {
   const { data, error } = await supabase
