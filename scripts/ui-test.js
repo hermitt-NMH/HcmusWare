@@ -108,11 +108,13 @@ async function open(path, width, height = 800) {
     mobile: width < 600,
   })
   await send('Page.navigate', { url: BASE + path })
-  // Chờ tải xong và hết skeleton
-  for (let i = 0; i < 40; i++) {
+  // Chờ tải xong, hết skeleton và hết chữ "Đang tải" (lúc tải trang lazy hoặc danh mục ở Header).
+  // Bản Vercel gọi Supabase online mất vài giây nên chờ tối đa 20 giây.
+  for (let i = 0; i < 80; i++) {
     await sleep(250)
     const busy = await evaluate(
-      `document.readyState !== 'complete' || !!document.querySelector('.animate-pulse')`,
+      `document.readyState !== 'complete' || !!document.querySelector('.animate-pulse') ||
+        /Đang tải/.test(document.body.innerText)`,
     )
     if (busy === false) break
   }
