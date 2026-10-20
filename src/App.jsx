@@ -5,7 +5,6 @@ import Footer from './components/Footer'
 import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
-import ComingSoon from './pages/ComingSoon'
 import NotFound from './pages/NotFound'
 
 // Trang ít người mở ngay từ đầu thì tải sau (lazy): mở trang chủ không phải tải code của chúng.
@@ -13,6 +12,8 @@ import NotFound from './pages/NotFound'
 const Login = lazy(() => import('./pages/Login'))
 const Account = lazy(() => import('./pages/Account'))
 const Privacy = lazy(() => import('./pages/Privacy'))
+const Builder = lazy(() => import('./pages/Builder'))
+const Cart = lazy(() => import('./pages/Cart'))
 
 // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
 const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>
@@ -33,9 +34,8 @@ export default function App() {
             <Route path="/dang-ky" element={<Login key="register" mode="register" />} />
             <Route path="/tai-khoan" element={<Account />} />
             <Route path="/chinh-sach-bao-mat" element={<Privacy />} />
-            {/* Các trang dưới đây làm ở Tuần 4–5 */}
-            <Route path="/build-pc" element={<ComingSoon title="Build PC" />} />
-            <Route path="/gio-hang" element={<ComingSoon title="Giỏ hàng" />} />
+            <Route path="/build-pc" element={<Builder />} />
+            <Route path="/gio-hang" element={<Cart />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

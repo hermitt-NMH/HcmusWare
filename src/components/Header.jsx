@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { getCategories } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useAuth } from '../hooks/useAuth'
+import { useCart } from '../hooks/useCart'
 
 const navClass = ({ isActive }) =>
   // flex + min-h-11: vùng bấm cao tối thiểu 44px; whitespace-nowrap: chữ không bị ngắt 2 dòng.
@@ -40,6 +41,7 @@ export default function Header() {
   const [open, setOpen] = useState(false)
   const categories = useAsync(getCategories)
   const { user, profile } = useAuth()
+  const { count } = useCart()
   const close = () => setOpen(false)
 
   // Đã đăng nhập: hiện tên (từ cuối của họ tên, vd "Nguyễn Văn An" → "An") và dẫn tới trang tài khoản.
@@ -59,8 +61,18 @@ export default function Header() {
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d={open ? 'M6 6l12 12M18 6L6 18' : 'M4 7h16M4 12h16M4 17h16'} strokeLinecap="round" />
+          <svg
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+          >
+            <path
+              d={open ? 'M6 6l12 12M18 6L6 18' : 'M4 7h16M4 12h16M4 17h16'}
+              strokeLinecap="round"
+            />
           </svg>
         </button>
 
@@ -79,8 +91,30 @@ export default function Header() {
           <NavLink to="/build-pc" className={navClass}>
             Build PC
           </NavLink>
-          <NavLink to="/gio-hang" className={navClass}>
-            Giỏ hàng
+          {/* Điện thoại chỉ hiện icon để header không tràn 360px (BUG-05); từ sm mới hiện chữ */}
+          <NavLink to="/gio-hang" className={navClass} aria-label={`Giỏ hàng, ${count} sản phẩm`}>
+            <svg
+              className="sm:hidden"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="9" cy="20" r="1.5" />
+              <circle cx="18" cy="20" r="1.5" />
+              <path d="M2 3h3l2.7 12.4a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6" />
+            </svg>
+            <span className="hidden sm:inline">Giỏ hàng</span>
+            {count > 0 && (
+              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white">
+                {count > 99 ? '99+' : count}
+              </span>
+            )}
           </NavLink>
           <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 sm:flex`}>
             <span className="truncate">{account.label}</span>
@@ -94,10 +128,14 @@ export default function Header() {
         <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-2 md:flex-row md:overflow-x-auto">
           {/* Đang tải: chữ nhỏ; lỗi: báo gọn một dòng. Giữ cùng chiều cao để không vỡ thanh menu */}
           {categories.loading && (
-            <li className="flex min-h-11 items-center px-3 text-xs text-slate-400">Đang tải danh mục…</li>
+            <li className="flex min-h-11 items-center px-3 text-xs text-slate-400">
+              Đang tải danh mục…
+            </li>
           )}
           {categories.error && (
-            <li className="flex min-h-11 items-center px-3 text-xs text-red-600">Không tải được danh mục</li>
+            <li className="flex min-h-11 items-center px-3 text-xs text-red-600">
+              Không tải được danh mục
+            </li>
           )}
           {categories.data?.map((c) => (
             <li key={c.id} className="shrink-0">
