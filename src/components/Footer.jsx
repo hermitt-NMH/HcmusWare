@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white">
@@ -10,6 +12,11 @@ export default function Footer() {
           <p className="font-semibold text-slate-900">Hỗ trợ</p>
           <ul className="mt-2 space-y-1">
             <li>Email: hoangbensan@gmail.com</li>
+            <li>
+              <Link to="/chinh-sach-bao-mat" className="hover:underline">
+                Chính sách bảo mật
+              </Link>
+            </li>
           </ul>
         </div>
         <div>
