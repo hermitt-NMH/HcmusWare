@@ -9,8 +9,10 @@ import { useAsync } from '../hooks/useAsync'
 import { formatPrice } from '../lib/format'
 import { categoryBg, categoryImage } from '../lib/images'
 import { specRows } from '../lib/specs'
+import PriceSection from '../features/price/PriceSection'
 
-// Trang chi tiết: ảnh, giá, tồn kho, bảng thông số, nút tải datasheet, sản phẩm tương tự.
+// Trang chi tiết: ảnh, giá, tồn kho, bảng thông số, nút tải datasheet, lịch sử giá + cảnh báo giá,
+// sản phẩm tương tự.
 export default function ProductDetail() {
   const { id } = useParams()
   const product = useAsync(() => getProductById(id), [id])
@@ -142,6 +144,9 @@ function DetailView({ product }) {
           <p className="text-sm text-slate-500">Chưa có thông số cho sản phẩm này.</p>
         )}
       </section>
+
+      {/* key: sang sản phẩm khác thì khung cảnh báo giá làm mới hoàn toàn */}
+      <PriceSection key={id} productId={id} currentPrice={price} />
 
       {slug && <RelatedProducts categorySlug={slug} excludeId={id} />}
     </div>
