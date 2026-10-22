@@ -12,6 +12,7 @@ export default function BuildSummary({
   stockIssues,
   onAddToCart,
   onReset,
+  children, // phần thêm dưới nút (vd khung lưu cấu hình)
 }) {
   const { errors, warnings, totalPowerW, recommendedPsuW, complete } = result
   const selectedCount = BUILDER_SLOTS.filter((s) => build[s.slug]).length
@@ -91,6 +92,7 @@ export default function BuildSummary({
         {reason && selectedCount > 0 && (
           <p className="text-center text-xs text-slate-500">{reason}</p>
         )}
+        {children}
         {selectedCount > 0 && (
           <button
             type="button"
