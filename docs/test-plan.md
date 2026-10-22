@@ -148,3 +148,20 @@ Chuẩn bị: Supabase local đã chạy migration `20261022000000_tuan5_don_han
 | Lỗi   | Mức độ       | Mô tả                                                                                                                                                                          | Trạng thái                                           |
 | ----- | ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------- |
 | BUG02 | Nghiêm trọng | Đặt hàng xong bị đưa về `/gio-hang` (trống) thay vì trang đơn hàng, dù đơn đã tạo. React Router v7 chuyển trang dạng transition, chạy sau lần xóa giỏ → Checkout thấy giỏ rỗng | Đã sửa: Checkout ghi nhận "đã đặt" trước khi xóa giỏ |
+
+### Kết quả lần chạy 22/10/2026 sau khi merge PR #42 và đưa migration lên Supabase online
+
+| Môi trường                     | Bộ test                                                                                                                                                        | Kết quả                     |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| Local (build + Supabase local) | Unit test Vitest                                                                                                                                               | 96/96 đạt                   |
+| Local                          | UI01–UI09, BD01–BD11, GH01–GH07 (`npm run test:ui`)                                                                                                            | 35/35 đạt                   |
+| Local                          | Tuần 5: MH01, MH03, MH07, MH08, GIA1–GIA6, CH01–CH05, AD01–AD06                                                                                                | 37/37 đạt sau khi sửa BUG03 |
+| Vercel (hcmusware.vercel.app)  | `BASE_URL=https://hcmusware.vercel.app npm run test:ui`                                                                                                        | 35/35 đạt                   |
+| Vercel                         | Tuần 5 chỉ đọc: GIA1 (3 sản phẩm, bảng giá, 360 px), GIA2, CH04, chưa đăng nhập vào `/thanh-toan`, `/don-hang/1`, `/admin`, cổng thanh toán → chuyển đăng nhập | 13/13 đạt                   |
+
+Trên bản Vercel **không** chạy các ca ghi dữ liệu (đặt hàng, đổi giá, hủy đơn) để DB thật không có đơn rác trước buổi demo. Test1 chạy tay các ca này trên điện thoại thật với tài khoản test riêng, rồi admin hủy các đơn thử.
+
+| Lỗi   | Mức độ | Mô tả                                                                                                                          | Trạng thái                                               |
+| ----- | ------ | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| BUG03 | Nhẹ    | Admin xóa sản phẩm đã có trong đơn: web vẫn báo đúng "không xóa được" nhưng Console có lỗi đỏ 409 (vi phạm Definition of Done) | Đã sửa: kiểm tra `order_items` trước, không gửi lệnh xóa |
+| BUG04 | Nhẹ    | Trang sản phẩm 360 px: ô "Thấp nhất / Cao nhất" rớt chữ "₫" xuống dòng                                                         | Đã sửa: không xuống dòng, chữ 13 px ở điện thoại         |
