@@ -189,3 +189,15 @@ Gọi thẳng REST/RPC bằng 2 tài khoản thử A, B (bỏ qua giao diện) �
 
 Sau khi sửa: API01–API20 đạt 22/22, Vitest 98/98, lint sạch, `npm run test:ui` 35/35 (ca BD06 @1024px chập chờn 1/3 lần do script đọc trang trước khi Builder tải xong – Test2 cần tăng thời gian chờ, không phải lỗi web).
 **Cần làm trước demo:** đưa migration `20261023000000_qa_tuan5_kiem_tra_don.sql` lên Supabase online (`npx supabase db push`), rồi Test1 chạy tay lại MH01–MH08, AD03–AD06 trên Vercel.
+
+### Kết quả lần chạy 22/10/2026 – end-to-end Tuần 5 tự động (`npm run test:e2e`)
+
+Script `scripts/e2e-tuan5.js` chạy MH01–MH08, AD03–AD06 bằng trình duyệt headless với tài khoản test riêng (`@hcmusware.test`), cuối cùng hủy hết đơn thử (trả kho) và xóa admin test.
+
+| Môi trường                     | Kết quả                                                                                                                   |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Local (build + Supabase local) | 13/13 đạt (MH01–MH08, AD03–AD06, Console)                                                                                 |
+| Vercel + Supabase online       | 11/13 ở lần chạy thử bằng bản nháp script: MH08 đọc trang trước khi tải xong; AD04 xóa nhầm sản phẩm (xem sự cố bên dưới) |
+| Local, `npm run test:ui`       | 35/35 đạt 4 lần liên tiếp sau khi BD06 chờ Builder tải xong                                                               |
+
+**Sự cố 22/10:** bản nháp script ở ca AD04 tìm dòng sản phẩm theo tên bằng "chứa chuỗi" nên tên "AMD Ryzen 5 7600" khớp nhầm "AMD Ryzen 5 7600X" và "7600X3D" → xóa 2 sản phẩm thật (id 9, 21) trên Supabase online (chưa nằm trong đơn nào nên DB cho xóa). Đã sửa script: chỉ bấm "Xóa" khi có đúng 1 dòng mang mã `#id` của sản phẩm đã nằm trong đơn. Khôi phục: chèn lại 2 sản phẩm đúng id cũ và sinh lại lịch sử giá (cùng seed, cùng thời điểm `2026-10-22 12:49:09.901`), cần chạy bằng SQL Editor của Supabase.
