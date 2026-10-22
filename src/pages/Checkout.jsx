@@ -19,7 +19,7 @@ const inputClass =
 // Trang thanh toán: thông tin giao hàng, chọn COD / online mô phỏng, đặt hàng.
 // Giá và tổng tiền thật do hàm place_order trong DB tính (không tin số ở trình duyệt).
 export default function Checkout() {
-  const { user, profile, loading } = useAuth()
+  const { user, loading } = useAuth()
   const { items } = useCart()
   const location = useLocation()
   // Đã đặt xong: giỏ vừa được xóa nhưng trang đơn hàng chưa kịp hiện (React Router v7 chuyển
@@ -32,8 +32,7 @@ export default function Checkout() {
   if (placed) return <p className="py-16 text-center text-slate-500">Đang mở đơn hàng…</p>
   if (!items.length) return <Navigate to="/gio-hang" replace />
 
-  // key: hồ sơ tải xong thì form điền sẵn lại theo hồ sơ.
-  return <CheckoutForm key={profile?.id ?? 'loading'} onPlaced={() => setPlaced(true)} />
+  return <CheckoutForm onPlaced={() => setPlaced(true)} />
 }
 
 function CheckoutForm({ onPlaced }) {
@@ -49,6 +48,21 @@ function CheckoutForm({ onPlaced }) {
   })
   // Hồ sơ chưa có địa chỉ thì mặc định lưu lại cho lần sau.
   const [saveInfo, setSaveInfo] = useState(!profile?.phone || !profile?.address)
+
+  // Hồ sơ thường tải xong SAU khi form đã hiện (AuthContext tải hồ sơ sau phiên đăng nhập).
+  // Lúc đó chỉ điền vào ô còn trống, giữ nguyên những gì khách đã gõ/chọn (BUG07).
+  // Cập nhật state ngay khi render (không dùng useEffect) theo hướng dẫn của React.
+  const [filledFrom, setFilledFrom] = useState(profile?.id ?? null)
+  if (profile && filledFrom !== profile.id) {
+    setFilledFrom(profile.id)
+    setForm((f) => ({
+      ...f,
+      name: f.name || profile.full_name || '',
+      phone: f.phone || profile.phone || '',
+      address: f.address || profile.address || '',
+    }))
+    setSaveInfo(!profile.phone || !profile.address)
+  }
   const [errors, setErrors] = useState({})
   const [submitError, setSubmitError] = useState('')
   const [submitting, setSubmitting] = useState(false)

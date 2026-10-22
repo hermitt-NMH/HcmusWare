@@ -32,6 +32,15 @@ describe('validateCheckout', () => {
     expect(validateCheckout({ ...validForm, phone: '+84901234567' }).errors).toEqual({})
   })
 
+  it('họ tên quá 100 ký tự, địa chỉ quá 300 ký tự thì báo lỗi (BUG06)', () => {
+    const { errors } = validateCheckout({
+      ...validForm,
+      name: 'A'.repeat(101),
+      address: 'x'.repeat(301),
+    })
+    expect(Object.keys(errors).sort()).toEqual(['address', 'name'])
+  })
+
   it('phương thức thanh toán lạ thì báo lỗi', () => {
     expect(validateCheckout({ ...validForm, payment: 'bitcoin' }).errors.payment).toBeTruthy()
   })
@@ -59,6 +68,10 @@ describe('nextStatuses', () => {
       'cancelled',
     ])
     expect(nextStatuses('shipping')).toEqual(['shipping', 'completed', 'cancelled'])
+  })
+
+  it('đơn online chưa thanh toán chỉ giữ nguyên hoặc hủy (BUG08)', () => {
+    expect(nextStatuses('pending', true)).toEqual(['pending', 'cancelled'])
   })
 
   it('đơn đã xong / đã hủy không đổi được', () => {

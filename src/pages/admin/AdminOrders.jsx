@@ -6,6 +6,7 @@ import OrderStatusBadge from '../../components/OrderStatusBadge'
 import {
   ORDER_STATUS,
   PAYMENT_METHODS,
+  canPayOnline,
   isFinalStatus,
   nextStatuses,
   orderErrorMessage,
@@ -150,7 +151,7 @@ function OrderCard({ order: o, onUpdated }) {
             onChange={(e) => change(e.target.value)}
             className="h-10 rounded-lg border border-slate-300 bg-white px-2 disabled:bg-slate-100"
           >
-            {nextStatuses(o.status).map((s) => (
+            {nextStatuses(o.status, canPayOnline(o)).map((s) => (
               <option key={s} value={s}>
                 {ORDER_STATUS[s].label}
               </option>
