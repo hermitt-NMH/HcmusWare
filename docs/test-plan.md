@@ -194,10 +194,10 @@ Sau khi sửa: API01–API20 đạt 22/22, Vitest 98/98, lint sạch, `npm run t
 
 Script `scripts/e2e-tuan5.js` chạy MH01–MH08, AD03–AD06 bằng trình duyệt headless với tài khoản test riêng (`@hcmusware.test`), cuối cùng hủy hết đơn thử (trả kho) và xóa admin test.
 
-| Môi trường                     | Kết quả                                                                                                                   |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| Local (build + Supabase local) | 13/13 đạt (MH01–MH08, AD03–AD06, Console)                                                                                 |
-| Vercel + Supabase online       | 11/13 ở lần chạy thử bằng bản nháp script: MH08 đọc trang trước khi tải xong; AD04 xóa nhầm sản phẩm (xem sự cố bên dưới) |
-| Local, `npm run test:ui`       | 35/35 đạt 4 lần liên tiếp sau khi BD06 chờ Builder tải xong                                                               |
+| Môi trường                     | Kết quả                                                                                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Local (build + Supabase local) | 13/13 đạt (MH01–MH08, AD03–AD06, Console)                                                                                                     |
+| Vercel + Supabase online       | 13/13 đạt sau khi khôi phục sản phẩm 9, 21 (bản nháp script trước đó: 11/13 – MH08 đọc trang sớm, AD04 xóa nhầm sản phẩm, xem sự cố bên dưới) |
+| `npm run test:ui`              | 35/35 đạt cả 6/6 lần trên Vercel và 2/2 lần trên local, sau khi thay mọi chỗ chờ cố định bằng chờ theo nội dung trang                         |
 
-**Sự cố 22/10:** bản nháp script ở ca AD04 tìm dòng sản phẩm theo tên bằng "chứa chuỗi" nên tên "AMD Ryzen 5 7600" khớp nhầm "AMD Ryzen 5 7600X" và "7600X3D" → xóa 2 sản phẩm thật (id 9, 21) trên Supabase online (chưa nằm trong đơn nào nên DB cho xóa). Đã sửa script: chỉ bấm "Xóa" khi có đúng 1 dòng mang mã `#id` của sản phẩm đã nằm trong đơn. Khôi phục: chèn lại 2 sản phẩm đúng id cũ và sinh lại lịch sử giá (cùng seed, cùng thời điểm `2026-10-22 12:49:09.901`), cần chạy bằng SQL Editor của Supabase.
+**Sự cố 22/10:** bản nháp script ở ca AD04 tìm dòng sản phẩm theo tên bằng "chứa chuỗi" nên tên "AMD Ryzen 5 7600" khớp nhầm "AMD Ryzen 5 7600X" và "7600X3D" → xóa 2 sản phẩm thật (id 9, 21) trên Supabase online (chưa nằm trong đơn nào nên DB cho xóa). Đã sửa script: chỉ bấm "Xóa" khi có đúng 1 dòng mang mã `#id` của sản phẩm đã nằm trong đơn. Khôi phục: chèn lại 2 sản phẩm đúng id cũ và sinh lại lịch sử giá (cùng seed, cùng thời điểm `2026-10-22 12:49:09.901`), đã chạy lên Supabase online, kiểm tra lại đủ 128 sản phẩm, 16 CPU.
