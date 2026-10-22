@@ -1,19 +1,26 @@
-import { useState } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
-
-// Số điện thoại VN: 0xxxxxxxxx hoặc +84xxxxxxxxx (10 số). Để trống cũng được.
-const PHONE_RE = /^(0|\+84)\d{9}$/
+import OrderHistory from '../features/orders/OrderHistory'
+import SavedBuilds from '../features/builder/SavedBuilds'
+import MyPriceAlerts from '../features/price/MyPriceAlerts'
+import { PHONE_RE } from '../features/orders/orders'
 
 const inputClass =
   'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
 
-// Trang hồ sơ: xem email, sửa họ tên / số điện thoại / địa chỉ giao hàng, đăng xuất.
-// Lịch sử đơn hàng thêm vào đây ở Tuần 5.
+// Trang tài khoản: hồ sơ giao hàng, lịch sử đơn hàng, cấu hình đã lưu, cảnh báo giá, đăng xuất.
+// Số điện thoại để trống cũng được (PHONE_RE dùng chung với trang thanh toán).
 export default function Account() {
   const { user, profile, loading, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+
+  // Link có #cau-hinh / #canh-bao-gia: React Router không tự cuộn tới, nên cuộn tay.
+  useEffect(() => {
+    if (!user || !location.hash) return
+    document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: 'start' })
+  }, [user, location.hash])
 
   if (loading) return <p className="py-16 text-center text-slate-500">Đang kiểm tra đăng nhập…</p>
   // Chưa đăng nhập → sang trang đăng nhập, xong quay lại đây.
@@ -42,13 +49,25 @@ export default function Account() {
       </div>
 
       {profile?.role === 'admin' && (
-        <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          Bạn đang dùng tài khoản quản trị (admin).
-        </p>
+        <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
+          <span>Bạn đang dùng tài khoản quản trị (admin).</span>
+          <Link
+            to="/admin"
+            className="inline-flex h-10 items-center rounded-lg bg-amber-600 px-4 font-semibold text-white hover:bg-amber-700"
+          >
+            Vào trang quản trị
+          </Link>
+        </div>
       )}
 
       {/* key: khi hồ sơ tải xong thì form khởi tạo lại với dữ liệu mới */}
       <ProfileForm key={profile?.id ?? 'loading'} />
+
+      <OrderHistory userId={user.id} />
+      <div id="cau-hinh" className="scroll-mt-36">
+        <SavedBuilds userId={user.id} />
+      </div>
+      <MyPriceAlerts userId={user.id} />
     </div>
   )
 }
