@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { getProducts } from '../lib/api'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { getBuildByShareCode, getProducts } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useCart } from '../hooks/useCart'
 import { formatPrice } from '../lib/format'
@@ -10,18 +10,22 @@ import { checkCompatibility } from '../features/builder/compatibility'
 import {
   BUILDER_SLOTS,
   MAX_RAM_QTY,
+  SHARE_PARAM,
   STORAGE_KEY,
+  buildFromItems,
   buildToCartEntries,
   buildTotalPrice,
   filterCandidates,
   parseStoredBuild,
   partQty,
   resolveBuild,
+  sameBuild,
   serializeBuild,
   stockProblems,
 } from '../features/builder/builder'
 import PartPicker from '../features/builder/PartPicker'
 import BuildSummary from '../features/builder/BuildSummary'
+import SaveBuild from '../features/builder/SaveBuild'
 
 // Cấu hình đang build lưu trong localStorage (chỉ id) để tải lại trang không mất.
 function loadBuild() {
@@ -40,6 +44,7 @@ export default function Builder() {
   const { ids, ramQty } = saved
   const { addItems } = useCart()
   const navigate = useNavigate()
+  const shared = useSharedBuild(saved, setSaved)
 
   useEffect(() => {
     try {
@@ -89,7 +94,7 @@ export default function Builder() {
     )
   }
 
-  const shared = {
+  const common = {
     all,
     build,
     ramQty,
@@ -107,7 +112,9 @@ export default function Builder() {
       stockIssues={stockIssues}
       onAddToCart={addToCart}
       onReset={reset}
-    />
+    >
+      <SaveBuild build={build} ids={ids} ramQty={ramQty} />
+    </BuildSummary>
   )
 
   return (
@@ -122,18 +129,97 @@ export default function Builder() {
         </p>
       </div>
 
+      {shared.notice && (
+        <div
+          role="status"
+          className={`flex items-start justify-between gap-2 rounded-lg p-3 text-sm ${
+            shared.notice.type === 'error' ? 'bg-red-50 text-red-700' : 'bg-blue-50 text-blue-800'
+          }`}
+        >
+          <span>{shared.notice.message}</span>
+          <button
+            type="button"
+            onClick={shared.dismiss}
+            aria-label="Đóng thông báo"
+            className="-m-2 inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md hover:bg-black/5"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
       {/* Máy tính: bảng 8 dòng + tổng kết bên phải (từ 1280 px; nhỏ hơn thì nằm dưới bảng) */}
       <div className="hidden gap-4 md:grid xl:grid-cols-[1fr_320px] xl:items-start">
-        <DesktopTable {...shared} />
+        <DesktopTable {...common} />
         <div className="xl:sticky xl:top-36">{summary}</div>
       </div>
 
       {/* Điện thoại: từng bước */}
       <div className="md:hidden">
-        <MobileSteps {...shared} totalPrice={totalPrice} summary={summary} />
+        <MobileSteps key={shared.loadCount} {...common} totalPrice={totalPrice} summary={summary} />
       </div>
     </div>
   )
+}
+
+// Mở cấu hình từ link chia sẻ /build-pc?cau-hinh=<mã>: tải từ DB, thay cấu hình đang build
+// (hỏi trước nếu đang có cấu hình khác), rồi bỏ tham số khỏi URL để tải lại trang không hỏi lại.
+function useSharedBuild(current, setSaved) {
+  const [params, setParams] = useSearchParams()
+  const code = params.get(SHARE_PARAM)
+  const [notice, setNotice] = useState(null)
+  const [loadCount, setLoadCount] = useState(0) // tăng mỗi lần nạp → các bước điện thoại bắt đầu lại
+  // Đọc cấu hình hiện tại qua ref để effect chỉ chạy lại khi đổi mã, không phải mỗi lần chọn linh kiện.
+  const currentRef = useRef(current)
+  currentRef.current = current
+
+  useEffect(() => {
+    if (!code) return
+    let cancelled = false
+    const clearParam = () =>
+      setParams(
+        (p) => {
+          p.delete(SHARE_PARAM)
+          return p
+        },
+        { replace: true },
+      )
+
+    getBuildByShareCode(code)
+      .then((row) => {
+        if (cancelled) return
+        clearParam()
+        if (!row) {
+          setNotice({ type: 'error', message: 'Link chia sẻ không đúng hoặc cấu hình đã bị xóa.' })
+          return
+        }
+        const next = buildFromItems(row.items)
+        const cur = currentRef.current
+        const hasCurrent = Object.keys(cur.ids).length > 0
+        if (
+          hasCurrent &&
+          !sameBuild(cur, next) &&
+          !window.confirm(`Thay cấu hình đang build bằng "${row.name}"?`)
+        )
+          return
+        setSaved(next)
+        setLoadCount((n) => n + 1)
+        setNotice({
+          type: 'info',
+          message: `Đã mở cấu hình "${row.name}". Bạn có thể chỉnh sửa, thêm vào giỏ hoặc lưu thành bản của mình.`,
+        })
+      })
+      .catch((err) => {
+        if (cancelled) return
+        clearParam()
+        setNotice({ type: 'error', message: `Không mở được cấu hình: ${err.message}` })
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [code, setParams, setSaved])
+
+  return { notice, loadCount, dismiss: () => setNotice(null) }
 }
 
 const ROW_STYLE = {

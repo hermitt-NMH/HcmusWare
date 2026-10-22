@@ -19,15 +19,19 @@ npm install
 npm run dev                    # mở http://localhost:5173
 ```
 
-| Lệnh                   | Tác dụng                                                       |
-| ---------------------- | -------------------------------------------------------------- |
-| `npm run dev`          | Chạy web ở chế độ phát triển                                   |
-| `npm run build`        | Build bản production vào `dist/`                               |
-| `npm run lint`         | Kiểm tra lỗi ESLint                                            |
-| `npm test`             | Chạy unit test (Vitest)                                        |
-| `npm run test:ui`      | Kiểm thử giao diện UI01–UI09 (cần `npm run preview` đang chạy) |
-| `npm run import-data`  | Đẩy ~120 sản phẩm từ bộ dữ liệu mở lên Supabase                |
-| `npm run fetch-images` | Tải ảnh thật cho sản phẩm còn thiếu ảnh                        |
+| Lệnh                        | Tác dụng                                                                                                            |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `npm run dev`               | Chạy web ở chế độ phát triển                                                                                        |
+| `npm run build`             | Build bản production vào `dist/`                                                                                    |
+| `npm run lint`              | Kiểm tra lỗi ESLint                                                                                                 |
+| `npm test`                  | Chạy unit test (Vitest)                                                                                             |
+| `npm run test:ui`           | Kiểm thử giao diện UI01–UI09 (cần `npm run preview` đang chạy)                                                      |
+| `npm run import-data`       | Đẩy ~120 sản phẩm từ bộ dữ liệu mở lên Supabase                                                                     |
+| `npm run fetch-images`      | Tải ảnh thật cho sản phẩm còn thiếu ảnh                                                                             |
+| `npm run gen-price-history` | Sinh lịch sử giá giả lập 6 tháng cho mọi sản phẩm (cần `SUPABASE_SERVICE_ROLE_KEY`, thêm `-- --dry-run` để chỉ xem) |
+
+**DB đang chạy sẵn mà có migration mới** (vd Tuần 5): `npx supabase migration up --local` (giữ dữ liệu), hoặc `npm run db:reset` (xóa sạch, nạp lại).
+Sau đó chạy `npm run gen-price-history` để biểu đồ giá có dữ liệu.
 
 ## Cơ sở dữ liệu local (Supabase chạy trên máy)
 

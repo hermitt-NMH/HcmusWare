@@ -136,3 +136,33 @@ export function resolveBuild(ids, products) {
   }
   return build
 }
+
+// ---------- Lưu / chia sẻ cấu hình (Tuần 5) ----------
+
+// Tên tham số trên URL khi mở cấu hình chia sẻ: /build-pc?cau-hinh=ab12cd34
+export const SHARE_PARAM = 'cau-hinh'
+
+export function shareUrl(code, origin = globalThis.location?.origin ?? '') {
+  return `${origin}/build-pc?${SHARE_PARAM}=${encodeURIComponent(code)}`
+}
+
+// Cột items của saved_builds (jsonb) → { ids, ramQty } đã kiểm tra như dữ liệu localStorage.
+export function buildFromItems(items) {
+  return parseStoredBuild(JSON.stringify(items ?? null))
+}
+
+// Hai cấu hình có giống nhau không (để khỏi hỏi "thay cấu hình đang build?" khi giống hệt).
+export function sameBuild(a, b) {
+  return (
+    a.ramQty === b.ramQty &&
+    SLOT_SLUGS.every((slug) => (a.ids[slug] ?? null) === (b.ids[slug] ?? null))
+  )
+}
+
+// Tên gợi ý khi lưu: "Cấu hình AMD Ryzen 5 7600 + RTX 4060".
+export function suggestBuildName(build) {
+  const cpu = build.cpu?.name
+  const gpu = build.vga?.specs?.chipset?.replace(/^(GeForce|Radeon)\s+/, '')
+  if (!cpu) return 'Cấu hình của tôi'
+  return `Cấu hình ${cpu}${gpu ? ` + ${gpu}` : ''}`.slice(0, 80)
+}

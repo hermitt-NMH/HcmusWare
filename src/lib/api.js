@@ -80,3 +80,201 @@ export async function getRelatedProducts({ categorySlug, excludeId, limit = 4 })
   if (error) throw error
   return data
 }
+
+// ---------- Lịch sử giá, cảnh báo giá (Tuần 5) ----------
+
+// Lịch sử giá 6 tháng gần nhất, cũ → mới.
+export async function getPriceHistory(productId, months = 6) {
+  const since = new Date()
+  since.setMonth(since.getMonth() - months)
+  const { data, error } = await supabase
+    .from('price_history')
+    .select('price, recorded_at')
+    .eq('product_id', productId)
+    .gte('recorded_at', since.toISOString())
+    .order('recorded_at')
+  if (error) throw error
+  return data
+}
+
+// Cảnh báo giá của người đang đăng nhập (RLS chỉ trả của chính mình), kèm giá hiện tại.
+export async function getMyPriceAlerts() {
+  const { data, error } = await supabase
+    .from('price_alerts')
+    .select(
+      'id, product_id, target_price, notified, created_at, products(id, name, price, image_url, categories(slug))',
+    )
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Cảnh báo giá của mình cho một sản phẩm (chưa đặt thì null).
+export async function getMyPriceAlert(productId) {
+  const { data, error } = await supabase
+    .from('price_alerts')
+    .select('id, product_id, target_price, notified')
+    .eq('product_id', productId)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// Đặt / đổi giá mong muốn. Đổi giá thì bật lại thông báo (notified = false).
+export async function upsertPriceAlert(userId, productId, targetPrice) {
+  const { data, error } = await supabase
+    .from('price_alerts')
+    .upsert(
+      { user_id: userId, product_id: productId, target_price: targetPrice, notified: false },
+      { onConflict: 'user_id,product_id' },
+    )
+    .select('id, product_id, target_price, notified')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deletePriceAlert(id) {
+  const { error } = await supabase.from('price_alerts').delete().eq('id', id)
+  if (error) throw error
+}
+
+// Khách bấm "Đã xem" trên thông báo giảm giá.
+export async function markAlertsNotified(ids) {
+  if (!ids.length) return
+  const { error } = await supabase.from('price_alerts').update({ notified: true }).in('id', ids)
+  if (error) throw error
+}
+
+// ---------- Đơn hàng (Tuần 5) ----------
+
+const ORDER_FIELDS =
+  'id, status, payment_method, total, shipping_name, shipping_phone, shipping_address, note, paid_at, created_at'
+
+// Tạo đơn qua hàm place_order trong DB (giá, tổng tiền, tồn kho do DB tính). Trả id đơn.
+export async function placeOrder({ items, name, phone, address, payment, note }) {
+  const { data, error } = await supabase.rpc('place_order', {
+    p_items: items,
+    p_shipping_name: name,
+    p_shipping_phone: phone,
+    p_shipping_address: address,
+    p_payment_method: payment,
+    p_note: note || null,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function mockPayOrder(orderId) {
+  const { error } = await supabase.rpc('mock_pay_order', { p_order_id: orderId })
+  if (error) throw error
+}
+
+// Đơn của người đang đăng nhập, mới nhất trước (admin dùng getAdminOrders).
+export async function getMyOrders(userId) {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`${ORDER_FIELDS}, order_items(quantity)`)
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Một đơn kèm từng sản phẩm. Không phải đơn của mình (và không phải admin) thì RLS trả null.
+export async function getOrderById(id) {
+  if (!/^\d+$/.test(String(id)) || !Number.isSafeInteger(Number(id))) return null
+  const { data, error } = await supabase
+    .from('orders')
+    .select(
+      `${ORDER_FIELDS}, order_items(id, product_id, quantity, unit_price, products(name, image_url, categories(slug)))`,
+    )
+    .eq('id', id)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// ---------- Cấu hình đã lưu (Tuần 5) ----------
+
+// items lưu cùng dạng với localStorage của Builder: { ids: { cpu: 12, ... }, ramQty }
+export async function saveBuild(userId, name, items) {
+  const { data, error } = await supabase
+    .from('saved_builds')
+    .insert({ user_id: userId, name, items })
+    .select('id, name, items, share_code, created_at')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function getMyBuilds(userId) {
+  const { data, error } = await supabase
+    .from('saved_builds')
+    .select('id, name, items, share_code, created_at')
+    .eq('user_id', userId)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function deleteBuild(id) {
+  const { error } = await supabase.from('saved_builds').delete().eq('id', id)
+  if (error) throw error
+}
+
+// Mở cấu hình qua link chia sẻ (ai có mã cũng xem được, không lộ chủ sở hữu).
+export async function getBuildByShareCode(code) {
+  if (!/^[a-z0-9]{1,32}$/i.test(String(code))) return null
+  const { data, error } = await supabase.rpc('get_build_by_share_code', { code })
+  if (error) throw error
+  return data?.[0] ?? null
+}
+
+// ---------- Quản trị (Tuần 5) – RLS chỉ cho admin ghi ----------
+
+export async function getAdminProducts() {
+  const { data, error } = await supabase
+    .from('products')
+    .select(
+      'id, category_id, name, brand, price, stock, image_url, datasheet_url, description, specs, categories(slug, name)',
+    )
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Thêm (không có id) hoặc sửa sản phẩm. Đổi giá thì trigger trong DB tự ghi price_history.
+export async function saveProduct({ id, ...fields }) {
+  const query = id
+    ? supabase.from('products').update(fields).eq('id', id)
+    : supabase.from('products').insert(fields)
+  const { data, error } = await query.select('id').single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteProduct(id) {
+  const { error } = await supabase.from('products').delete().eq('id', id)
+  if (error) throw error
+}
+
+export async function getAdminOrders() {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`${ORDER_FIELDS}, order_items(id, quantity, unit_price, products(name))`)
+    .order('created_at', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function updateOrderStatus(id, status) {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ status })
+    .eq('id', id)
+    .select(ORDER_FIELDS)
+    .single()
+  if (error) throw error
+  return data
+}
