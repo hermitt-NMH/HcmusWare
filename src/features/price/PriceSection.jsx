@@ -123,7 +123,10 @@ function Stat({ label, value, className = '' }) {
   return (
     <div className="rounded-lg bg-slate-50 p-2">
       <dt className="text-[11px] text-slate-500">{label}</dt>
-      <dd className={`font-semibold ${className}`}>{value}</dd>
+      {/* nowrap + chữ nhỏ hơn ở 360px: "4.770.000 ₫" không bị rớt "₫" xuống dòng (BUG04) */}
+      <dd className={`whitespace-nowrap text-[13px] font-semibold sm:text-base ${className}`}>
+        {value}
+      </dd>
     </div>
   )
 }
