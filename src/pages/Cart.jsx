@@ -6,7 +6,7 @@ import { formatPrice } from '../lib/format'
 import { categoryImage } from '../lib/images'
 import { isUnavailable, maxQty } from '../features/cart/cart'
 
-// Trang giỏ hàng: đổi số lượng, xóa, tạm tính. Thanh toán làm ở Tuần 5.
+// Trang giỏ hàng: đổi số lượng, xóa, tạm tính, sang trang thanh toán.
 export default function Cart() {
   const { items, count, subtotal, setQty, removeItem, clear, refresh } = useCart()
   const [syncError, setSyncError] = useState(null)
@@ -86,21 +86,29 @@ export default function Cart() {
             <span className="text-slate-600">Tạm tính</span>
             <span className="text-xl font-bold text-red-600">{formatPrice(subtotal)}</span>
           </div>
-          <p className="text-xs text-slate-500">Phí giao hàng tính ở bước thanh toán.</p>
+          <p className="text-xs text-slate-500">Miễn phí giao hàng toàn quốc.</p>
           {hasUnavailable && (
             <p className="rounded-md bg-amber-50 p-2 text-xs text-amber-800">
               Có sản phẩm hết hàng hoặc ngừng bán, không tính vào tạm tính. Hãy xóa khỏi giỏ.
             </p>
           )}
-          {/* Thanh toán làm ở Tuần 5 (Dev3) – tạm khóa nút */}
-          <button
-            type="button"
-            disabled
-            title="Thanh toán sẽ có ở Tuần 5"
-            className="h-12 w-full rounded-lg bg-blue-600 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            Thanh toán (sắp có)
-          </button>
+          {/* Chưa đăng nhập thì trang thanh toán tự chuyển sang đăng nhập rồi quay lại */}
+          {subtotal > 0 ? (
+            <Link
+              to="/thanh-toan"
+              className="flex h-12 w-full items-center justify-center rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-700"
+            >
+              Thanh toán
+            </Link>
+          ) : (
+            <button
+              type="button"
+              disabled
+              className="h-12 w-full rounded-lg bg-blue-600 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Thanh toán
+            </button>
+          )}
           <Link
             to="/san-pham"
             className="flex min-h-11 items-center justify-center text-sm text-blue-700 hover:underline"
