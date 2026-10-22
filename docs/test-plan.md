@@ -165,3 +165,27 @@ Trên bản Vercel **không** chạy các ca ghi dữ liệu (đặt hàng, đ�
 | ----- | ------ | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
 | BUG03 | Nhẹ    | Admin xóa sản phẩm đã có trong đơn: web vẫn báo đúng "không xóa được" nhưng Console có lỗi đỏ 409 (vi phạm Definition of Done) | Đã sửa: kiểm tra `order_items` trước, không gửi lệnh xóa |
 | BUG04 | Nhẹ    | Trang sản phẩm 360 px: ô "Thấp nhất / Cao nhất" rớt chữ "₫" xuống dòng                                                         | Đã sửa: không xuống dòng, chữ 13 px ở điện thoại         |
+
+### Kết quả lần chạy 22/10/2026 – kiểm thử thăm dò API và RLS (Supabase local)
+
+Gọi thẳng REST/RPC bằng 2 tài khoản thử A, B (bỏ qua giao diện) để xem DB có tự bảo vệ không.
+
+| Ca            | Nội dung                                                                             | Kết quả                   |
+| ------------- | ------------------------------------------------------------------------------------ | ------------------------- |
+| API05–06      | B / khách chưa đăng nhập đọc đơn và `order_items` của A                              | Đạt: không thấy           |
+| API07         | B thanh toán đơn của A                                                               | Đạt: "Không tìm thấy đơn" |
+| API08–10      | A tự đổi `status`, `total` đơn mình; tự nâng `role = admin`                          | Đạt: bị chặn              |
+| API11–14      | A tạo cảnh báo giá cho B, insert đơn thẳng vào bảng, sửa giá, liệt kê `saved_builds` | Đạt: bị chặn              |
+| API01         | Đặt 1 sản phẩm bằng 2 dòng 10 + 10 chiếc                                             | **Lỗi → BUG05**           |
+| API02, 03, 17 | Phương thức thanh toán null, SĐT "abc", họ tên 100.000 ký tự                         | **Lỗi → BUG06**           |
+| API18         | Admin xác nhận đơn online chưa thanh toán                                            | **Lỗi → BUG08**           |
+
+| Lỗi   | Mức độ     | Mô tả                                                                                                                                               | Trạng thái                                                                                                          |
+| ----- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| BUG05 | Trung bình | `place_order` kiểm tra tối đa 10 chiếc theo từng dòng, không cộng các dòng cùng sản phẩm → một tài khoản gửi 10 + 10 + … giữ hết tồn kho            | Đã sửa: migration `20261023000000` gom số lượng theo sản phẩm trước khi kiểm tra, khóa sản phẩm theo thứ tự id      |
+| BUG06 | Thấp       | Gọi thẳng `place_order` bỏ qua kiểm tra của form: SĐT sai, tên/địa chỉ dài vô hạn; thanh toán null báo lỗi tiếng Anh "violates not-null constraint" | Đã sửa: DB kiểm tra SĐT, độ dài (tên ≤ 100, địa chỉ 10–300, ghi chú ≤ 500); form thêm giới hạn tên/địa chỉ cho khớp |
+| BUG07 | Thấp       | Trang thanh toán: hồ sơ tải xong sau khi form hiện → form bị dựng lại, mất chữ khách đã gõ và phương thức thanh toán quay về COD                    | Đã sửa: hồ sơ về chỉ điền vào ô còn trống, giữ nguyên lựa chọn của khách                                            |
+| BUG08 | Thấp       | Admin chuyển được đơn online chưa thanh toán sang "Đã xác nhận"/"Đang giao" → khách mất nút thanh toán, hoàn tất thì bị ghi là đã thu tiền          | Đã sửa: DB chặn (chỉ được hủy), ô chọn trạng thái ở admin chỉ còn "Chờ xác nhận" và "Đã hủy"                        |
+
+Sau khi sửa: API01–API20 đạt 22/22, Vitest 98/98, lint sạch, `npm run test:ui` 35/35 (ca BD06 @1024px chập chờn 1/3 lần do script đọc trang trước khi Builder tải xong – Test2 cần tăng thời gian chờ, không phải lỗi web).
+**Cần làm trước demo:** đưa migration `20261023000000_qa_tuan5_kiem_tra_don.sql` lên Supabase online (`npx supabase db push`), rồi Test1 chạy tay lại MH01–MH08, AD03–AD06 trên Vercel.
