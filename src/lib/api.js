@@ -254,7 +254,16 @@ export async function saveProduct({ id, ...fields }) {
   return data
 }
 
+// Sản phẩm đã nằm trong đơn hàng thì DB chặn xóa (khóa ngoại order_items). Kiểm tra trước để
+// khỏi gửi lệnh xóa chắc chắn lỗi (trình duyệt sẽ ghi lỗi đỏ 409 trong Console – BUG03).
 export async function deleteProduct(id) {
+  const { count, error: countError } = await supabase
+    .from('order_items')
+    .select('id', { count: 'exact', head: true })
+    .eq('product_id', id)
+  if (countError) throw countError
+  if (count > 0) throw Object.assign(new Error('Sản phẩm đã có trong đơn hàng'), { code: '23503' })
+
   const { error } = await supabase.from('products').delete().eq('id', id)
   if (error) throw error
 }
