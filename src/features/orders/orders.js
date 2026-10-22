@@ -21,8 +21,10 @@ const FLOW = ['pending', 'confirmed', 'shipping', 'completed']
 
 // Các trạng thái admin được chọn tiếp theo cho một đơn (gồm cả trạng thái hiện tại).
 // Chỉ đi tới, không lùi; lúc nào chưa xong cũng hủy được.
-export function nextStatuses(status) {
+// awaitingPayment: đơn online chưa thanh toán → chỉ giữ nguyên hoặc hủy (DB cũng chặn, BUG08).
+export function nextStatuses(status, awaitingPayment = false) {
   if (status === 'completed' || status === 'cancelled') return [status]
+  if (awaitingPayment) return [status, 'cancelled']
   const i = FLOW.indexOf(status)
   return [...FLOW.slice(Math.max(i, 0)), 'cancelled']
 }
@@ -58,11 +60,14 @@ export function validateCheckout(form) {
     payment: form.payment,
   }
   const errors = {}
+  // Giới hạn độ dài khớp với hàm place_order trong DB (BUG06).
   if (!data.name) errors.name = 'Vui lòng nhập họ tên người nhận.'
+  else if (data.name.length > 100) errors.name = 'Họ tên tối đa 100 ký tự.'
   if (!data.phone) errors.phone = 'Vui lòng nhập số điện thoại.'
   else if (!PHONE_RE.test(data.phone)) errors.phone = 'Số điện thoại không hợp lệ (vd 0901234567).'
   if (data.address.length < 10)
     errors.address = 'Vui lòng nhập địa chỉ đầy đủ (số nhà, đường, phường, quận, tỉnh).'
+  else if (data.address.length > 300) errors.address = 'Địa chỉ tối đa 300 ký tự.'
   if (data.note.length > 500) errors.note = 'Ghi chú tối đa 500 ký tự.'
   if (!PAYMENT_METHODS[data.payment]) errors.payment = 'Vui lòng chọn phương thức thanh toán.'
   return { data, errors }
