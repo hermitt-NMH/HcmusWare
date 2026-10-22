@@ -406,6 +406,12 @@ await setBuild(B0)
 for (const w of [360, 768, 1024, 1366]) {
   await open('/build-pc', w)
   if (w === 360) await clickText(/^Tổng kết$/)
+  // Chờ Builder tải xong 8 linh kiện và tính tổng (tối đa 10 giây). Trước đây đọc trang quá sớm
+  // nên BD06 @1024px thỉnh thoảng báo sai dù web đúng.
+  for (let i = 0; i < 40; i++) {
+    if (await evaluate(`/Cấu hình tương thích/.test(document.body.innerText)`)) break
+    await sleep(250)
+  }
   const t = await text()
   const ok =
     /Cấu hình tương thích/.test(t) &&
