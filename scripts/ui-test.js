@@ -110,19 +110,33 @@ async function open(path, width, height = 800) {
   await send('Page.navigate', { url: BASE + path })
   // Chờ tải xong, hết skeleton và hết chữ "Đang tải" (lúc tải trang lazy hoặc danh mục ở Header).
   // Bản Vercel gọi Supabase online mất vài giây nên chờ tối đa 20 giây.
-  for (let i = 0; i < 80; i++) {
+  // Phải "rảnh" 2 lần liên tiếp và <main> đã có nội dung: ngay sau khi điều hướng, React có thể
+  // chưa kịp hiện skeleton nên lần kiểm tra đầu tưởng đã tải xong (UI01, GH07 thỉnh thoảng sai trên Vercel).
+  let idle = 0
+  for (let i = 0; i < 80 && idle < 2; i++) {
     await sleep(250)
     const busy = await evaluate(
       `document.readyState !== 'complete' || !!document.querySelector('.animate-pulse') ||
-        /Đang tải/.test(document.body.innerText)`,
+        /Đang tải/.test(document.body.innerText) ||
+        (document.querySelector('main')?.innerText.trim().length ?? 0) < 20`,
     )
-    if (busy === false) break
+    idle = busy === false ? idle + 1 : 0
   }
   await sleep(300)
 }
 async function shot(name) {
   const r = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: true })
   writeFileSync(new URL(`${name}.png`, OUT), Buffer.from(r.result.data, 'base64'))
+}
+
+// Chờ tới khi biểu thức JS trên trang đúng (tối đa ms). Bản Vercel gọi Supabase online chậm hơn
+// local nhiều, chờ cố định vài giây thì thỉnh thoảng đọc trang khi dữ liệu chưa tải xong.
+const waitUntil = async (expr, ms = 10000) => {
+  for (let i = 0; i < ms / 250; i++) {
+    if (await evaluate(expr)) return true
+    await sleep(250)
+  }
+  return false
 }
 
 const results = []
@@ -178,7 +192,10 @@ await open('/', 1366)
 
 // UI03 – bấm ô danh mục RAM
 await evaluate(`document.querySelector('main a[href="/danh-muc/ram"]')?.click()`)
-await sleep(2000)
+await waitUntil(
+  `location.pathname === '/danh-muc/ram' && new Set([...document.querySelectorAll('a[href^="/san-pham/"]')].map((a) => a.getAttribute('href'))).size >= 16`,
+  20000,
+)
 {
   const path = await evaluate('location.pathname')
   const h1 = await evaluate(`document.querySelector('h1')?.innerText`)
@@ -196,7 +213,10 @@ await open('/', 1366)
 await evaluate(
   `[...document.querySelectorAll('a')].find((a) => /xem tất cả/i.test(a.innerText))?.click()`,
 )
-await sleep(2500)
+await waitUntil(
+  `location.pathname === '/san-pham' && new Set([...document.querySelectorAll('a[href^="/san-pham/"]')].map((a) => a.getAttribute('href'))).size >= 128`,
+  20000,
+)
 {
   const path = await evaluate('location.pathname')
   const n = await productLinks()
@@ -278,6 +298,9 @@ const optionButtons = `[...document.querySelectorAll('li > button')].filter(${VI
   .filter((b) => b.querySelector('.line-clamp-2'))`
 const optionCount = () => evaluate(`${optionButtons}.length`)
 const pick = async (name) => {
+  await waitUntil(
+    `${optionButtons}.some((b) => b.querySelector('.line-clamp-2').innerText.trim() === ${js(name)})`,
+  )
   const ok = await evaluate(`(() => {
     const b = ${optionButtons}.find((b) => b.querySelector('.line-clamp-2').innerText.trim() === ${js(name)})
     b?.click()
@@ -289,6 +312,9 @@ const pick = async (name) => {
 const rowOf = (slug) => `document.querySelectorAll('table tbody tr')[${SLOTS.indexOf(slug)}]`
 const rowText = (slug) => evaluate(`${rowOf(slug)}?.innerText ?? ''`)
 const openRow = async (slug) => {
+  await waitUntil(
+    `!!${rowOf(slug)} && [...${rowOf(slug)}.querySelectorAll('button')].some((b) => /Chọn|Đổi/.test(b.innerText))`,
+  )
   await evaluate(
     `[...${rowOf(slug)}.querySelectorAll('button')].find((b) => /Chọn|Đổi/.test(b.innerText))?.click()`,
   )
@@ -408,10 +434,7 @@ for (const w of [360, 768, 1024, 1366]) {
   if (w === 360) await clickText(/^Tổng kết$/)
   // Chờ Builder tải xong 8 linh kiện và tính tổng (tối đa 10 giây). Trước đây đọc trang quá sớm
   // nên BD06 @1024px thỉnh thoảng báo sai dù web đúng.
-  for (let i = 0; i < 40; i++) {
-    if (await evaluate(`/Cấu hình tương thích/.test(document.body.innerText)`)) break
-    await sleep(250)
-  }
+  await waitUntil(`/Cấu hình tương thích/.test(document.body.innerText)`)
   const t = await text()
   const ok =
     /Cấu hình tương thích/.test(t) &&
@@ -437,7 +460,8 @@ for (const w of [360, 768, 1024, 1366]) {
 
 // BD10 – tải lại vẫn giữ cấu hình (đang ở 1366 px với B0 lấy từ localStorage)
 await send('Page.reload')
-await sleep(2500)
+await sleep(500)
+await waitUntil(`/29\\.020\\.000 ₫/.test(document.body.innerText)`, 20000)
 {
   const rows = await evaluate(
     `[...document.querySelectorAll('table tbody tr')].map((r) => /Chưa chọn/.test(r.innerText))`,
@@ -472,6 +496,7 @@ await pick('Zotac GeForce RTX 3080 Ti AMP Extreme Holo 12GB')
 await setBuild({ ...B0, cpu: 11, mainboard: 28, vga: undefined })
 await open('/build-pc', 1366)
 {
+  await waitUntil(`/Còn thiếu: VGA/.test(document.body.innerText)`)
   const vga = await rowText('vga')
   const t = await text()
   const disabled = await addToCartDisabled()
@@ -485,12 +510,15 @@ await open('/build-pc', 1366)
 // BD09 – 2 kit RAM
 await setBuild(B0)
 await open('/build-pc', 1366)
+await waitUntil(
+  `!!document.getElementById('ram-qty-desktop') && /29\\.020\\.000 ₫/.test(document.body.innerText)`,
+)
 await evaluate(`(() => {
   const s = document.getElementById('ram-qty-desktop')
   Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value').set.call(s, '2')
   s.dispatchEvent(new Event('change', { bubbles: true }))
 })()`)
-await sleep(400)
+await waitUntil(`/31\\.710\\.000 ₫/.test(document.body.innerText)`, 3000)
 {
   const ram = await rowText('ram')
   const t = await text()
@@ -503,7 +531,11 @@ await sleep(400)
 
 // GH01 – thêm cả cấu hình vào giỏ
 await clickText(/^Thêm cấu hình vào giỏ$/)
-await sleep(1500)
+// Trang giỏ tải lại giá/tồn kho từ DB rồi mới hiện tạm tính
+await waitUntil(
+  `location.pathname === '/gio-hang' && /31\\.710\\.000 ₫/.test(document.body.innerText)`,
+  20000,
+)
 const cartLines = () => evaluate(`document.querySelectorAll('main ul > li').length`)
 const cartQty = (name) =>
   evaluate(`(() => {
@@ -599,8 +631,12 @@ await clickText(/^Xóa tất cả$/)
 // GH07 – thêm 1 sản phẩm từ trang chi tiết
 await open('/san-pham/1', 1366)
 {
+  await waitUntil(
+    `[...document.querySelectorAll('button')].some((b) => b.innerText.trim() === 'Thêm vào giỏ')`,
+  )
   const before = await headerCount()
   await clickText(/^Thêm vào giỏ$/)
+  await waitUntil(`/Đã thêm vào giỏ/.test(document.body.innerText)`, 3000)
   const t = await text()
   const after = await headerCount()
   rec(
