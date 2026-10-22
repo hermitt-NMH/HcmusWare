@@ -40,7 +40,7 @@ function SearchForm({ className = '', onDone }) {
 export default function Header() {
   const [open, setOpen] = useState(false)
   const categories = useAsync(getCategories)
-  const { user, profile } = useAuth()
+  const { user, profile, isAdmin } = useAuth()
   const { count } = useCart()
   const close = () => setOpen(false)
 
@@ -88,6 +88,12 @@ export default function Header() {
         <SearchForm className="mx-2 hidden max-w-md flex-1 md:block" />
 
         <nav className="ml-auto flex items-center gap-1">
+          {/* Lối tắt cho admin, chỉ trên màn rộng (điện thoại vào qua trang Tài khoản) */}
+          {isAdmin && (
+            <NavLink to="/admin" className={(s) => `${navClass(s)} hidden lg:flex`}>
+              Quản trị
+            </NavLink>
+          )}
           <NavLink to="/build-pc" className={navClass}>
             Build PC
           </NavLink>
