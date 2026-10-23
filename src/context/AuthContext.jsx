@@ -9,6 +9,10 @@ export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true) // đang kiểm tra phiên đăng nhập lúc mở web
   const [profile, setProfile] = useState(null)
+  // id người dùng của lần tải hồ sơ gần nhất đã xong (thành công hoặc lỗi).
+  // Khác userId hiện tại nghĩa là hồ sơ đang tải.
+  const [profileFor, setProfileFor] = useState(null)
+  const [profileError, setProfileError] = useState(null)
 
   useEffect(() => {
     // 1. Lấy phiên đã lưu sẵn (Supabase tự lưu trong localStorage).
@@ -29,27 +33,49 @@ export function AuthProvider({ children }) {
   const userId = user?.id
 
   // Tải hồ sơ mỗi khi đổi người dùng (đăng nhập tài khoản khác hoặc đăng xuất).
-  const loadProfile = useCallback(async () => {
-    if (!userId) return setProfile(null)
-    const { data, error } = await supabase
+  // Lỗi mạng cũng phải đánh dấu "đã tải xong" để trang admin không chờ mãi.
+  const [profileReload, setProfileReload] = useState(0)
+  useEffect(() => {
+    let cancelled = false
+    setProfileError(null)
+    if (!userId) {
+      setProfile(null)
+      setProfileFor(null)
+      return
+    }
+    supabase
       .from('profiles')
       .select('id, full_name, phone, address, role')
       .eq('id', userId)
       .maybeSingle()
-    if (error) console.error('Không tải được hồ sơ:', error.message)
-    setProfile(data ?? null)
-  }, [userId])
-
-  useEffect(() => {
-    loadProfile()
-  }, [loadProfile])
+      .then(
+        ({ data, error }) => ({ data, error }),
+        (error) => ({ data: null, error }),
+      )
+      .then(({ data, error }) => {
+        if (cancelled) return // đã đổi tài khoản trong lúc chờ → bỏ kết quả cũ
+        if (error) console.error('Không tải được hồ sơ:', error.message)
+        setProfile(data ?? null)
+        setProfileError(error ?? null)
+        setProfileFor(userId)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [userId, profileReload])
+  const reloadProfile = useCallback(() => setProfileReload((n) => n + 1), [])
+  const profileLoading = Boolean(userId) && profileFor !== userId
 
   const value = useMemo(
     () => ({
       user,
-      profile,
+      // Đang tải hồ sơ của tài khoản khác (vừa đổi tài khoản) thì coi như chưa có hồ sơ.
+      profile: profileLoading ? null : profile,
+      profileLoading,
+      profileError,
+      reloadProfile,
       loading,
-      isAdmin: profile?.role === 'admin',
+      isAdmin: !profileLoading && profile?.role === 'admin',
 
       signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),
 
@@ -83,7 +109,7 @@ export function AuthProvider({ children }) {
         return { error }
       },
     }),
-    [user, profile, loading, userId],
+    [user, profile, profileLoading, profileError, reloadProfile, loading, userId],
   )
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
