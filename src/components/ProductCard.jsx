@@ -1,8 +1,9 @@
 import { Link } from 'react-router-dom'
 import { formatPrice } from '../lib/format'
-import { categoryBg, categoryImage } from '../lib/images'
+import { categoryBg, categoryImage, productSrcSet } from '../lib/images'
 
-export default function ProductCard({ product }) {
+// eager: thẻ ở hàng đầu (thấy ngay khi mở trang) tải ảnh luôn, không lazy, để LCP nhanh hơn.
+export default function ProductCard({ product, eager = false }) {
   const { id, name, brand, price, stock, image_url, categories } = product
   const outOfStock = stock <= 0
   const fallback = categoryImage(categories?.slug)
@@ -17,11 +18,19 @@ export default function ProductCard({ product }) {
       >
         <img
           src={image_url || fallback}
+          srcSet={productSrcSet(image_url)}
+          sizes="(min-width: 1024px) 270px, (min-width: 640px) calc((100vw - 56px) / 3), calc((100vw - 44px) / 2)"
+          width="600"
+          height="600"
           alt={name}
-          loading="lazy"
+          loading={eager ? 'eager' : 'lazy'}
+          fetchPriority={eager ? 'high' : 'auto'}
           onError={(e) => {
             // Ảnh sản phẩm hỏng thì quay về ảnh minh họa của danh mục
-            if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback
+            if (!e.currentTarget.src.endsWith(fallback)) {
+              e.currentTarget.removeAttribute('srcset')
+              e.currentTarget.src = fallback
+            }
           }}
           className={`h-full w-full object-contain transition duration-300 group-hover:scale-105 ${image_url ? 'p-2' : 'p-6'} ${outOfStock ? 'opacity-50 grayscale' : ''}`}
         />
@@ -36,7 +45,7 @@ export default function ProductCard({ product }) {
           {name}
         </h3>
         <p className="mt-auto pt-2 font-semibold text-red-600">{formatPrice(price)}</p>
-        <p className={`text-xs ${outOfStock ? 'text-slate-400' : 'text-green-600'}`}>
+        <p className={`text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700'}`}>
           {outOfStock ? 'Hết hàng' : `Còn ${stock} sản phẩm`}
         </p>
       </div>

@@ -4,7 +4,7 @@ import { getBuildByShareCode, getProducts } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useCart } from '../hooks/useCart'
 import { formatPrice } from '../lib/format'
-import { categoryImage } from '../lib/images'
+import { categoryImage, thumbUrl } from '../lib/images'
 import { specRows } from '../lib/specs'
 import { checkCompatibility } from '../features/builder/compatibility'
 import {
@@ -123,7 +123,7 @@ export default function Builder() {
         <h1 className="text-xl font-bold sm:text-2xl">Build PC</h1>
         <p className="mt-1 text-sm text-slate-500">
           Chọn từng linh kiện, web tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.{' '}
-          <Link to="/san-pham" className="text-blue-700 hover:underline">
+          <Link to="/san-pham" className="text-blue-700 underline hover:no-underline">
             Xem tất cả sản phẩm
           </Link>
         </p>
@@ -266,7 +266,7 @@ function SelectedPart({ slug, product }) {
   return (
     <span className="flex min-w-0 items-center gap-3">
       <img
-        src={product.image_url || fallback}
+        src={thumbUrl(product.image_url) || fallback}
         alt=""
         onError={(e) => {
           if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback

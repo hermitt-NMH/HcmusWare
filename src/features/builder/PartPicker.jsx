@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { applyFilters } from '../../lib/productFilters'
 import { formatPrice } from '../../lib/format'
-import { categoryImage } from '../../lib/images'
+import { categoryImage, thumbUrl } from '../../lib/images'
 import { specRows } from '../../lib/specs'
 import { checkCompatibility } from './compatibility'
 
@@ -123,7 +123,7 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
         } disabled:cursor-not-allowed disabled:opacity-60`}
       >
         <img
-          src={image_url || fallback}
+          src={thumbUrl(image_url) || fallback}
           alt=""
           loading="lazy"
           onError={(e) => {
@@ -154,7 +154,7 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
           <span className="block whitespace-nowrap text-sm font-semibold text-red-600">
             {formatPrice(price)}
           </span>
-          <span className={`block text-xs ${outOfStock ? 'text-slate-400' : 'text-green-600'}`}>
+          <span className={`block text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700'}`}>
             {outOfStock ? 'Hết hàng' : selected ? '✓ Đang chọn' : `Còn ${stock}`}
           </span>
         </span>

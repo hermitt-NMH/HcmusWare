@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useCart } from '../hooks/useCart'
 import { getProductsByIds } from '../lib/api'
 import { formatPrice } from '../lib/format'
-import { categoryImage } from '../lib/images'
+import { categoryImage, thumbUrl } from '../lib/images'
 import { isUnavailable, maxQty } from '../features/cart/cart'
 
 // Trang giỏ hàng: đổi số lượng, xóa, tạm tính, sang trang thanh toán.
@@ -131,7 +131,7 @@ function CartLine({ item, onQty, onRemove }) {
     <li className="flex gap-3 p-3 sm:p-4">
       <Link to={`/san-pham/${id}`} className="shrink-0">
         <img
-          src={image_url || fallback}
+          src={thumbUrl(image_url) || fallback}
           alt={name}
           onError={(e) => {
             if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback

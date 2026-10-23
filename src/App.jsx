@@ -28,7 +28,8 @@ export default function App() {
     <div className="flex min-h-screen flex-col">
       <Header />
       <PriceAlertNotifier />
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
+      {/* min-h-dvh: Footer luôn nằm dưới màn hình đầu tiên, không bị đẩy xuống khi dữ liệu tải xong (CLS) */}
+      <main className="mx-auto min-h-dvh w-full max-w-6xl flex-1 px-4 py-6">
         <Suspense fallback={PageLoading}>
           <Routes>
             <Route path="/" element={<Home />} />

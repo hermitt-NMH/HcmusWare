@@ -24,8 +24,8 @@ export default function ProductGrid({ products, loading, error, skeletonCount = 
   }
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-      {products.map((p) => (
-        <ProductCard key={p.id} product={p} />
+      {products.map((p, i) => (
+        <ProductCard key={p.id} product={p} eager={i < 2} />
       ))}
     </div>
   )
