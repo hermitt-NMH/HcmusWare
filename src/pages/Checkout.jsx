@@ -4,7 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
 import { getProductsByIds, placeOrder } from '../lib/api'
 import { formatPrice } from '../lib/format'
-import { categoryImage } from '../lib/images'
+import { categoryImage, thumbUrl } from '../lib/images'
 import { isUnavailable } from '../features/cart/cart'
 import {
   PAYMENT_METHODS,
@@ -228,7 +228,7 @@ function CheckoutForm({ onPlaced }) {
             {buyable.map((it) => (
               <li key={it.id} className="flex gap-3 text-sm">
                 <img
-                  src={it.image_url || categoryImage(it.slug)}
+                  src={thumbUrl(it.image_url) || categoryImage(it.slug)}
                   alt=""
                   loading="lazy"
                   className="h-12 w-12 shrink-0 rounded-md border border-slate-100 object-contain"

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAsync } from '../../hooks/useAsync'
 import { deleteProduct, getAdminProducts, getCategories, saveProduct } from '../../lib/api'
 import { formatPrice } from '../../lib/format'
-import { categoryImage } from '../../lib/images'
+import { categoryImage, thumbUrl } from '../../lib/images'
 import {
   productErrorMessage,
   productToForm,
@@ -97,7 +97,7 @@ export default function AdminProducts() {
         {list.map((p) => (
           <li key={p.id} className="flex items-center gap-3 p-3">
             <img
-              src={p.image_url || categoryImage(p.categories?.slug)}
+              src={thumbUrl(p.image_url) || categoryImage(p.categories?.slug)}
               alt=""
               loading="lazy"
               className="h-12 w-12 shrink-0 rounded-md border border-slate-100 object-contain"

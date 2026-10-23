@@ -76,6 +76,9 @@ function DetailView({ product }) {
           <img
             src={image_url || fallback}
             alt={name}
+            width="600"
+            height="600"
+            fetchPriority="high"
             onError={(e) => {
               if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback
             }}

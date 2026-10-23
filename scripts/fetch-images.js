@@ -11,6 +11,7 @@
 //
 // Ảnh sai mà --redo vẫn không ra: tự tải ảnh khác, đặt vào public/images/products/
 // rồi sửa đường dẫn trong data/images.json (đặt "locked": true để script không ghi đè).
+// Đổi ảnh xong chạy `npm run thumbs` để tạo lại ảnh thu nhỏ -sm.webp.
 
 import { readFile, writeFile, mkdir, rm } from 'node:fs/promises'
 import { existsSync } from 'node:fs'

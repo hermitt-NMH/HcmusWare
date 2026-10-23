@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useAsync } from '../hooks/useAsync'
 import { getOrderById } from '../lib/api'
 import { formatDateTime, formatPrice } from '../lib/format'
-import { categoryImage } from '../lib/images'
+import { categoryImage, thumbUrl } from '../lib/images'
 import OrderStatusBadge from '../components/OrderStatusBadge'
 import {
   ORDER_STATUS,
@@ -118,7 +118,7 @@ function OrderView() {
             return (
               <li key={it.id} className="flex items-center gap-3 p-3 text-sm">
                 <img
-                  src={it.products?.image_url || fallback}
+                  src={thumbUrl(it.products?.image_url) || fallback}
                   alt=""
                   loading="lazy"
                   className="h-14 w-14 shrink-0 rounded-md border border-slate-100 object-contain"
