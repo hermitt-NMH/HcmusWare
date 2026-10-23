@@ -85,12 +85,22 @@ export default function Builder() {
         ? 'warning'
         : null
 
-  if (products.loading) return <BuilderSkeleton />
+  // Tiêu đề hiện ngay cả khi đang tải để trang có nội dung sớm (LCP), không chờ dữ liệu.
+  if (products.loading)
+    return (
+      <div className="space-y-4">
+        <BuilderIntro />
+        <BuilderSkeleton />
+      </div>
+    )
   if (products.error) {
     return (
-      <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được linh kiện: {products.error.message}
-      </p>
+      <div className="space-y-4">
+        <BuilderIntro />
+        <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
+          Không tải được linh kiện: {products.error.message}
+        </p>
+      </div>
     )
   }
 
@@ -119,15 +129,7 @@ export default function Builder() {
 
   return (
     <div className="space-y-4">
-      <div>
-        <h1 className="text-xl font-bold sm:text-2xl">Build PC</h1>
-        <p className="mt-1 text-sm text-slate-500">
-          Chọn từng linh kiện, web tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.{' '}
-          <Link to="/san-pham" className="text-blue-700 underline hover:no-underline">
-            Xem tất cả sản phẩm
-          </Link>
-        </p>
-      </div>
+      <BuilderIntro />
 
       {shared.notice && (
         <div
@@ -676,10 +678,23 @@ function SlotTitle({ slot, build }) {
   )
 }
 
+function BuilderIntro() {
+  return (
+    <div>
+      <h1 className="text-xl font-bold sm:text-2xl">Build PC</h1>
+      <p className="mt-1 text-sm text-slate-500">
+        Chọn từng linh kiện, web tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.{' '}
+        <Link to="/san-pham" className="text-blue-700 underline hover:no-underline">
+          Xem tất cả sản phẩm
+        </Link>
+      </p>
+    </div>
+  )
+}
+
 function BuilderSkeleton() {
   return (
     <div className="animate-pulse space-y-3">
-      <div className="h-8 w-40 rounded bg-slate-200" />
       {Array.from({ length: 8 }, (_, i) => (
         <div key={i} className="h-16 rounded-xl bg-slate-200" />
       ))}
