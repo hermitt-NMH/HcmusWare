@@ -201,3 +201,13 @@ Script `scripts/e2e-tuan5.js` chạy MH01–MH08, AD03–AD06 bằng trình duy�
 | `npm run test:ui`              | 35/35 đạt cả 6/6 lần trên Vercel và 2/2 lần trên local, sau khi thay mọi chỗ chờ cố định bằng chờ theo nội dung trang                         |
 
 **Sự cố 22/10:** bản nháp script ở ca AD04 tìm dòng sản phẩm theo tên bằng "chứa chuỗi" nên tên "AMD Ryzen 5 7600" khớp nhầm "AMD Ryzen 5 7600X" và "7600X3D" → xóa 2 sản phẩm thật (id 9, 21) trên Supabase online (chưa nằm trong đơn nào nên DB cho xóa). Đã sửa script: chỉ bấm "Xóa" khi có đúng 1 dòng mang mã `#id` của sản phẩm đã nằm trong đơn. Khôi phục: chèn lại 2 sản phẩm đúng id cũ và sinh lại lịch sử giá (cùng seed, cùng thời điểm `2026-10-22 12:49:09.901`), đã chạy lên Supabase online, kiểm tra lại đủ 128 sản phẩm, 16 CPU.
+
+### Kết quả lần chạy 23/10/2026 – sau PR #60–#62 (Lighthouse, LCP, sửa admin quay mãi)
+
+Trước khi chạy: `npx supabase migration list` thấy đủ 5 migration ở cột Remote (gồm `20261023000000` sửa BUG05–BUG08); sao lưu dữ liệu online bằng `npm run db:backup`.
+
+| Môi trường                                   | Kết quả                                                                   |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
+| `npx vitest run`, `npm run lint`             | 102/102 đạt, lint sạch                                                    |
+| Vercel – `npm run test:ui`                   | 35/35 đạt                                                                 |
+| Vercel + Supabase online – `test:e2e:online` | 13/13 đạt; đơn thử #10–#12 đã hủy, kho trả về như cũ, vẫn đủ 128 sản phẩm |

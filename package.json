@@ -17,6 +17,8 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:status": "supabase status",
+    "db:backup": "node --env-file=.env.online.local scripts/backup-db.js",
+    "db:backup:local": "node --env-file=.env.local scripts/backup-db.js",
     "import-data": "node --env-file=.env.local scripts/import-dataset.js",
     "gen-price-history": "node --env-file=.env.local scripts/gen-price-history.js",
     "fetch-images": "node scripts/fetch-images.js",

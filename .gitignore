@@ -9,6 +9,9 @@ dist-ssr
 coverage
 ui-test-output
 
+# Bản sao lưu DB (có email, SĐT, địa chỉ khách) – KHÔNG commit, chép lên drive nhóm
+backups/
+
 # Biến môi trường chứa khóa thật – KHÔNG commit
 .env
 .env.local
