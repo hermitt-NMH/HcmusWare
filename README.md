@@ -68,6 +68,20 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
      `http://localhost:5173/**` và `https://*-<tên-nhóm-vercel>.vercel.app/**` (để link preview của Pull Request cũng đăng nhập được).
    - Local chưa cấu hình Google nên nút "Tiếp tục với Google" sẽ báo "chưa được bật" — dùng email để thử.
 
+## Sao lưu và khôi phục Supabase online (Kiến trúc sư)
+
+**Bắt buộc sao lưu trước mỗi lần chạy test ghi dữ liệu** (`npm run test:e2e:online`, thử đặt hàng, đổi giá trên bản thật).
+
+- Kiểm tra migration đã lên online: `npx supabase migration list` — mọi dòng phải có số ở cả cột Local và Remote; thiếu thì `npx supabase db push`.
+- Sao lưu dữ liệu: `npm run db:backup` → file `backups/<mã-project>-<ngày-giờ>.json` (mọi bảng public, không cần Docker). Chép file lên drive nhóm; thư mục `backups/` không được commit vì có thông tin khách.
+- Sao lưu đầy đủ bằng `pg_dump` (cần Docker Desktop đang chạy):
+  `npx supabase db dump --linked -f backups/schema.sql` và `npx supabase db dump --linked --data-only -f backups/data.sql`.
+- Khôi phục:
+  - Mất vài dòng (ví dụ xóa nhầm sản phẩm): lấy đúng các dòng đó trong file JSON, chèn lại bằng SQL Editor **giữ nguyên `id`** (kèm `price_history` của sản phẩm).
+  - Hỏng nhiều: trong SQL Editor xóa dữ liệu các bảng bị hỏng, chạy lại `backups/data.sql` bằng
+    `psql "<connection string trong Supabase → Connect>" -f backups/data.sql`.
+  - Sau khi chèn dòng có `id` sẵn, chỉnh lại bộ đếm, ví dụ `select setval(pg_get_serial_sequence('products','id'), (select max(id) from products));`.
+
 ## Lỗi thường gặp
 
 - `npm.ps1 cannot be loaded because running scripts is disabled`: chạy một lần
