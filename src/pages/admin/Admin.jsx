@@ -11,14 +11,30 @@ const tabClass = ({ isActive }) =>
 // Trang quản trị /admin/san-pham và /admin/don-hang. Chỉ tài khoản role = 'admin' vào được.
 // Ẩn giao diện chỉ để tiện; bảo vệ thật nằm ở RLS trong DB (người thường có gọi API cũng bị chặn).
 export default function Admin() {
-  const { user, profile, loading, isAdmin } = useAuth()
+  const { user, loading, isAdmin, profileLoading, profileError, reloadProfile } = useAuth()
   const location = useLocation()
 
-  // profile tải sau user một chút → chờ cả hai rồi mới quyết định.
-  if (loading || (user && !profile))
+  // profile tải sau user một chút → chờ tải xong (kể cả khi lỗi) rồi mới quyết định.
+  if (loading || profileLoading)
     return <p className="py-16 text-center text-slate-500">Đang kiểm tra quyền…</p>
   if (!user)
     return <Navigate to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`} replace />
+  if (profileError) {
+    return (
+      <div className="py-16 text-center">
+        <p role="alert" className="text-red-700">
+          Không kiểm tra được quyền truy cập (lỗi tải hồ sơ).
+        </p>
+        <button
+          type="button"
+          onClick={reloadProfile}
+          className="mt-4 inline-flex h-11 items-center rounded-lg bg-blue-600 px-4 font-semibold text-white hover:bg-blue-700"
+        >
+          Thử lại
+        </button>
+      </div>
+    )
+  }
   if (!isAdmin) {
     return (
       <div className="py-16 text-center">
