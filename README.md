@@ -1,7 +1,7 @@
 # HcmusWare
 
 Website bán linh kiện máy tính có công cụ **Build PC** tự kiểm tra tương thích.
-Đồ án nhóm 8 – Nhập môn CNTT (19/10 – 21/11/2026).
+Đồ án nhóm Yêu Khoa Học Chọn Tự Nhiên – Nhập môn CNTT (19/10 – 21/11/2026).
 
 **Công nghệ:** React (Vite) · Tailwind CSS v4 · Supabase (database, đăng nhập, lưu ảnh) · Chart.js · Vitest · deploy Vercel.
 
