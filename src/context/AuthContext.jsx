@@ -76,9 +76,8 @@ export function AuthProvider({ children }) {
       reloadProfile,
       loading,
       // 'customer' | 'seller' | 'admin' (src/lib/roles.js). null khi chưa đăng nhập hoặc đang tải hồ sơ.
+      // Kiểm tra quyền: canAccess(role, AREA_ROLES.xxx) trong src/lib/roles.js.
       role: profileLoading ? null : (profile?.role ?? null),
-      isAdmin: !profileLoading && profile?.role === 'admin',
-      isSeller: !profileLoading && profile?.role === 'seller',
 
       signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),
 
