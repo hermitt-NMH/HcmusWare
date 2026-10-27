@@ -24,7 +24,8 @@
     "import-data": "node --env-file=.env.local scripts/import-dataset.js",
     "gen-price-history": "node --env-file=.env.local scripts/gen-price-history.js",
     "fetch-images": "node scripts/fetch-images.js",
-    "thumbs": "node scripts/make-thumbs.js"
+    "thumbs": "node scripts/make-thumbs.js",
+    "build-dvhc": "node scripts/build-dvhc.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.4",
