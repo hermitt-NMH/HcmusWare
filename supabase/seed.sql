@@ -54,8 +54,8 @@ begin
   for v_acc in
     select * from (values
       ('admin@hcmusware.local',  'admin123',  'Quản trị viên',  'admin'),
-      ('seller@hcmusware.local', 'seller123', 'Người Bán Mẫu',  'seller'),
-      ('khach@hcmusware.local',  'khach123',  'Khách Hàng Mẫu', 'customer')
+      ('seller@hcmusware.local', 'seller123', 'Trần Văn Bán',   'seller'),
+      ('khach@hcmusware.local',  'khach123',  'Lê Thị Khách',   'customer')
     ) as t(email, password, full_name, role)
   loop
     if exists (select 1 from auth.users where email = v_acc.email) then
