@@ -26,13 +26,13 @@ export default function SellerChannel() {
         </p>
       )}
       {!shop.loading && !shop.error && !shop.data && (
-        <p className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
+        <p className="rounded-xl border border-slate-200 bg-surface p-5 text-sm text-slate-600">
           Tài khoản của bạn chưa có shop. Liên hệ admin để được tạo shop.
         </p>
       )}
 
       {shop.data && (
-        <section className="space-y-2 rounded-xl border border-slate-200 bg-white p-5">
+        <section className="space-y-2 rounded-xl border border-slate-200 bg-surface p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h2 className="text-lg font-semibold">{shop.data.name}</h2>
             <span className={`rounded-full px-3 py-1 text-xs font-semibold ${status?.className}`}>

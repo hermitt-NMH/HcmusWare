@@ -52,9 +52,9 @@ function PaymentView() {
 
   return (
     <div className="mx-auto max-w-md space-y-4 py-4">
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
-        <div className="bg-slate-900 px-5 py-4 text-white">
-          <p className="text-xs uppercase tracking-wide text-slate-300">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-surface shadow-sm">
+        <div className="bg-gray-900 px-5 py-4 text-white">
+          <p className="text-xs uppercase tracking-wide text-gray-300">
             Cổng thanh toán thử nghiệm
           </p>
           <p className="text-lg font-semibold">HcmusPay</p>
@@ -75,7 +75,9 @@ function PaymentView() {
             </div>
             <div className="flex items-baseline justify-between gap-2 border-t border-slate-100 pt-2">
               <dt className="text-slate-500">Số tiền</dt>
-              <dd className="text-2xl font-bold text-red-600">{formatPrice(o.total)}</dd>
+              <dd className="text-2xl font-bold text-red-600 dark:text-red-400">
+                {formatPrice(o.total)}
+              </dd>
             </div>
           </dl>
           {error && (

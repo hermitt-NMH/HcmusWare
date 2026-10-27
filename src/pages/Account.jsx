@@ -8,7 +8,7 @@ import { PHONE_RE } from '../features/orders/orders'
 import { roleLabel, roleShortcut } from '../lib/roles'
 
 const inputClass =
-  'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
+  'h-11 w-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
 
 // Trang tài khoản: hồ sơ giao hàng, lịch sử đơn hàng, cấu hình đã lưu, cảnh báo giá, đăng xuất.
 // Số điện thoại để trống cũng được (PHONE_RE dùng chung với trang thanh toán).
@@ -44,7 +44,7 @@ export default function Account() {
         <button
           type="button"
           onClick={handleSignOut}
-          className="h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium hover:bg-slate-50"
+          className="h-11 rounded-lg border border-slate-300 bg-surface px-4 text-sm font-medium hover:bg-slate-50"
         >
           Đăng xuất
         </button>
@@ -114,7 +114,7 @@ function ProfileForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
+      className="space-y-4 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
       <div>
         <h2 className="text-lg font-semibold">Thông tin giao hàng</h2>
@@ -150,7 +150,7 @@ function ProfileForm() {
           placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
           value={form.address}
           onChange={set('address')}
-          className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-lg border border-slate-300 bg-surface p-3 text-sm focus:border-blue-500 focus:outline-none"
         />
       </label>
 

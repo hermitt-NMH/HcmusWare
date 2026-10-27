@@ -34,7 +34,7 @@ export default function AdminUsers() {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Tìm theo email hoặc họ tên…"
           aria-label="Tìm người dùng"
-          className="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none"
+          className="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none"
         />
         <button
           type="submit"
@@ -59,7 +59,7 @@ export default function AdminUsers() {
         </p>
       )}
 
-      <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">
+      <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-surface">
         {users.data?.map((u) => (
           <UserRow
             key={u.id}
@@ -121,7 +121,7 @@ function UserRow({ user: u, onChanged }) {
           disabled={saving || isMe}
           title={isMe ? 'Không thể tự đổi vai trò của chính mình' : undefined}
           aria-label={`Vai trò của ${u.email}`}
-          className="h-11 rounded-lg border border-slate-300 bg-white px-3 disabled:opacity-60"
+          className="h-11 rounded-lg border border-slate-300 bg-surface px-3 disabled:opacity-60"
         >
           {ROLE_VALUES.map((r) => (
             <option key={r} value={r}>

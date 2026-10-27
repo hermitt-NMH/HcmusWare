@@ -14,7 +14,7 @@ import {
 } from '../features/orders/orders'
 
 const inputClass =
-  'h-11 w-full rounded-lg border bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
+  'h-11 w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
 
 // Trang thanh toán: thông tin giao hàng, chọn COD / online mô phỏng, đặt hàng.
 // Giá và tổng tiền thật do hàm place_order trong DB tính (không tin số ở trình duyệt).
@@ -129,7 +129,7 @@ function CheckoutForm({ onPlaced }) {
         <h1 className="text-xl font-bold sm:text-2xl">Thanh toán</h1>
         <Link
           to="/gio-hang"
-          className="inline-flex min-h-11 items-center text-sm text-blue-700 hover:underline"
+          className="inline-flex min-h-11 items-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
         >
           ← Sửa giỏ hàng
         </Link>
@@ -137,7 +137,7 @@ function CheckoutForm({ onPlaced }) {
 
       <div className="grid gap-4 lg:grid-cols-[1fr_360px] lg:items-start">
         <div className="space-y-4">
-          <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          <section className="space-y-4 rounded-xl border border-slate-200 bg-surface p-4 sm:p-5">
             <h2 className="text-lg font-semibold">Thông tin giao hàng</h2>
             <Field label="Họ tên người nhận" error={errors.name}>
               <input
@@ -168,7 +168,7 @@ function CheckoutForm({ onPlaced }) {
                 value={form.address}
                 onChange={set('address')}
                 aria-invalid={Boolean(errors.address)}
-                className={`w-full rounded-lg border bg-white p-3 text-sm focus:border-blue-500 focus:outline-none ${errors.address ? 'border-red-400' : 'border-slate-300'}`}
+                className={`w-full rounded-lg border bg-surface p-3 text-sm focus:border-blue-500 focus:outline-none ${errors.address ? 'border-red-400' : 'border-slate-300'}`}
               />
             </Field>
             <Field label="Ghi chú (không bắt buộc)" error={errors.note}>
@@ -191,7 +191,7 @@ function CheckoutForm({ onPlaced }) {
             </label>
           </section>
 
-          <fieldset className="space-y-2 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          <fieldset className="space-y-2 rounded-xl border border-slate-200 bg-surface p-4 sm:p-5">
             <legend className="px-1 text-lg font-semibold">Phương thức thanh toán</legend>
             {Object.entries(PAYMENT_METHODS).map(([value, m]) => (
               <label
@@ -218,11 +218,13 @@ function CheckoutForm({ onPlaced }) {
                 </span>
               </label>
             ))}
-            {errors.payment && <p className="text-sm text-red-600">{errors.payment}</p>}
+            {errors.payment && (
+              <p className="text-sm text-red-600 dark:text-red-400">{errors.payment}</p>
+            )}
           </fieldset>
         </div>
 
-        <aside className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 lg:sticky lg:top-36">
+        <aside className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4 lg:sticky lg:top-36">
           <h2 className="font-semibold">Đơn hàng ({buyable.length} sản phẩm)</h2>
           <ul className="max-h-72 space-y-3 overflow-y-auto">
             {buyable.map((it) => (
@@ -253,11 +255,13 @@ function CheckoutForm({ onPlaced }) {
             </div>
             <div className="flex justify-between">
               <dt className="text-slate-600">Phí giao hàng</dt>
-              <dd className="text-green-700">Miễn phí</dd>
+              <dd className="text-green-700 dark:text-green-400">Miễn phí</dd>
             </div>
             <div className="flex items-baseline justify-between pt-1">
               <dt className="font-medium">Tổng cộng</dt>
-              <dd className="text-xl font-bold text-red-600">{formatPrice(subtotal)}</dd>
+              <dd className="text-xl font-bold text-red-600 dark:text-red-400">
+                {formatPrice(subtotal)}
+              </dd>
             </div>
           </dl>
 
@@ -291,7 +295,7 @@ function Field({ label, error, children }) {
     <label className="block text-sm">
       <span className="mb-1 block font-medium text-slate-700">{label}</span>
       {children}
-      {error && <span className="mt-1 block text-sm text-red-600">{error}</span>}
+      {error && <span className="mt-1 block text-sm text-red-600 dark:text-red-400">{error}</span>}
     </label>
   )
 }

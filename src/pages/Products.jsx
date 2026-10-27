@@ -102,7 +102,7 @@ export default function Products() {
           type="button"
           onClick={() => setShowFilters((v) => !v)}
           aria-expanded={showFilters}
-          className="h-11 flex-1 rounded-lg border border-slate-300 bg-white px-3 text-sm font-medium sm:flex-none lg:hidden"
+          className="h-11 flex-1 rounded-lg border border-slate-300 bg-surface px-3 text-sm font-medium sm:flex-none lg:hidden"
         >
           Bộ lọc{activeCount > 0 && ` (${activeCount})`}
         </button>
@@ -110,7 +110,7 @@ export default function Products() {
           value={filters.sort}
           onChange={(e) => onSort(e.target.value)}
           aria-label="Sắp xếp"
-          className="h-11 flex-1 rounded-lg border border-slate-300 bg-white px-2 text-sm sm:flex-none"
+          className="h-11 flex-1 rounded-lg border border-slate-300 bg-surface px-2 text-sm sm:flex-none"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
@@ -123,7 +123,7 @@ export default function Products() {
       <div className="lg:flex lg:items-start lg:gap-6">
         {/* Điện thoại/tablet: bấm nút mới hiện; máy tính (lg): luôn hiện bên trái */}
         <aside
-          className={`${showFilters ? 'block' : 'hidden'} mb-4 rounded-xl border border-slate-200 bg-white p-3 lg:sticky lg:top-32 lg:mb-0 lg:block lg:max-h-[calc(100vh-9rem)] lg:w-64 lg:shrink-0 lg:overflow-y-auto`}
+          className={`${showFilters ? 'block' : 'hidden'} mb-4 rounded-xl border border-slate-200 bg-surface p-3 lg:sticky lg:top-32 lg:mb-0 lg:block lg:max-h-[calc(100vh-9rem)] lg:w-64 lg:shrink-0 lg:overflow-y-auto`}
         >
           <ProductFilters {...filterProps} />
           <button
@@ -141,12 +141,12 @@ export default function Products() {
           ) : !products.data.length ? (
             <ProductGrid products={[]} />
           ) : !visible.length ? (
-            <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
+            <div className="rounded-xl border border-dashed border-slate-300 bg-surface p-8 text-center">
               <p className="text-slate-600">Không có sản phẩm phù hợp với bộ lọc.</p>
               <button
                 type="button"
                 onClick={() => setSearchParams({})}
-                className="mt-3 min-h-11 rounded-lg px-4 text-sm font-medium text-blue-700 hover:bg-blue-50"
+                className="mt-3 min-h-11 rounded-lg px-4 text-sm font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50"
               >
                 Xóa tìm kiếm và bộ lọc
               </button>
@@ -194,7 +194,7 @@ function SearchInput({ value, onChange, placeholder }) {
       }}
       placeholder={placeholder}
       aria-label="Tìm sản phẩm theo tên"
-      className="h-11 min-w-0 flex-1 basis-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none sm:basis-auto"
+      className="h-11 min-w-0 flex-1 basis-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none sm:basis-auto"
     />
   )
 }

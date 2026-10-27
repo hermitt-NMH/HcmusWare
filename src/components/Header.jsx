@@ -5,12 +5,13 @@ import { useAsync } from '../hooks/useAsync'
 import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
 import { roleShortcut } from '../lib/roles'
+import { useTheme } from '../hooks/useTheme'
 
 const navClass = ({ isActive }) =>
   // flex + min-h-11: vùng bấm cao tối thiểu 44px; whitespace-nowrap: chữ không bị ngắt 2 dòng.
   // Màn nhỏ dùng px-2 cho đủ chỗ ở 360px, từ sm trở lên mới px-3.
   `flex min-h-11 items-center whitespace-nowrap rounded-md px-2 py-2 text-sm font-medium sm:px-3 ${
-    isActive ? 'bg-blue-50 text-blue-700' : 'text-slate-600 hover:bg-slate-100'
+    isActive ? 'bg-blue-50 text-blue-700 dark:text-blue-300' : 'text-slate-600 hover:bg-slate-100'
   }`
 
 // Ô tìm kiếm: gõ tên rồi Enter → sang /san-pham?q=...
@@ -32,9 +33,52 @@ function SearchForm({ className = '', onDone }) {
         onChange={(e) => setQ(e.target.value)}
         placeholder="Tìm CPU, VGA, RAM..."
         aria-label="Tìm sản phẩm"
-        className="h-11 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm focus:border-blue-500 focus:bg-white focus:outline-none"
+        className="h-11 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm focus:border-blue-500 focus:bg-surface focus:outline-none"
       />
     </form>
+  )
+}
+
+// Nút đổi giao diện sáng/tối: đang sáng hiện mặt trăng (bấm để tối), đang tối hiện mặt trời.
+// Thanh trên cùng chỉ có icon; withLabel: kèm chữ, dùng trong menu xổ xuống trên điện thoại
+// (thanh trên cùng ở 360px không còn chỗ – BUG-05).
+function ThemeToggle({ withLabel = false, className = '' }) {
+  const { theme, toggleTheme } = useTheme()
+  const dark = theme === 'dark'
+  const label = dark ? 'Giao diện sáng' : 'Giao diện tối'
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      aria-label={withLabel ? undefined : `Chuyển sang ${label.toLowerCase()}`}
+      title={withLabel ? undefined : label}
+      // className quyết định cách hiện (vd "hidden sm:inline-flex"), mặc định inline-flex
+      className={`min-h-11 shrink-0 items-center gap-2 rounded-md text-slate-600 hover:bg-slate-100 ${
+        withLabel ? 'flex w-full px-2 py-2 text-sm font-medium' : 'w-11 justify-center'
+      } ${className || (withLabel ? '' : 'inline-flex')}`}
+    >
+      <svg
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+      >
+        {dark ? (
+          <>
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+          </>
+        ) : (
+          <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+        )}
+      </svg>
+      {withLabel && label}
+    </button>
   )
 }
 
@@ -54,7 +98,7 @@ export default function Header() {
     : { to: '/dang-nhap', label: 'Đăng nhập' }
 
   return (
-    <header className="sticky top-0 z-20 border-b border-slate-200 bg-white">
+    <header className="sticky top-0 z-20 border-b border-slate-200 bg-surface">
       {/* px-3 ở điện thoại: px-4 làm thanh này rộng 364px, tràn màn 360px (BUG-05) */}
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4">
         <button
@@ -128,6 +172,7 @@ export default function Header() {
           <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 sm:flex`}>
             <span className="truncate">{account.label}</span>
           </NavLink>
+          <ThemeToggle className="hidden sm:inline-flex" />
         </nav>
       </div>
 
@@ -142,7 +187,7 @@ export default function Header() {
             </li>
           )}
           {categories.error && (
-            <li className="flex min-h-11 items-center px-3 text-xs text-red-600">
+            <li className="flex min-h-11 items-center px-3 text-xs text-red-600 dark:text-red-400">
               Không tải được danh mục
             </li>
           )}
@@ -165,6 +210,9 @@ export default function Header() {
               </NavLink>
             </li>
           )}
+          <li className="sm:hidden">
+            <ThemeToggle withLabel />
+          </li>
         </ul>
       </div>
     </header>

@@ -35,12 +35,12 @@ export default function PriceSection({ productId, currentPrice }) {
     <section className="space-y-3">
       <h2 className="text-lg font-semibold">Lịch sử giá 6 tháng</h2>
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-        <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4">
           {history.loading && (
             <div className="h-56 animate-pulse rounded-lg bg-slate-100 sm:h-64" />
           )}
           {history.error && (
-            <p className="text-sm text-red-600">
+            <p className="text-sm text-red-600 dark:text-red-400">
               Không tải được lịch sử giá: {history.error.message}
             </p>
           )}
@@ -54,9 +54,9 @@ export default function PriceSection({ productId, currentPrice }) {
                   value={`${stats.changePct > 0 ? '+' : ''}${stats.changePct.toLocaleString('vi-VN')}%`}
                   className={
                     stats.changePct < 0
-                      ? 'text-green-700'
+                      ? 'text-green-700 dark:text-green-400'
                       : stats.changePct > 0
-                        ? 'text-red-600'
+                        ? 'text-red-600 dark:text-red-400'
                         : ''
                   }
                 />
@@ -81,7 +81,7 @@ export default function PriceSection({ productId, currentPrice }) {
                 type="button"
                 onClick={() => setShowTable((v) => !v)}
                 aria-expanded={showTable}
-                className="min-h-11 text-sm text-blue-700 hover:underline"
+                className="min-h-11 text-sm text-blue-700 dark:text-blue-300 hover:underline"
               >
                 {showTable ? 'Ẩn bảng giá' : 'Xem dạng bảng'}
               </button>
@@ -140,7 +140,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
 
-  const box = 'space-y-3 rounded-xl border border-slate-200 bg-white p-4 text-sm'
+  const box = 'space-y-3 rounded-xl border border-slate-200 bg-surface p-4 text-sm'
   const title = <h3 className="font-semibold">🔔 Báo tôi khi giá giảm</h3>
 
   if (!user) {
@@ -152,7 +152,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
         </p>
         <Link
           to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`}
-          className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-blue-600 font-medium text-blue-700 hover:bg-blue-50"
+          className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-blue-600 font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50"
         >
           Đăng nhập để đặt cảnh báo
         </Link>
@@ -202,14 +202,18 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
         {title}
         <p>
           Giá mong muốn:{' '}
-          <strong className="text-green-700">{formatPrice(alert.target_price)}</strong>
+          <strong className="text-green-700 dark:text-green-400">
+            {formatPrice(alert.target_price)}
+          </strong>
         </p>
-        <p className={reached ? 'font-medium text-green-700' : 'text-slate-500'}>
+        <p
+          className={reached ? 'font-medium text-green-700 dark:text-green-400' : 'text-slate-500'}
+        >
           {reached
             ? '✓ Giá hiện tại đã đạt mức bạn mong muốn!'
             : `Còn cách ${formatPrice(currentPrice - alert.target_price)}. Web sẽ báo khi bạn mở trang lúc giá giảm.`}
         </p>
-        {error && <p className="text-red-600">{error}</p>}
+        {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
         <div className="flex gap-2">
           <button
             type="button"
@@ -225,7 +229,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
             type="button"
             onClick={remove}
             disabled={busy}
-            className="h-11 rounded-lg px-3 text-slate-500 hover:bg-slate-100 hover:text-red-600 disabled:opacity-60"
+            className="h-11 rounded-lg px-3 text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-60"
           >
             Hủy cảnh báo
           </button>
@@ -265,7 +269,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
           </span>
         </div>
       </label>
-      {error && <p className="text-red-600">{error}</p>}
+      {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex gap-2">
         <button
           type="submit"

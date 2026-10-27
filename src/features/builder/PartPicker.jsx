@@ -61,7 +61,7 @@ export default function PartPicker({
           value={sort}
           onChange={(e) => setSort(e.target.value)}
           aria-label="Sắp xếp"
-          className="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm"
+          className="h-11 rounded-lg border border-slate-300 bg-surface px-3 text-sm"
         >
           {SORTS.map((s) => (
             <option key={s.value} value={s.value}>
@@ -119,7 +119,7 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
         className={`flex w-full items-center gap-3 rounded-xl border p-2 text-left transition sm:p-3 ${
           selected
             ? 'border-blue-500 bg-blue-50 ring-1 ring-blue-500'
-            : 'border-slate-200 bg-white hover:border-blue-300'
+            : 'border-slate-200 bg-surface hover:border-blue-300'
         } disabled:cursor-not-allowed disabled:opacity-60`}
       >
         <img
@@ -142,7 +142,9 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
             <span className="mt-0.5 block truncate text-xs text-slate-500">{summary}</span>
           )}
           {conflict && (
-            <span className="mt-0.5 block text-xs font-medium text-red-600">⚠ {conflict}</span>
+            <span className="mt-0.5 block text-xs font-medium text-red-600 dark:text-red-400">
+              ⚠ {conflict}
+            </span>
           )}
           {slug === 'cpu' && specs?.igpu === false && (
             <span className="mt-0.5 block text-xs text-slate-500">
@@ -151,10 +153,12 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
           )}
         </span>
         <span className="shrink-0 text-right">
-          <span className="block whitespace-nowrap text-sm font-semibold text-red-600">
+          <span className="block whitespace-nowrap text-sm font-semibold text-red-600 dark:text-red-400">
             {formatPrice(price)}
           </span>
-          <span className={`block text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700'}`}>
+          <span
+            className={`block text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700 dark:text-green-400'}`}
+          >
             {outOfStock ? 'Hết hàng' : selected ? '✓ Đang chọn' : `Còn ${stock}`}
           </span>
         </span>
