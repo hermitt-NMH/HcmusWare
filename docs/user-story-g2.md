@@ -1,7 +1,7 @@
-# User story – Giai đoạn 2 (F13–F18)
+# User story – Giai đoạn 2 (F13–F18, F12)
 
 Người phụ trách: BA · Dùng cho: Dev1/Dev2/Dev3/KTS (làm tính năng), Test1/Test2 (test case).
-Phiên bản 1 – Tuần 1 giai đoạn 2. Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
+Phiên bản 1.1 – Tuần 1 giai đoạn 2 (thêm F12 thông báo trong web và email, thay Zalo OA). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
 
 Liên quan:
 
@@ -121,7 +121,7 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 ### US-14.7 (Tuần 3): Là người bán, tôi muốn xem và cập nhật đơn có hàng của shop mình.
 
 - Giỏ có hàng của 2 shop, When đặt hàng, Then tạo 2 đơn (mỗi shop một đơn) cùng một mã thanh toán; khách thấy 2 đơn nhóm theo shop.
-- Người bán chỉ thấy đơn của shop mình (**[DB]**), cập nhật trạng thái theo thứ tự Chờ xác nhận → Đang giao → Đã giao, hoặc Hủy khi chưa giao.
+- Người bán chỉ thấy đơn của shop mình (**[DB]**), cập nhật trạng thái theo thứ tự Chờ xác nhận → Đã xác nhận → Đang giao → Hoàn tất (`pending` → `confirmed` → `shipping` → `completed`), hoặc Đã hủy khi chưa hoàn tất.
 - Admin vẫn xem được mọi đơn.
 
 ---
@@ -165,7 +165,7 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 
 ### US-16.1: Là khách đã mua, tôi muốn chấm sao và nhận xét sản phẩm để giúp người mua sau.
 
-- Given có đơn **Đã giao** chứa sản phẩm, When mở trang sản phẩm, Then thấy form đánh giá: số sao 1–5 (bắt buộc), nhận xét (không bắt buộc, ≤ 1000 ký tự).
+- Given có đơn **Hoàn tất** (`completed`) chứa sản phẩm, When mở trang sản phẩm, Then thấy form đánh giá: số sao 1–5 (bắt buộc), nhận xét (không bắt buộc, ≤ 1000 ký tự).
 - Given chưa mua hoặc đơn chưa giao, Then không thấy form, thấy dòng "Chỉ người đã nhận hàng mới đánh giá được". **[DB]** Gửi thẳng đánh giá bị từ chối.
 - Mỗi người 1 đánh giá / sản phẩm; đã đánh giá thì form chuyển thành "Sửa đánh giá của bạn". **[DB]** Gửi lần hai bị từ chối.
 - Đánh giá hiện tên người viết (họ tên rút gọn, ví dụ "Nguyễn V. A."), ngày, số sao, nhãn "Đã mua hàng".
@@ -253,6 +253,44 @@ Ví dụ cho unit test hàm gợi ý (Test2):
 - Mọi trang hiện có (kể cả Builder, biểu đồ giá, trang admin, thông báo lỗi tương thích đỏ/vàng) đọc rõ ở cả 2 chế độ: chữ thường tương phản ≥ 4,5:1.
 - Ảnh sản phẩm nền trắng vẫn nhìn rõ trên nền tối (có khung nền sáng quanh ảnh).
 - Trang mới của giai đoạn 2 phải đạt các điều trên trước khi merge (Definition of Done).
+
+---
+
+## F12 – Thông báo trong web và email (Could, Tuần 5; thay Zalo OA)
+
+Thay cho "Thông báo Zalo" vì nhóm không đăng ký được Zalo OA (lý do: [g2-ba-tuan1.md](g2-ba-tuan1.md), mục 2).
+Ưu tiên giữ **Could** như F12 cũ: Tuần 5 trễ thì cắt trước. Làm theo thứ tự US-12.1 → US-12.2 → US-12.3;
+email (US-12.3) chỉ làm khi phần trong web đã xong.
+
+Dữ liệu (KTS): bảng `notifications` mới: `user_id`, `type`, `title`, `body`, `link`, `read_at`, `created_at`.
+Thông báo được **tạo trong DB** (trigger khi đơn đổi trạng thái, shop/sản phẩm được duyệt...), không tạo từ frontend.
+
+### US-12.1: Là khách hàng, tôi muốn nhận thông báo trong web khi giá giảm hoặc đơn hàng đổi trạng thái để không phải tự vào kiểm tra.
+
+- Header có nút chuông kèm số thông báo chưa đọc (lớn hơn 9 thì hiện "9+"); chưa đăng nhập thì không có chuông.
+- Bấm chuông: danh sách 20 thông báo gần nhất, mới nhất ở trên; chưa đọc thì in đậm. Bấm một thông báo thì mở đúng trang liên quan (sản phẩm, đơn hàng) và đánh dấu đã đọc. Có nút "Đánh dấu tất cả đã đọc".
+- Tạo thông báo khi:
+  - giá sản phẩm xuống tới giá mong muốn (thay cho thanh "Giá đã giảm" dưới Header hiện nay, mỗi lần đặt giá mong muốn chỉ báo 1 lần như cũ);
+  - đơn của tôi chuyển sang Đã xác nhận, Đang giao, Hoàn tất hoặc Đã hủy (nội dung có mã đơn và trạng thái mới);
+  - người bán trả lời câu hỏi của tôi (khi F16 xong).
+- Không cần thời gian thực: thông báo mới hiện khi chuyển trang hoặc quay lại tab, giống cách thanh cảnh báo giá đang làm.
+- **[DB]** Chỉ đọc và đánh dấu đã đọc được thông báo của chính mình; không tạo được thông báo cho người khác.
+- Trên điện thoại 360 px, danh sách mở toàn chiều rộng màn hình, đọc rõ ở cả 2 chế độ sáng/tối.
+
+### US-12.2: Là người bán, tôi muốn được báo khi shop có việc cần xử lý.
+
+- Tạo thông báo khi: shop được duyệt hoặc bị từ chối (kèm lý do); sản phẩm được duyệt hoặc bị trả lại (kèm lý do); shop có đơn mới; có câu hỏi mới trên sản phẩm của shop.
+- Bấm thông báo thì mở đúng trang trong `/kenh-nguoi-ban`.
+- Shop bị khóa: người bán nhận 1 thông báo "Shop đã bị khóa".
+
+### US-12.3 (làm nếu kịp): Là khách hàng, tôi muốn nhận email cho những thông báo quan trọng để biết cả khi không mở web.
+
+- Gửi email (tới email đăng nhập) khi: giá xuống tới giá mong muốn; đơn chuyển Đang giao, Hoàn tất hoặc Đã hủy.
+- `/tai-khoan` có công tắc bật/tắt email cho từng loại; mặc định bật. Cuối mỗi email có link tới trang tắt email.
+- Mỗi sự kiện gửi đúng 1 email; đổi trạng thái 2 lần liên tiếp thì 2 email, không gửi lặp lại khi tải lại trang.
+- Gửi email lỗi (hết hạn mức, sai địa chỉ) **không** làm hỏng việc đổi trạng thái đơn và không chặn thông báo trong web.
+- Gửi bằng Supabase Edge Function và một dịch vụ email có gói miễn phí (KTS chọn, kiểm tra hạn mức gửi/ngày trước khi làm). Khóa API chỉ để trong secrets của Edge Function, **không** nằm trong code frontend hay repo.
+- Nội dung email chỉ là chữ, có link về web; không chứa địa chỉ nhận hàng hay số điện thoại.
 
 ---
 

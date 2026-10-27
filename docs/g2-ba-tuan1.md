@@ -73,11 +73,16 @@ Lưu ý: kết luận dựa trên tài liệu công khai, chưa ai trong nhóm t
 
 ### Quyết định
 
-- **Bỏ F12 (Thông báo Zalo)** khỏi phạm vi giai đoạn 2: đăng ký rườm rà, cần giấy ĐKKD mà nhóm không có, ZNS tính phí. Ghi F12 vào backlog.
-- Thay thế: giữ thông báo **trong web** đã có từ giai đoạn 1 (`PriceAlertNotifier`), mở rộng thêm thông báo đổi trạng thái đơn.
-- Không bắt buộc: nếu Tuần 5 còn thời gian, gửi **email** cảnh báo giá và trạng thái đơn qua Supabase Edge Function. Không cần giấy tờ, có gói miễn phí.
+- **Bỏ Zalo OA**: đăng ký rườm rà, cần giấy ĐKKD mà nhóm không có, ZNS tính phí. Zalo ghi vào backlog.
+- **F12 đổi thành "Thông báo trong web và email"**, giữ ưu tiên Could ở Tuần 5. User story: F12 trong [user-story-g2.md](user-story-g2.md).
+  - Trong web (làm trước): chuông thông báo trên Header, thay và mở rộng thanh "Giá đã giảm" (`PriceAlertNotifier`) hiện có: giá giảm, đơn đổi trạng thái, việc của người bán.
+  - Email (làm nếu kịp): cảnh báo giá và trạng thái đơn qua Supabase Edge Function, dịch vụ email gói miễn phí. Không cần giấy tờ.
 
 Việc tiếp theo:
 
-- PM: cập nhật kế hoạch giai đoạn 2 (phạm vi còn 9 tính năng; xóa việc "KTS: thông báo Zalo (F12)" ở Tuần 5; bảng rủi ro ghi "Không đăng ký được Zalo OA" là đã xảy ra, đã xử lý), bỏ thẻ F12 trên GitHub Projects, báo lý do ở buổi báo cáo.
-- KTS: Tuần 5 dùng thời gian của F12 để sửa lỗi hoặc làm email nếu PM đồng ý.
+- PM: cập nhật kế hoạch giai đoạn 2: đổi tên F12 trong bảng phạm vi; Tuần 5 thay "KTS: thông báo Zalo (F12) qua Supabase Edge Function…" bằng các việc dưới; bảng rủi ro ghi "Không đăng ký được Zalo OA" là đã xảy ra, đã xử lý; đổi thẻ F12 trên GitHub Projects; báo lý do ở buổi báo cáo.
+- Tuần 5, đề xuất chia việc:
+  - KTS: bảng `notifications`, RLS, trigger tạo thông báo khi đơn đổi trạng thái và khi duyệt shop/sản phẩm.
+  - Dev1: chuông thông báo trên Header, gộp thanh cảnh báo giá vào chuông.
+  - KTS (nếu kịp): Edge Function gửi email.
+  - Test2: test RLS bảng `notifications` cho 3 vai trò. Test1: kiểm thử tay luồng đổi trạng thái đơn → khách nhận thông báo.
