@@ -5,6 +5,7 @@ import OrderHistory from '../features/orders/OrderHistory'
 import SavedBuilds from '../features/builder/SavedBuilds'
 import MyPriceAlerts from '../features/price/MyPriceAlerts'
 import { PHONE_RE } from '../features/orders/orders'
+import { roleLabel, roleShortcut } from '../lib/roles'
 
 const inputClass =
   'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -12,7 +13,7 @@ const inputClass =
 // Trang tài khoản: hồ sơ giao hàng, lịch sử đơn hàng, cấu hình đã lưu, cảnh báo giá, đăng xuất.
 // Số điện thoại để trống cũng được (PHONE_RE dùng chung với trang thanh toán).
 export default function Account() {
-  const { user, profile, loading, signOut } = useAuth()
+  const { user, profile, role, loading, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -27,6 +28,7 @@ export default function Account() {
   if (!user)
     return <Navigate to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`} replace />
 
+  const shortcut = roleShortcut(role)
   const handleSignOut = async () => {
     await signOut()
     navigate('/', { replace: true })
@@ -48,14 +50,14 @@ export default function Account() {
         </button>
       </div>
 
-      {profile?.role === 'admin' && (
+      {shortcut && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          <span>Bạn đang dùng tài khoản quản trị (admin).</span>
+          <span>Bạn đang dùng tài khoản {roleLabel(role).toLowerCase()}.</span>
           <Link
-            to="/admin"
+            to={shortcut.to}
             className="inline-flex h-10 items-center rounded-lg bg-amber-600 px-4 font-semibold text-white hover:bg-amber-700"
           >
-            Vào trang quản trị
+            Vào {shortcut.label.toLowerCase()}
           </Link>
         </div>
       )}
