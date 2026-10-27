@@ -93,14 +93,12 @@ stable
 security definer
 set search_path = public
 as $$
-  select exists (
+  select public.is_seller() and exists (
     select 1
     from public.shops s
-    join public.profiles p on p.id = s.owner_id
     where s.id = p_shop_id
       and s.owner_id = auth.uid()
       and s.status = 'active'
-      and p.role = 'seller'
   );
 $$;
 
@@ -118,7 +116,7 @@ create table public.brands (
 insert into public.brands (name, slug)
 select distinct on (slug) name, slug
 from (
-  select trim(brand) as name, public.slugify(brand) as slug, count(*) as n
+  select left(trim(brand), 60) as name, public.slugify(brand) as slug, count(*) as n
   from public.products
   where public.slugify(brand) <> ''
   group by 1, 2
@@ -174,7 +172,7 @@ begin
     end if;
     select id into v_id from public.brands where slug = v_slug;
     if v_id is null and (public.is_admin() or auth.uid() is null) then
-      insert into public.brands (name, slug) values (trim(new.brand), v_slug) returning id into v_id;
+      insert into public.brands (name, slug) values (left(trim(new.brand), 60), v_slug) returning id into v_id;
     end if;
     new.brand_id := v_id;
   end if;
@@ -191,6 +189,8 @@ create trigger products_sync_brand
 -- - không tự duyệt: chỉ được 'active' lại sản phẩm admin đã duyệt trước đó (bỏ ẩn)
 -- - không chuyển sản phẩm sang shop khác
 -- Admin và script chạy bằng service role (auth.uid() null) không bị giới hạn.
+-- Admin gỡ sản phẩm (đổi sang ẩn / chờ duyệt) thì xóa approved_at: người bán không tự bán lại được,
+-- phải chờ admin duyệt lần nữa.
 create or replace function public.guard_product_write()
 returns trigger
 language plpgsql
@@ -201,6 +201,8 @@ begin
   if public.is_admin() or auth.uid() is null then
     if new.status = 'active' and new.approved_at is null then
       new.approved_at := now();
+    elsif tg_op = 'UPDATE' and new.status <> 'active' and new.status is distinct from old.status then
+      new.approved_at := null;
     end if;
     return new;
   end if;
@@ -290,6 +292,10 @@ security definer
 set search_path = public
 as $$
 begin
+  -- house_shop_id() tìm shop HcmusWare theo slug (mặc định của products.shop_id) → không ai đổi được slug này.
+  if tg_op = 'UPDATE' and old.slug = 'hcmusware' and new.slug is distinct from old.slug then
+    raise exception 'Không đổi được đường dẫn của shop HcmusWare';
+  end if;
   if public.is_admin() or auth.uid() is null then
     return new;
   end if;

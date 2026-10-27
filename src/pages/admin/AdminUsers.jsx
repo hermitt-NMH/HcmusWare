@@ -12,13 +12,17 @@ const SHOP_STATUS = { pending: 'chờ duyệt', active: 'đang hoạt động', 
 export default function AdminUsers() {
   const [input, setInput] = useState('')
   const [search, setSearch] = useState('')
-  const users = useAsync(() => getAdminUsers(search), [search])
+  // reload: bấm "Tìm" lại với cùng từ khóa vẫn tải mới (deps đổi) – không thì danh sách cũ
+  // hiện lại vai trò trước khi đổi.
+  const [reload, setReload] = useState(0)
+  const users = useAsync(() => getAdminUsers(search), [search, reload])
   const [changed, setChanged] = useState({}) // id → vai trò mới (khỏi tải lại cả danh sách)
 
   const submit = (e) => {
     e.preventDefault()
     setChanged({})
     setSearch(input.trim())
+    setReload((n) => n + 1)
   }
 
   return (

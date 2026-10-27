@@ -1,7 +1,8 @@
 -- =====================================================================
 -- Dữ liệu khởi tạo.
 -- Local: tự chạy sau migration mỗi lần npm run db:start (lần đầu) / npm run db:reset.
--- Online: chạy tay trong SQL Editor, BỎ phần "Tài khoản admin local" ở cuối file.
+-- Online: chạy tay trong SQL Editor, BỎ TOÀN BỘ khối "Tài khoản mẫu local" ở cuối file
+--         (tạo 3 tài khoản mật khẩu yếu admin@, seller@, khach@hcmusware.local – tuyệt đối không có trên online).
 -- Sản phẩm thật được đẩy lên bằng: npm run import-data
 -- =====================================================================
 

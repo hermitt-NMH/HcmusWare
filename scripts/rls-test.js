@@ -455,6 +455,35 @@ let sellerNew
   }
 }
 
+// ---------- Admin gỡ sản phẩm, shop HcmusWare (sửa sau review) ----------
+{
+  // Shop B vẫn hoạt động; sản phẩm đang bán pActiveB đã được duyệt.
+  const takeDown = await api(admin.token, `/rest/v1/products?id=eq.${pActiveB.id}`, {
+    method: 'PATCH',
+    body: { status: 'hidden' },
+  })
+  const relist = await api(seller2.token, `/rest/v1/products?id=eq.${pActiveB.id}`, {
+    method: 'PATCH',
+    body: { status: 'active' },
+  })
+  const now = (await svc(`/rest/v1/products?select=status&id=eq.${pActiveB.id}`)).data[0].status
+  rec(
+    'RLS26',
+    takeDown.data?.[0]?.approved_at === null && !relist.ok && now === 'hidden',
+    `admin gỡ sản phẩm: approved_at=${takeDown.data?.[0]?.approved_at}; người bán tự bán lại: ${relist.status} "${errMsg(relist)}", trạng thái=${now}`,
+  )
+  const rename = await api(admin.token, `/rest/v1/shops?id=eq.${houseShop.id}`, {
+    method: 'PATCH',
+    body: { slug: `hcmusware-moi-${ts}` },
+  })
+  const slug = (await svc(`/rest/v1/shops?select=slug&id=eq.${houseShop.id}`)).data[0].slug
+  rec(
+    'RLS27',
+    !rename.ok && slug === 'hcmusware',
+    `admin đổi đường dẫn shop HcmusWare: ${rename.status} "${errMsg(rename)}", slug hiện tại=${slug}`,
+  )
+}
+
 // ---------- Dọn dẹp ----------
 for (const u of [customer, seller, seller2, admin]) {
   for (const s of (await svc(`/rest/v1/shops?select=id&owner_id=eq.${u.id}`)).data) {
