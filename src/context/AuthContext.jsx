@@ -3,7 +3,7 @@ import { supabase } from '../lib/supabase'
 import { AuthContext } from '../hooks/useAuth'
 
 // Bọc toàn bộ app (trong main.jsx) để mọi trang biết ai đang đăng nhập.
-// Cung cấp: user, profile (bảng profiles: full_name, phone, address, role), loading,
+// Cung cấp: user, profile (bảng profiles: full_name, phone, address, role), role, loading,
 // và các hàm signIn, signUp, signInWithGoogle, signOut, updateProfile.
 export function AuthProvider({ children }) {
   const [session, setSession] = useState(null)
@@ -75,7 +75,9 @@ export function AuthProvider({ children }) {
       profileError,
       reloadProfile,
       loading,
-      isAdmin: !profileLoading && profile?.role === 'admin',
+      // 'customer' | 'seller' | 'admin' (src/lib/roles.js). null khi chưa đăng nhập hoặc đang tải hồ sơ.
+      // Kiểm tra quyền: canAccess(role, AREA_ROLES.xxx) trong src/lib/roles.js.
+      role: profileLoading ? null : (profile?.role ?? null),
 
       signIn: (email, password) => supabase.auth.signInWithPassword({ email, password }),
 

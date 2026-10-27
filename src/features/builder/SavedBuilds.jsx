@@ -26,17 +26,19 @@ export default function SavedBuilds({ userId }) {
   const list = builds.data?.filter((b) => !deleted.includes(b.id)) ?? []
 
   return (
-    <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+    <section className="space-y-3 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6">
       <h2 className="text-lg font-semibold">Cấu hình đã lưu</h2>
       {builds.loading && <p className="text-sm text-slate-500">Đang tải…</p>}
       {builds.error && (
-        <p className="text-sm text-red-600">Không tải được: {builds.error.message}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">
+          Không tải được: {builds.error.message}
+        </p>
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       {!builds.loading && !builds.error && !list.length && (
         <p className="text-sm text-slate-500">
           Chưa có cấu hình nào.{' '}
-          <Link to="/build-pc" className="text-blue-700 hover:underline">
+          <Link to="/build-pc" className="text-blue-700 dark:text-blue-300 hover:underline">
             Build PC
           </Link>{' '}
           rồi bấm "Lưu cấu hình".
@@ -64,7 +66,7 @@ export default function SavedBuilds({ userId }) {
                 <button
                   type="button"
                   onClick={() => remove(b)}
-                  className="inline-flex h-10 items-center rounded-lg px-3 text-sm text-slate-500 hover:bg-slate-100 hover:text-red-600"
+                  className="inline-flex h-10 items-center rounded-lg px-3 text-sm text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
                 >
                   Xóa
                 </button>

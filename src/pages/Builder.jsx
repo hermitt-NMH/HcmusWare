@@ -249,7 +249,9 @@ function SlotLabel({ slot, build }) {
       <span>
         <span className="block whitespace-nowrap font-medium">{slot.label}</span>
         {slot.optional && (
-          <span className={`block text-[11px] ${needVga ? 'text-red-600' : 'text-slate-400'}`}>
+          <span
+            className={`block text-[11px] ${needVga ? 'text-red-600 dark:text-red-400' : 'text-slate-400'}`}
+          >
             {needVga ? 'Bắt buộc (CPU không có iGPU)' : 'Không bắt buộc'}
           </span>
         )}
@@ -273,13 +275,13 @@ function SelectedPart({ slug, product }) {
         onError={(e) => {
           if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback
         }}
-        className="h-12 w-12 shrink-0 rounded-md border border-slate-100 bg-white object-contain"
+        className="h-12 w-12 shrink-0 rounded-md border border-slate-100 bg-surface object-contain"
       />
       <span className="min-w-0">
         <Link
           to={`/san-pham/${product.id}`}
           target="_blank"
-          className="line-clamp-2 text-sm font-medium text-slate-900 hover:text-blue-700"
+          className="line-clamp-2 text-sm font-medium text-slate-900 hover:text-blue-700 dark:hover:text-blue-300"
         >
           {product.name}
         </Link>
@@ -289,7 +291,7 @@ function SelectedPart({ slug, product }) {
           </span>
         )}
         {product.stock <= 0 && (
-          <span className="block text-xs font-medium text-red-600">Hết hàng</span>
+          <span className="block text-xs font-medium text-red-600 dark:text-red-400">Hết hàng</span>
         )}
       </span>
     </span>
@@ -304,7 +306,7 @@ function RamQtySelect({ value, onChange, id }) {
         id={id}
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
-        className="h-9 rounded-md border border-slate-300 bg-white px-2 text-sm text-slate-900"
+        className="h-9 rounded-md border border-slate-300 bg-surface px-2 text-sm text-slate-900"
       >
         {Array.from({ length: MAX_RAM_QTY }, (_, i) => i + 1).map((n) => (
           <option key={n} value={n}>
@@ -322,7 +324,7 @@ function DesktopTable({ all, build, ramQty, statusOf, onSelect, onRemove, onRamQ
 
   return (
     <>
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-surface">
         <table className="w-full table-fixed text-sm">
           <thead className="bg-slate-50 text-left text-xs uppercase text-slate-500">
             <tr>
@@ -359,7 +361,7 @@ function DesktopTable({ all, build, ramQty, statusOf, onSelect, onRemove, onRamQ
                     )}
                     {status && <div className="mt-1">{BADGE[status]}</div>}
                   </td>
-                  <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-red-600">
+                  <td className="whitespace-nowrap px-4 py-3 text-right font-semibold text-red-600 dark:text-red-400">
                     {p
                       ? formatPrice(p.price == null ? null : p.price * partQty(slot.slug, ramQty))
                       : ''}
@@ -382,7 +384,7 @@ function DesktopTable({ all, build, ramQty, statusOf, onSelect, onRemove, onRamQ
                           type="button"
                           onClick={() => onRemove(slot.slug)}
                           aria-label={`Bỏ ${slot.label}`}
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-red-600"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
                         >
                           ✕
                         </button>
@@ -436,7 +438,7 @@ function PickerDialog({ slot, onClose, children }) {
       // Bấm ra ngoài (vùng nền mờ) thì đóng.
       onClick={(e) => e.target === ref.current && onClose()}
       aria-labelledby="picker-title"
-      className="m-auto w-[min(720px,calc(100vw-2rem))] rounded-2xl p-0 backdrop:bg-slate-900/50"
+      className="m-auto w-[min(720px,calc(100vw-2rem))] rounded-2xl p-0 backdrop:bg-gray-900/50"
     >
       <div className="flex max-h-[85vh] flex-col">
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
@@ -512,7 +514,7 @@ function MobileSteps({
                       ? 'border-red-300 bg-red-50 text-red-700'
                       : done
                         ? 'border-green-300 bg-green-50 text-green-800'
-                        : 'border-slate-300 bg-white text-slate-600'
+                        : 'border-slate-300 bg-surface text-slate-600'
                 }`}
               >
                 {done && i !== step && (status === 'error' ? '!' : '✓')} {s.label}
@@ -528,7 +530,7 @@ function MobileSteps({
             className={`inline-flex h-10 items-center rounded-full border px-3 text-xs font-medium ${
               step === lastStep
                 ? 'border-blue-600 bg-blue-600 text-white'
-                : 'border-slate-300 bg-white text-slate-600'
+                : 'border-slate-300 bg-surface text-slate-600'
             }`}
           >
             Tổng kết
@@ -545,13 +547,13 @@ function MobileSteps({
           </div>
 
           {product && (
-            <div className="space-y-2 rounded-xl border border-slate-200 bg-white p-3">
+            <div className="space-y-2 rounded-xl border border-slate-200 bg-surface p-3">
               <div className="flex items-start justify-between gap-2">
                 <SelectedPart slug={slot.slug} product={product} />
                 <button
                   type="button"
                   onClick={() => onRemove(slot.slug)}
-                  className="inline-flex h-11 shrink-0 items-center px-2 text-sm text-slate-500 hover:text-red-600"
+                  className="inline-flex h-11 shrink-0 items-center px-2 text-sm text-slate-500 hover:text-red-600 dark:hover:text-red-400"
                 >
                   Bỏ chọn
                 </button>
@@ -562,7 +564,7 @@ function MobileSteps({
                 ) : (
                   <span />
                 )}
-                <span className="font-semibold text-red-600">
+                <span className="font-semibold text-red-600 dark:text-red-400">
                   {formatPrice(
                     product.price == null ? null : product.price * partQty(slot.slug, ramQty),
                   )}
@@ -603,7 +605,7 @@ function MobileSteps({
       ) : (
         <section className="space-y-3">
           <h2 className="text-base font-semibold">Tổng kết cấu hình</h2>
-          <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-white">
+          <ul className="divide-y divide-slate-100 rounded-xl border border-slate-200 bg-surface">
             {BUILDER_SLOTS.map((s, i) => (
               <li key={s.slug}>
                 <button
@@ -632,15 +634,19 @@ function MobileSteps({
       )}
 
       {/* Thanh dưới: tổng tiền + nút lùi/tiếp, luôn thấy khi cuộn danh sách dài */}
-      <div className="sticky bottom-0 -mx-4 flex items-center gap-2 border-t border-slate-200 bg-white/95 px-4 py-2 backdrop-blur">
+      <div className="sticky bottom-0 -mx-4 flex items-center gap-2 border-t border-slate-200 bg-surface/95 px-4 py-2 backdrop-blur">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] text-slate-500">
             Tổng cộng
             {result.errors.length > 0 && (
-              <span className="ml-1 font-semibold text-red-600">· {result.errors.length} lỗi</span>
+              <span className="ml-1 font-semibold text-red-600 dark:text-red-400">
+                · {result.errors.length} lỗi
+              </span>
             )}
           </p>
-          <p className="truncate font-bold text-red-600">{formatPrice(totalPrice)}</p>
+          <p className="truncate font-bold text-red-600 dark:text-red-400">
+            {formatPrice(totalPrice)}
+          </p>
         </div>
         <button
           type="button"
@@ -670,7 +676,9 @@ function SlotTitle({ slot, build }) {
     <>
       {slot.label}
       {slot.optional && (
-        <span className={`ml-1 text-xs font-normal ${needVga ? 'text-red-600' : 'text-slate-400'}`}>
+        <span
+          className={`ml-1 text-xs font-normal ${needVga ? 'text-red-600 dark:text-red-400' : 'text-slate-400'}`}
+        >
           ({needVga ? 'bắt buộc vì CPU không có iGPU' : 'không bắt buộc'})
         </span>
       )}
@@ -684,7 +692,10 @@ function BuilderIntro() {
       <h1 className="text-xl font-bold sm:text-2xl">Build PC</h1>
       <p className="mt-1 text-sm text-slate-500">
         Chọn từng linh kiện, web tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.{' '}
-        <Link to="/san-pham" className="text-blue-700 underline hover:no-underline">
+        <Link
+          to="/san-pham"
+          className="text-blue-700 dark:text-blue-300 underline hover:no-underline"
+        >
           Xem tất cả sản phẩm
         </Link>
       </p>

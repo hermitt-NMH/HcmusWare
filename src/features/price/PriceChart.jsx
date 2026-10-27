@@ -1,13 +1,24 @@
 import { Chart as ChartJS, Filler, LineElement, LinearScale, PointElement, Tooltip } from 'chart.js'
 import { Line } from 'react-chartjs-2'
 import { formatDate, formatPrice } from '../../lib/format'
+import { useTheme } from '../../hooks/useTheme'
 
 // Chỉ đăng ký phần Chart.js cần dùng để file nhẹ hơn.
 ChartJS.register(LineElement, PointElement, LinearScale, Tooltip, Filler)
 
-const BLUE = '#2563eb' // blue-600, cùng màu nút chính của web
-const GRID = '#e2e8f0' // slate-200
-const TICK = '#64748b' // slate-500
+// Màu lấy từ biến CSS --chart-* trong index.css (mỗi chế độ sáng/tối một bộ màu).
+function chartColors() {
+  const css = getComputedStyle(document.documentElement)
+  const v = (name) => css.getPropertyValue(name).trim()
+  return {
+    line: v('--chart-line'),
+    fill: v('--chart-fill'),
+    grid: v('--chart-grid'),
+    tick: v('--chart-tick'),
+    target: v('--chart-target'),
+    pointBorder: v('--chart-point-border'),
+  }
+}
 
 // "5,49 tr" cho trục Y gọn trên điện thoại.
 function shortPrice(v) {
@@ -21,21 +32,23 @@ function shortPrice(v) {
 // cài thêm thư viện ngày tháng. Đường bậc thang: giá giữ nguyên cho tới lần đổi tiếp theo.
 // targetPrice: vẽ thêm đường ngang nét đứt "giá mong muốn" nếu khách đã đặt.
 export default function PriceChart({ points, targetPrice }) {
+  const { theme } = useTheme() // đổi chế độ → vẽ lại với bộ màu mới
+  const c = chartColors()
   const data = points.map((p) => ({ x: Date.parse(p.recorded_at), y: p.price }))
   const datasets = [
     {
       label: 'Giá',
       data,
       stepped: 'after',
-      borderColor: BLUE,
+      borderColor: c.line,
       borderWidth: 2,
-      backgroundColor: 'rgba(37, 99, 235, 0.08)',
+      backgroundColor: c.fill,
       fill: 'start',
       pointRadius: 0,
       pointHoverRadius: 5,
       pointHitRadius: 12,
-      pointHoverBackgroundColor: BLUE,
-      pointHoverBorderColor: '#fff',
+      pointHoverBackgroundColor: c.line,
+      pointHoverBorderColor: c.pointBorder,
       pointHoverBorderWidth: 2,
     },
   ]
@@ -46,7 +59,7 @@ export default function PriceChart({ points, targetPrice }) {
         { x: data[0].x, y: targetPrice },
         { x: data[data.length - 1].x, y: targetPrice },
       ],
-      borderColor: '#16a34a', // green-600
+      borderColor: c.target,
       borderWidth: 1.5,
       borderDash: [6, 4],
       pointRadius: 0,
@@ -68,9 +81,9 @@ export default function PriceChart({ points, targetPrice }) {
         min: data[0]?.x,
         max: data[data.length - 1]?.x,
         grid: { display: false },
-        border: { color: GRID },
+        border: { color: c.grid },
         ticks: {
-          color: TICK,
+          color: c.tick,
           maxTicksLimit: 6,
           maxRotation: 0,
           callback: (v) =>
@@ -78,9 +91,9 @@ export default function PriceChart({ points, targetPrice }) {
         },
       },
       y: {
-        grid: { color: GRID },
+        grid: { color: c.grid },
         border: { display: false },
-        ticks: { color: TICK, maxTicksLimit: 5, callback: shortPrice },
+        ticks: { color: c.tick, maxTicksLimit: 5, callback: shortPrice },
         grace: '5%',
       },
     },
@@ -100,6 +113,7 @@ export default function PriceChart({ points, targetPrice }) {
   return (
     <div className="h-56 sm:h-64">
       <Line
+        key={theme}
         data={{ datasets }}
         options={options}
         role="img"

@@ -54,7 +54,7 @@ export default function AdminProducts() {
           value={cat}
           onChange={(e) => setCat(e.target.value)}
           aria-label="Lọc theo danh mục"
-          className="h-11 rounded-lg border border-slate-300 bg-white px-3 text-sm"
+          className="h-11 rounded-lg border border-slate-300 bg-surface px-3 text-sm"
         >
           <option value="">Tất cả danh mục</option>
           {categories.data?.map((c) => (
@@ -93,7 +93,7 @@ export default function AdminProducts() {
         </p>
       )}
 
-      <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-surface">
         {list.map((p) => (
           <li key={p.id} className="flex items-center gap-3 p-3">
             <img
@@ -106,7 +106,7 @@ export default function AdminProducts() {
               <Link
                 to={`/san-pham/${p.id}`}
                 target="_blank"
-                className="line-clamp-1 text-sm font-medium hover:text-blue-700"
+                className="line-clamp-1 text-sm font-medium hover:text-blue-700 dark:hover:text-blue-300"
               >
                 {p.name}
               </Link>
@@ -114,9 +114,11 @@ export default function AdminProducts() {
                 #{p.id} · {p.categories?.name} · {p.brand ?? '—'}
               </p>
               <p className="text-sm">
-                <span className="font-semibold text-red-600">{formatPrice(p.price)}</span>
+                <span className="font-semibold text-red-600 dark:text-red-400">
+                  {formatPrice(p.price)}
+                </span>
                 <span
-                  className={`ml-2 text-xs ${p.stock <= 0 ? 'font-medium text-red-600' : 'text-slate-500'}`}
+                  className={`ml-2 text-xs ${p.stock <= 0 ? 'font-medium text-red-600 dark:text-red-400' : 'text-slate-500'}`}
                 >
                   Kho: {p.stock}
                 </span>
@@ -133,7 +135,7 @@ export default function AdminProducts() {
               <button
                 type="button"
                 onClick={() => remove(p)}
-                className="inline-flex h-10 items-center justify-center rounded-lg px-3 text-sm text-slate-500 hover:bg-red-50 hover:text-red-600"
+                className="inline-flex h-10 items-center justify-center rounded-lg px-3 text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:text-red-400"
               >
                 Xóa
               </button>
@@ -159,7 +161,7 @@ export default function AdminProducts() {
 }
 
 const inputClass =
-  'w-full rounded-lg border bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
+  'w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
 
 function ProductDialog({ product, categories, onClose, onSaved }) {
   const ref = useRef(null)
@@ -204,7 +206,9 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
       <span className="mb-1 block font-medium text-slate-700">{label}</span>
       {input}
       {hint && !errors[key] && <span className="mt-1 block text-xs text-slate-500">{hint}</span>}
-      {errors[key] && <span className="mt-1 block text-red-600">{errors[key]}</span>}
+      {errors[key] && (
+        <span className="mt-1 block text-red-600 dark:text-red-400">{errors[key]}</span>
+      )}
     </label>
   )
   const border = (key) => (errors[key] ? 'border-red-400' : 'border-slate-300')
@@ -214,7 +218,7 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
       ref={ref}
       onClose={onClose}
       aria-labelledby="product-dialog-title"
-      className="m-auto w-[min(640px,calc(100vw-2rem))] rounded-2xl p-0 backdrop:bg-slate-900/50"
+      className="m-auto w-[min(640px,calc(100vw-2rem))] rounded-2xl p-0 backdrop:bg-gray-900/50"
     >
       <form onSubmit={submit} noValidate className="flex max-h-[90vh] flex-col">
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">

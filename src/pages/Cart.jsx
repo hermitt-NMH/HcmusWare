@@ -43,7 +43,7 @@ export default function Cart() {
           </Link>
           <Link
             to="/san-pham"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-5 font-medium text-slate-700 hover:bg-slate-50"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-surface px-5 font-medium text-slate-700 hover:bg-slate-50"
           >
             Xem sản phẩm
           </Link>
@@ -61,7 +61,7 @@ export default function Cart() {
         <button
           type="button"
           onClick={() => window.confirm('Xóa toàn bộ giỏ hàng?') && clear()}
-          className="inline-flex min-h-11 items-center px-2 text-sm text-slate-500 hover:text-red-600"
+          className="inline-flex min-h-11 items-center px-2 text-sm text-slate-500 hover:text-red-600 dark:hover:text-red-400"
         >
           Xóa tất cả
         </button>
@@ -75,16 +75,18 @@ export default function Cart() {
       )}
 
       <div className="grid gap-4 lg:grid-cols-[1fr_320px] lg:items-start">
-        <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-surface">
           {items.map((it) => (
             <CartLine key={it.id} item={it} onQty={setQty} onRemove={removeItem} />
           ))}
         </ul>
 
-        <aside className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 lg:sticky lg:top-36">
+        <aside className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4 lg:sticky lg:top-36">
           <div className="flex items-center justify-between">
             <span className="text-slate-600">Tạm tính</span>
-            <span className="text-xl font-bold text-red-600">{formatPrice(subtotal)}</span>
+            <span className="text-xl font-bold text-red-600 dark:text-red-400">
+              {formatPrice(subtotal)}
+            </span>
           </div>
           <p className="text-xs text-slate-500">Miễn phí giao hàng toàn quốc.</p>
           {hasUnavailable && (
@@ -111,7 +113,7 @@ export default function Cart() {
           )}
           <Link
             to="/san-pham"
-            className="flex min-h-11 items-center justify-center text-sm text-blue-700 hover:underline"
+            className="flex min-h-11 items-center justify-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
             Tiếp tục mua sắm
           </Link>
@@ -144,16 +146,20 @@ function CartLine({ item, onQty, onRemove }) {
           {brand && <p className="text-xs font-semibold uppercase text-slate-500">{brand}</p>}
           <Link
             to={`/san-pham/${id}`}
-            className="line-clamp-2 text-sm font-medium text-slate-900 hover:text-blue-700"
+            className="line-clamp-2 text-sm font-medium text-slate-900 hover:text-blue-700 dark:hover:text-blue-300"
           >
             {name}
           </Link>
           {missing ? (
-            <p className="text-xs font-medium text-red-600">Sản phẩm đã ngừng bán</p>
+            <p className="text-xs font-medium text-red-600 dark:text-red-400">
+              Sản phẩm đã ngừng bán
+            </p>
           ) : stock <= 0 ? (
-            <p className="text-xs font-medium text-red-600">Hết hàng</p>
+            <p className="text-xs font-medium text-red-600 dark:text-red-400">Hết hàng</p>
           ) : (
-            stock < qty + 3 && <p className="text-xs text-amber-700">Chỉ còn {stock} sản phẩm</p>
+            stock < qty + 3 && (
+              <p className="text-xs text-amber-700 dark:text-amber-300">Chỉ còn {stock} sản phẩm</p>
+            )
           )}
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -164,7 +170,7 @@ function CartLine({ item, onQty, onRemove }) {
             label={name}
             onChange={(v) => onQty(id, v)}
           />
-          <p className="font-semibold text-red-600">
+          <p className="font-semibold text-red-600 dark:text-red-400">
             {price == null ? 'Liên hệ' : formatPrice(price * qty)}
           </p>
         </div>
@@ -173,7 +179,7 @@ function CartLine({ item, onQty, onRemove }) {
         type="button"
         onClick={() => onRemove(id)}
         aria-label={`Xóa ${name} khỏi giỏ`}
-        className="-mr-1 -mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-600"
+        className="-mr-1 -mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
       >
         <svg
           width="18"

@@ -94,24 +94,28 @@ function OrderView() {
       )}
 
       <div className="grid gap-4 sm:grid-cols-2">
-        <section className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+        <section className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
           <h2 className="mb-2 font-semibold">Giao đến</h2>
           <p className="font-medium">{o.shipping_name}</p>
           <p>{o.shipping_phone}</p>
           <p className="whitespace-pre-line text-slate-600">{o.shipping_address}</p>
           {o.note && <p className="mt-2 text-slate-500">Ghi chú: {o.note}</p>}
         </section>
-        <section className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+        <section className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
           <h2 className="mb-2 font-semibold">Thanh toán</h2>
           <p>{PAYMENT_METHODS[o.payment_method]?.label ?? o.payment_method}</p>
-          <p className={o.paid_at ? 'font-medium text-green-700' : 'text-slate-600'}>
+          <p
+            className={
+              o.paid_at ? 'font-medium text-green-700 dark:text-green-400' : 'text-slate-600'
+            }
+          >
             {paymentStatusLabel(o)}
             {o.paid_at && ` lúc ${formatDateTime(o.paid_at)}`}
           </p>
         </section>
       </div>
 
-      <section className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <section className="overflow-hidden rounded-xl border border-slate-200 bg-surface">
         <ul className="divide-y divide-slate-100">
           {o.order_items.map((it) => {
             const fallback = categoryImage(it.products?.categories?.slug)
@@ -126,7 +130,7 @@ function OrderView() {
                 <span className="min-w-0 flex-1">
                   <Link
                     to={`/san-pham/${it.product_id}`}
-                    className="line-clamp-2 hover:text-blue-700"
+                    className="line-clamp-2 hover:text-blue-700 dark:hover:text-blue-300"
                   >
                     {it.products?.name ?? `Sản phẩm #${it.product_id}`}
                   </Link>
@@ -143,20 +147,22 @@ function OrderView() {
         </ul>
         <div className="flex items-baseline justify-between border-t border-slate-200 p-4">
           <span className="font-medium">Tổng cộng</span>
-          <span className="text-xl font-bold text-red-600">{formatPrice(o.total)}</span>
+          <span className="text-xl font-bold text-red-600 dark:text-red-400">
+            {formatPrice(o.total)}
+          </span>
         </div>
       </section>
 
       <div className="flex flex-col gap-2 sm:flex-row">
         <Link
           to="/tai-khoan"
-          className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-white px-5 text-sm font-medium hover:bg-slate-50"
+          className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-surface px-5 text-sm font-medium hover:bg-slate-50"
         >
           Xem tất cả đơn hàng
         </Link>
         <Link
           to="/san-pham"
-          className="inline-flex h-11 items-center justify-center rounded-lg px-5 text-sm text-blue-700 hover:underline"
+          className="inline-flex h-11 items-center justify-center rounded-lg px-5 text-sm text-blue-700 dark:text-blue-300 hover:underline"
         >
           Tiếp tục mua sắm
         </Link>

@@ -54,13 +54,16 @@ function DetailView({ product }) {
       <nav aria-label="Đường dẫn" className="text-sm text-slate-500">
         <ol className="flex flex-wrap items-center gap-1">
           <li>
-            <Link to="/" className="hover:text-blue-700 hover:underline">
+            <Link to="/" className="hover:text-blue-700 dark:hover:text-blue-300 hover:underline">
               Trang chủ
             </Link>
           </li>
           {categories && (
             <li className="before:mx-1 before:content-['/']">
-              <Link to={`/danh-muc/${slug}`} className="hover:text-blue-700 hover:underline">
+              <Link
+                to={`/danh-muc/${slug}`}
+                className="hover:text-blue-700 dark:hover:text-blue-300 hover:underline"
+              >
                 {categories.name}
               </Link>
             </li>
@@ -96,9 +99,11 @@ function DetailView({ product }) {
             <h1 className="mt-1 text-2xl font-bold text-slate-900">{name}</h1>
           </div>
 
-          <p className="text-3xl font-bold text-red-600">{formatPrice(price)}</p>
+          <p className="text-3xl font-bold text-red-600 dark:text-red-400">{formatPrice(price)}</p>
 
-          <p className={`text-sm font-medium ${outOfStock ? 'text-slate-500' : 'text-green-700'}`}>
+          <p
+            className={`text-sm font-medium ${outOfStock ? 'text-slate-500' : 'text-green-700 dark:text-green-400'}`}
+          >
             {outOfStock ? 'Hết hàng' : `Còn hàng – ${stock} sản phẩm`}
           </p>
 
@@ -111,7 +116,7 @@ function DetailView({ product }) {
                 href={datasheet_url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-300 bg-white px-5 font-medium text-slate-700 hover:bg-slate-50"
+                className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-300 bg-surface px-5 font-medium text-slate-700 hover:bg-slate-50"
               >
                 {/* Có hãng cho file PDF, có hãng chỉ có trang thông số trên web → ghi đúng để khách không bất ngờ */}
                 {/\.pdf($|\?)/i.test(datasheet_url) ? 'Tải datasheet (PDF)' : 'Xem thông số hãng ↗'}
@@ -128,7 +133,7 @@ function DetailView({ product }) {
       <section>
         <h2 className="mb-3 text-lg font-semibold">Thông số kỹ thuật</h2>
         {rows.length ? (
-          <table className="w-full overflow-hidden rounded-xl border border-slate-200 bg-white text-sm">
+          <table className="w-full overflow-hidden rounded-xl border border-slate-200 bg-surface text-sm">
             <tbody>
               {rows.map((r) => (
                 <tr
@@ -182,7 +187,10 @@ function AddToCartButton({ product }) {
           {outOfStock ? 'Hết hàng' : 'Đã đủ số lượng trong giỏ'}
         </button>
         {!outOfStock && (
-          <Link to="/gio-hang" className="text-center text-sm text-blue-700 hover:underline">
+          <Link
+            to="/gio-hang"
+            className="text-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
+          >
             Xem giỏ hàng ({inCart})
           </Link>
         )}
@@ -203,7 +211,10 @@ function AddToCartButton({ product }) {
         {added ? '✓ Đã thêm vào giỏ' : 'Thêm vào giỏ'}
       </button>
       {inCart > 0 && (
-        <Link to="/gio-hang" className="text-center text-sm text-blue-700 hover:underline">
+        <Link
+          to="/gio-hang"
+          className="text-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
+        >
           Trong giỏ: {inCart} · Xem giỏ hàng
         </Link>
       )}
