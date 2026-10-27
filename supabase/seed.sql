@@ -37,36 +37,63 @@ on conflict (category_id, name) do update set image_url = excluded.image_url;
 -- 1. Vào Authentication → Users → Add user, tạo tài khoản admin (mật khẩu mạnh).
 -- 2. Chạy: update public.profiles set role = 'admin'
 --          where id = (select id from auth.users where email = '<email admin>');
+-- 3. Shop HcmusWare (migration 20261123000000) tự gán cho admin đầu tiên. DB online đã có admin
+--    trước khi chạy migration nên không cần làm gì; nếu owner_id vẫn trống thì chạy:
+--    update public.shops set owner_id = '<id admin>' where slug = 'hcmusware';
 
--- ---------- Tài khoản admin local (CHỈ dùng trên máy, không chạy trên online) ----------
--- Đăng nhập: admin@HcmusWare.local / admin123 (Supabase lưu email chữ thường)
+-- ---------- Tài khoản mẫu local (CHỈ dùng trên máy, không chạy trên online) ----------
+-- 3 vai trò để demo phân quyền (Supabase lưu email chữ thường):
+--   admin@HcmusWare.local  / admin123  – quản trị, chủ shop HcmusWare
+--   seller@hcmusware.local / seller123 – người bán, shop "Linh Kiện Mẫu" (đã duyệt)
+--   khach@hcmusware.local  / khach123  – khách hàng
 do $$
 declare
-  v_id uuid := gen_random_uuid();
+  v_acc record;
+  v_id  uuid;
 begin
-  if exists (select 1 from auth.users where email = 'admin@hcmusware.local') then
-    return;
-  end if;
+  for v_acc in
+    select * from (values
+      ('admin@hcmusware.local',  'admin123',  'Quản trị viên',  'admin'),
+      ('seller@hcmusware.local', 'seller123', 'Trần Văn Bán',   'seller'),
+      ('khach@hcmusware.local',  'khach123',  'Lê Thị Khách',   'customer')
+    ) as t(email, password, full_name, role)
+  loop
+    if exists (select 1 from auth.users where email = v_acc.email) then
+      continue;
+    end if;
+    v_id := gen_random_uuid();
 
-  insert into auth.users (
-    instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
-    raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
-    confirmation_token, recovery_token, email_change_token_new, email_change
-  ) values (
-    '00000000-0000-0000-0000-000000000000', v_id, 'authenticated', 'authenticated',
-    'admin@hcmusware.local', extensions.crypt('admin123', extensions.gen_salt('bf')), now(),
-    '{"provider":"email","providers":["email"]}', '{"full_name":"Quản trị viên"}', now(), now(),
-    '', '', '', ''
-  );
+    insert into auth.users (
+      instance_id, id, aud, role, email, encrypted_password, email_confirmed_at,
+      raw_app_meta_data, raw_user_meta_data, created_at, updated_at,
+      confirmation_token, recovery_token, email_change_token_new, email_change
+    ) values (
+      '00000000-0000-0000-0000-000000000000', v_id, 'authenticated', 'authenticated',
+      v_acc.email, extensions.crypt(v_acc.password, extensions.gen_salt('bf')), now(),
+      '{"provider":"email","providers":["email"]}', jsonb_build_object('full_name', v_acc.full_name),
+      now(), now(), '', '', '', ''
+    );
 
-  insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
-  values (
-    gen_random_uuid(), v_id::text, v_id,
-    jsonb_build_object('sub', v_id::text, 'email', 'admin@hcmusware.local', 'email_verified', true),
-    'email', now(), now(), now()
-  );
+    insert into auth.identities (id, provider_id, user_id, identity_data, provider, last_sign_in_at, created_at, updated_at)
+    values (
+      gen_random_uuid(), v_id::text, v_id,
+      jsonb_build_object('sub', v_id::text, 'email', v_acc.email, 'email_verified', true),
+      'email', now(), now(), now()
+    );
 
-  -- profile đã được trigger handle_new_user tạo, chỉ cần nâng quyền
-  update public.profiles set role = 'admin' where id = v_id;
+    -- profile đã được trigger handle_new_user tạo, chỉ cần đặt vai trò
+    update public.profiles set role = v_acc.role where id = v_id;
+  end loop;
+
+  -- Migration tạo shop HcmusWare lúc DB mới chưa có admin → gán cho admin local.
+  update public.shops
+  set owner_id = (select id from auth.users where email = 'admin@hcmusware.local')
+  where slug = 'hcmusware' and owner_id is null;
+
+  insert into public.shops (owner_id, name, slug, description, status)
+  select id, 'Linh Kiện Mẫu', 'linh-kien-mau', 'Shop mẫu để thử kênh người bán', 'active'
+  from auth.users
+  where email = 'seller@hcmusware.local'
+  on conflict do nothing;
 end;
 $$;

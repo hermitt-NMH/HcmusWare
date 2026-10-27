@@ -4,6 +4,7 @@ import { getCategories } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
+import { roleShortcut } from '../lib/roles'
 import { useTheme } from '../hooks/useTheme'
 
 const navClass = ({ isActive }) =>
@@ -84,9 +85,11 @@ function ThemeToggle({ withLabel = false, className = '' }) {
 export default function Header() {
   const [open, setOpen] = useState(false)
   const categories = useAsync(getCategories)
-  const { user, profile, isAdmin } = useAuth()
+  const { user, profile, role } = useAuth()
   const { count } = useCart()
   const close = () => setOpen(false)
+  // Lối tắt tới khu vực riêng của vai trò: admin → Quản trị, người bán → Kênh người bán.
+  const shortcut = roleShortcut(role)
 
   // Đã đăng nhập: hiện tên (từ cuối của họ tên, vd "Nguyễn Văn An" → "An") và dẫn tới trang tài khoản.
   const firstName = profile?.full_name?.trim().split(/\s+/).pop()
@@ -132,10 +135,10 @@ export default function Header() {
         <SearchForm className="mx-2 hidden max-w-md flex-1 md:block" />
 
         <nav className="ml-auto flex items-center gap-1">
-          {/* Lối tắt cho admin, chỉ trên màn rộng (điện thoại vào qua trang Tài khoản) */}
-          {isAdmin && (
-            <NavLink to="/admin" className={(s) => `${navClass(s)} hidden lg:flex`}>
-              Quản trị
+          {/* Lối tắt theo vai trò, chỉ trên màn rộng (màn nhỏ nằm trong menu bên dưới) */}
+          {shortcut && (
+            <NavLink to={shortcut.to} className={(s) => `${navClass(s)} hidden lg:flex`}>
+              {shortcut.label}
             </NavLink>
           )}
           <NavLink to="/build-pc" className={navClass}>
@@ -200,6 +203,13 @@ export default function Header() {
               {account.label}
             </NavLink>
           </li>
+          {shortcut && (
+            <li className="lg:hidden">
+              <NavLink to={shortcut.to} className={navClass} onClick={close}>
+                {shortcut.label}
+              </NavLink>
+            </li>
+          )}
           <li className="sm:hidden">
             <ThemeToggle withLabel />
           </li>
