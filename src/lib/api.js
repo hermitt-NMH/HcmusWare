@@ -22,15 +22,24 @@ export async function getCategoryBySlug(slug) {
   return data
 }
 
+// Trang bán hàng (danh sách, chi tiết, giỏ, Builder) chỉ lấy hàng ĐANG BÁN của shop ĐANG HOẠT ĐỘNG.
+// RLS còn cho admin, chủ shop và người đã mua đọc hàng chờ duyệt / đã ẩn (để quản lý, xem lại đơn cũ),
+// nên phải lọc ở đây – không thì những người đó thấy cả hàng không mua được trên web.
+const ON_SALE_SHOP = 'shops!inner(status)'
+const onSale = (query) => query.eq('status', 'active').eq('shops.status', 'active')
+
 export async function getProducts({ categorySlug, limit } = {}) {
   let query = supabase
     .from('products')
-    .select('id, name, brand, price, stock, image_url, specs, categories!inner(slug, name)')
+    .select(
+      `id, name, brand, price, stock, image_url, specs, categories!inner(slug, name), ${ON_SALE_SHOP}`,
+    )
     .order('created_at', { ascending: false })
     // Nhiều sản phẩm trùng created_at (nhập cùng lúc) nên thêm id làm khóa phụ
     // để thứ tự luôn cố định giữa các lần tải.
     .order('id', { ascending: false })
 
+  query = onSale(query)
   if (categorySlug) query = query.eq('categories.slug', categorySlug)
   if (limit) query = query.limit(limit)
 
@@ -44,13 +53,14 @@ export async function getProductById(id) {
   // id trên URL không phải số (vd /san-pham/abc) thì khỏi gọi DB – Postgres sẽ báo lỗi kiểu dữ liệu.
   // id quá lớn (vượt kiểu bigint, vd /san-pham/99999999999999999999) cũng không tồn tại → 404.
   if (!/^\d+$/.test(String(id)) || !Number.isSafeInteger(Number(id))) return null
-  const { data, error } = await supabase
-    .from('products')
-    .select(
-      'id, name, brand, price, stock, image_url, datasheet_url, description, specs, categories(slug, name)',
-    )
-    .eq('id', id)
-    .maybeSingle()
+  const { data, error } = await onSale(
+    supabase
+      .from('products')
+      .select(
+        `id, name, brand, price, stock, image_url, datasheet_url, description, specs, categories(slug, name), ${ON_SALE_SHOP}`,
+      )
+      .eq('id', id),
+  ).maybeSingle()
   if (error) throw error
   return data
 }
@@ -59,19 +69,25 @@ export async function getProductById(id) {
 // id không còn trên DB thì đơn giản là không có trong kết quả.
 export async function getProductsByIds(ids) {
   if (!ids.length) return []
-  const { data, error } = await supabase
-    .from('products')
-    .select('id, name, brand, price, stock, image_url, categories(slug)')
-    .in('id', ids)
+  const { data, error } = await onSale(
+    supabase
+      .from('products')
+      .select(`id, name, brand, price, stock, image_url, categories(slug), ${ON_SALE_SHOP}`)
+      .in('id', ids),
+  )
   if (error) throw error
   return data
 }
 
 // Sản phẩm cùng danh mục (trừ chính nó) cho mục "Sản phẩm tương tự".
 export async function getRelatedProducts({ categorySlug, excludeId, limit = 4 }) {
-  const { data, error } = await supabase
-    .from('products')
-    .select('id, name, brand, price, stock, image_url, specs, categories!inner(slug, name)')
+  const { data, error } = await onSale(
+    supabase
+      .from('products')
+      .select(
+        `id, name, brand, price, stock, image_url, specs, categories!inner(slug, name), ${ON_SALE_SHOP}`,
+      ),
+  )
     .eq('categories.slug', categorySlug)
     .neq('id', excludeId)
     .gt('stock', 0)
