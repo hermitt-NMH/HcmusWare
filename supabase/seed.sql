@@ -38,9 +38,10 @@ on conflict (category_id, name) do update set image_url = excluded.image_url;
 -- 1. Vào Authentication → Users → Add user, tạo tài khoản admin (mật khẩu mạnh).
 -- 2. Chạy: update public.profiles set role = 'admin'
 --          where id = (select id from auth.users where email = '<email admin>');
--- 3. Shop HcmusWare (migration 20261123000000) tự gán cho admin đầu tiên. DB online đã có admin
---    trước khi chạy migration nên không cần làm gì; nếu owner_id vẫn trống thì chạy:
---    update public.shops set owner_id = '<id admin>' where slug = 'hcmusware';
+-- 3. Shop HcmusWare (migration 20261123000000) chỉ tự gán cho admin nếu lúc chạy migration DB đã có admin.
+--    DB online lúc đó CHƯA có admin (27/10/2026) → owner_id để trống, phải gán tay sau bước 2:
+--    update public.shops set owner_id = '<id admin>' where slug = 'hcmusware' and owner_id is null;
+--    Kiểm tra: select owner_id from public.shops where slug = 'hcmusware';  -- không được null
 
 -- ---------- Tài khoản mẫu local (CHỈ dùng trên máy, không chạy trên online) ----------
 -- 3 vai trò để demo phân quyền (Supabase lưu email chữ thường):

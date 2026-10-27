@@ -59,7 +59,10 @@ npm run db:status    # xem URL, anon key, chuỗi kết nối PostgreSQL
 1. Tạo project trên [supabase.com](https://supabase.com) (region Singapore).
 2. Đẩy schema: `npx supabase login`, `npx supabase link --project-ref <mã-project>`, rồi `npx supabase db push`.
 3. Chạy phần danh mục + sản phẩm mẫu của `supabase/seed.sql` trong SQL Editor (**bỏ khối tài khoản admin local**), tạo admin thật theo hướng dẫn trong file.
-4. Đặt `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` của project online trên Vercel.
+4. Đặt `VITE_SUPABASE_URL` và `VITE_SUPABASE_ANON_KEY` của project online trên Vercel (Settings → Environment Variables, nhập tay).
+   **Không gắn Supabase qua Vercel Marketplace / Storage / "recommended integrations"**: cách đó tạo thêm một DB Supabase
+   riêng mà app không dùng, và Vercel bắt deploy phải chờ DB đó. DB đó bị tạm dừng thì mọi deploy lỗi
+   `Resource provisioning failed` trước khi build (đã xảy ra 27/10/2026). Gặp lỗi này: Vercel → Storage → chọn DB → Projects → Disconnect, rồi Redeploy.
 5. Bật đăng nhập Google (Tuần 3):
    - [Google Cloud Console](https://console.cloud.google.com) → APIs & Services → Credentials → **Create OAuth client ID** (Web application).
      Ô _Authorized redirect URIs_ điền `https://<mã-project>.supabase.co/auth/v1/callback`.
