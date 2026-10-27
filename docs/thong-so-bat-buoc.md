@@ -16,16 +16,16 @@ Phiên bản 1 – Tuần 1 giai đoạn 2. User story: US-14.4, US-14.5 trong [
 
 ## Trường chung (mọi danh mục)
 
-| Trường         | Bắt buộc | Kiểm tra                                                       |
-| -------------- | -------- | -------------------------------------------------------------- |
-| Danh mục       | Có       | 1 trong 8 danh mục; chọn trước, form thông số đổi theo         |
-| Tên sản phẩm   | Có       | 5–200 ký tự; không trùng tên khác trong cùng shop + danh mục   |
-| Thương hiệu    | Có       | Chọn từ bảng `brands` (xem Cần chốt C1)                        |
-| Giá (VNĐ)      | Có       | Số nguyên 1.000 – 200.000.000                                  |
-| Tồn kho        | Có       | Số nguyên 0 – 9.999                                            |
-| Ảnh            | Có       | 1–5 ảnh, JPG/PNG/WebP, mỗi ảnh ≤ 2 MB; ảnh đầu là ảnh đại diện |
-| Mô tả          | Không    | ≤ 5.000 ký tự, hiển thị dạng chữ thường (không HTML)           |
-| Link datasheet | Không    | `https://...`                                                  |
+| Trường         | Bắt buộc | Kiểm tra                                                                                                        |
+| -------------- | -------- | --------------------------------------------------------------------------------------------------------------- |
+| Danh mục       | Có       | 1 trong 8 danh mục; chọn trước, form thông số đổi theo                                                          |
+| Tên sản phẩm   | Có       | 5–200 ký tự; không trùng tên khác trong cùng shop + danh mục                                                    |
+| Thương hiệu    | Có       | Chọn từ bảng `brands`; chưa có thì "Thương hiệu khác" + gõ tên, admin tạo khi duyệt (C1 trong user-story-g2.md) |
+| Giá (VNĐ)      | Có       | Số nguyên 1.000 – 200.000.000                                                                                   |
+| Tồn kho        | Có       | Số nguyên 0 – 9.999                                                                                             |
+| Ảnh            | Có       | 1–5 ảnh, JPG/PNG/WebP, mỗi ảnh ≤ 2 MB; ảnh đầu là ảnh đại diện                                                  |
+| Mô tả          | Không    | ≤ 5.000 ký tự, hiển thị dạng chữ thường (không HTML)                                                            |
+| Link datasheet | Không    | `https://...`                                                                                                   |
 
 ## Thông số theo danh mục
 

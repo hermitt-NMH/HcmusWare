@@ -1,7 +1,7 @@
 # User story – Giai đoạn 2 (F13–F18, F12)
 
 Người phụ trách: BA · Dùng cho: Dev1/Dev2/Dev3/KTS (làm tính năng), Test1/Test2 (test case).
-Phiên bản 1.1 – Tuần 1 giai đoạn 2 (thêm F12 thông báo trong web và email, thay Zalo OA). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
+Phiên bản 1.2 – Tuần 1 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
 
 Liên quan:
 
@@ -13,7 +13,7 @@ Quy ước:
 - Mỗi tiêu chí viết dạng **Given / When / Then**. Test1 viết test case từ đúng các dòng này.
 - Tiêu chí có đánh dấu **[DB]** phải đúng cả khi gọi thẳng Supabase bằng anon key + token của vai trò đó (không qua giao diện). Test2 kiểm bằng `npm run test:rls`.
 - **Tuần** = tuần mà tính năng phải chạy được trên Vercel theo kế hoạch.
-- Mục **Cần chốt** ở cuối file là chỗ BA đề xuất nhưng cần KTS/PM quyết định.
+- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C5 (BA đề xuất, KTS/PM chốt) và việc DB cho Tuần 2.
 
 ## Vai trò
 
@@ -74,15 +74,17 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 - When gửi form hợp lệ, Then shop được tạo ở trạng thái **Chờ duyệt**, trang `/tai-khoan` hiện "Shop … đang chờ admin duyệt".
 - Given tên shop trùng shop khác (so sánh không phân biệt hoa thường, không dấu), Then báo "Tên shop đã có người dùng", không tạo shop.
 - Given đã có shop (bất kỳ trạng thái nào), Then không thấy nút "Mở shop" nữa. **[DB]** Gửi thẳng lệnh tạo shop thứ hai bị từ chối.
+- Given shop bị **Từ chối**, Then `/tai-khoan` hiện lý do và nút "Sửa và gửi lại": sửa tên, mô tả, logo rồi gửi thì shop về **Chờ duyệt** (C2).
 - **[DB]** Gửi thẳng `status: 'active'` khi tạo shop, Then shop vẫn ở `pending`.
 - Đường dẫn shop (`slug`) tạo tự động từ tên, bỏ dấu: "Linh Kiện Sài Gòn" → `linh-kien-sai-gon`.
 
 ### US-14.2: Là admin, tôi muốn duyệt hoặc từ chối đăng ký shop để chỉ người bán đáng tin mới được bán.
 
 - Given ở `/admin/duyet`, tab "Shop", Then thấy shop chờ duyệt, cũ nhất ở trên: tên, mô tả, logo, email chủ shop, ngày đăng ký; trên tab có số lượng chờ duyệt.
-- When bấm "Duyệt", Then **trong cùng một thao tác**: shop chuyển **Hoạt động** và chủ shop thành `seller`. Không có trạng thái "shop hoạt động mà chủ vẫn là customer".
+- When bấm "Duyệt", Then **trong cùng một thao tác** (hàm `approve_shop`, C4): shop chuyển **Hoạt động** và chủ shop thành `seller`. Không có trạng thái "shop hoạt động mà chủ vẫn là customer".
 - Chủ shop đăng nhập lại (hoặc F5) thì thấy "Kênh người bán".
-- When bấm "Từ chối" và nhập lý do (bắt buộc), Then đăng ký bị gỡ, khách hàng thấy lý do ở `/tai-khoan` và được đăng ký lại. (Xem **Cần chốt C2**.)
+- When bấm "Từ chối" và nhập lý do (bắt buộc, ≤ 500 ký tự), Then shop chuyển **Từ chối** (`rejected`), lý do lưu ở `shops.review_note`; khách hàng thấy lý do ở `/tai-khoan` (C2).
+- **[DB]** Chủ shop chỉ được tự đổi trạng thái theo đúng một chiều `rejected` → `pending` (gửi lại); mọi đổi trạng thái khác bị từ chối.
 
 ### US-14.3: Là admin, tôi muốn khóa shop vi phạm để dừng bán ngay.
 
@@ -98,7 +100,7 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 - Given ở `/kenh-nguoi-ban/san-pham/moi`, When chọn danh mục, Then form hiện đúng các ô thông số của danh mục đó theo [thong-so-bat-buoc.md](thong-so-bat-buoc.md): ô chọn cho giá trị cố định (socket, chuẩn RAM...), ô số có đơn vị cho số đo.
 - Ô bắt buộc để trống hoặc sai khoảng, Then không lưu được, báo lỗi ngay dưới đúng ô đó, con trỏ nhảy tới ô lỗi đầu tiên.
 - Ảnh: 1–5 ảnh, mỗi ảnh ≤ 2 MB, chỉ JPG/PNG/WebP; ảnh đầu tiên là ảnh đại diện. Ảnh quá cỡ báo "Ảnh … lớn hơn 2 MB" và không tải lên.
-- Thương hiệu: chọn từ danh sách admin quản lý. (Xem **Cần chốt C1**.)
+- Thương hiệu (C1): chọn từ danh sách admin quản lý; người bán **không** tạo được thương hiệu. Chưa có trong danh sách thì chọn "Thương hiệu khác" và gõ tên (lưu vào `products.brand`, `brand_id` để trống); admin thêm thương hiệu khi duyệt.
 - Giá: số nguyên VNĐ 1.000 – 200.000.000; tồn kho: số nguyên 0 – 9.999.
 - When lưu, Then sản phẩm ở trạng thái **Chờ duyệt**, hiện trong danh sách của kênh người bán với nhãn vàng; **không** hiện với khách và **không** có trong Builder.
 - **[DB]** Gửi thẳng `status: 'active'` khi thêm, Then vẫn là `pending`. Gửi `shop_id` của shop khác, Then bị từ chối.
@@ -108,13 +110,14 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 
 - Given ở `/admin/duyet`, tab "Sản phẩm", Then thấy sản phẩm chờ duyệt: ảnh, tên, shop, danh mục, giá, bảng thông số đầy đủ; thông số nằm ngoài khoảng thường gặp (xem cột "Khoảng hợp lệ") được tô vàng để admin kiểm tra kỹ.
 - When "Duyệt", Then sản phẩm **Đang bán**: hiện ở danh mục, tìm kiếm, trang shop, trang thương hiệu và chọn được trong Builder (đúng quy tắc tương thích như sản phẩm cũ).
-- When "Trả lại" kèm lý do (bắt buộc), Then sản phẩm về **Ẩn**, người bán thấy lý do ở danh sách sản phẩm, sửa xong gửi lại thì về **Chờ duyệt**.
+- Given sản phẩm có "Thương hiệu khác" (`brand_id` trống), Then nút "Duyệt" bị khóa; admin chọn thương hiệu có sẵn hoặc bấm "Tạo thương hiệu …" từ tên người bán gõ, rồi mới duyệt được. **[DB]** Duyệt sản phẩm có `brand_id` trống bị từ chối (C1).
+- When "Trả lại" kèm lý do (bắt buộc, ≤ 500 ký tự), Then sản phẩm về **Ẩn**, lý do lưu ở `products.review_note`; người bán thấy lý do ở danh sách sản phẩm, sửa xong gửi lại thì về **Chờ duyệt** và lý do được xóa (C2).
 - Duyệt / trả lại không làm thay đổi sản phẩm của shop khác.
 
 ### US-14.6: Là người bán, tôi muốn sửa và ẩn sản phẩm của shop mình.
 
 - Đổi **giá, tồn kho, mô tả, ảnh**: lưu xong áp dụng ngay, không cần duyệt lại. Đổi giá thì ghi vào lịch sử giá như admin.
-- Đổi **tên, danh mục, thương hiệu hoặc thông số**: sản phẩm quay về **Chờ duyệt** (vì ảnh hưởng Builder). Trước khi lưu hiện cảnh báo "Sản phẩm sẽ tạm ẩn đến khi admin duyệt lại". (Xem **Cần chốt C3**.)
+- Đổi **tên, danh mục, thương hiệu hoặc thông số**: sản phẩm quay về **Chờ duyệt** (vì ảnh hưởng Builder). Trước khi lưu hiện cảnh báo "Sản phẩm sẽ tạm ẩn đến khi admin duyệt lại". **[DB]** Trigger tự chuyển về `pending` và xóa `approved_at`, kể cả khi gọi API thẳng (C3).
 - "Ẩn": sản phẩm biến mất với khách ngay; "Hiện lại": chỉ được khi sản phẩm đã từng được duyệt và không bị admin gỡ.
 - Người bán **không xóa** được sản phẩm (có thể nằm trong đơn); không có nút xóa, **[DB]** bị chặn.
 
@@ -302,7 +305,8 @@ Thông báo được **tạo trong DB** (trigger khi đơn đổi trạng thái,
 stateDiagram-v2
   [*] --> pending: Khách gửi form mở shop
   pending --> active: Admin duyệt (+ role → seller)
-  pending --> [*]: Admin từ chối (kèm lý do)
+  pending --> rejected: Admin từ chối (kèm lý do)
+  rejected --> pending: Khách sửa và gửi lại
   active --> locked: Admin khóa
   locked --> active: Admin mở khóa
 ```
@@ -328,10 +332,10 @@ Sản phẩm chỉ hiện với khách khi **cả hai** điều kiện đúng: s
 | --- | ---------- | ----------------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------------------- |
 | 1   | Khách hàng | `/tai-khoan` → "Mở shop", gửi form  | `shops` thêm dòng `pending`, `owner_id` = mình        | Khách: "Đang chờ duyệt". Admin: tab Shop +1                                     |
 | 2a  | Admin      | `/admin/duyet` → Shop → "Duyệt"     | `shops.status = active`, `profiles.role = seller`     | Người bán: menu "Kênh người bán" (sau F5). Trang `/shop/:slug` mở được          |
-| 2b  | Admin      | "Từ chối" + lý do                   | Đăng ký bị gỡ, lưu lý do                              | Khách: lý do + nút "Đăng ký lại"                                                |
+| 2b  | Admin      | "Từ chối" + lý do                   | `shops.status = rejected`, `review_note` = lý do      | Khách: lý do + nút "Sửa và gửi lại" → về bước 1 (`pending`)                     |
 | 3   | Người bán  | `/kenh-nguoi-ban` → "Thêm sản phẩm" | `products` thêm dòng `pending`, `shop_id` = shop mình | Người bán: nhãn "Chờ duyệt". Khách, Builder: không thấy. Admin: tab Sản phẩm +1 |
 | 4a  | Admin      | `/admin/duyet` → Sản phẩm → "Duyệt" | `status = active`, `approved_at = now()`              | Khách: thấy ở danh mục, tìm kiếm, shop, thương hiệu, Builder                    |
-| 4b  | Admin      | "Trả lại" + lý do                   | `status = hidden`, `approved_at` rỗng                 | Người bán: lý do; sửa và gửi lại → bước 3                                       |
+| 4b  | Admin      | "Trả lại" + lý do                   | `status = hidden`, `approved_at` rỗng, `review_note`  | Người bán: lý do; sửa và gửi lại → bước 3                                       |
 | 5   | Người bán  | Sửa giá / tồn kho                   | Đổi ngay, ghi `price_history` nếu đổi giá             | Khách thấy giá mới ngay                                                         |
 | 6   | Người bán  | Sửa thông số                        | `status = pending`                                    | Sản phẩm tạm ẩn với khách đến khi admin duyệt lại                               |
 | 7   | Admin      | Khóa shop                           | `shops.status = locked`                               | Mọi sản phẩm của shop ẩn; người bán mất quyền ghi                               |
@@ -340,12 +344,15 @@ Demo Tuần 2 chạy đúng các bước 1 → 2a → 3 → 4a, rồi mở Build
 
 ---
 
-## Cần chốt
+## Đã chốt (27/10/2026)
 
-| Mã  | Câu hỏi                                                                | BA đề xuất                                                                                                                                                                  | Ai chốt |
-| --- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| C1  | Người bán có tự tạo thương hiệu mới không? (câu hỏi mở trong kế hoạch) | **Không.** Chỉ chọn từ danh sách. Nếu chưa có, chọn "Thương hiệu khác" và ghi tên; admin thêm thương hiệu khi duyệt sản phẩm. Tránh trùng "Asus"/"ASUS" và thương hiệu rác. | PM      |
-| C2  | Lưu lý do từ chối shop / trả lại sản phẩm ở đâu?                       | Thêm cột `review_note text` cho `shops` và `products` (migration Tuần 2). Từ chối shop = xóa dòng `shops` sau khi lưu lý do vào thông báo, hoặc thêm trạng thái `rejected`. | KTS     |
-| C3  | Sửa thông số có phải duyệt lại không?                                  | **Có**, như US-14.6. Hiện `guard_product_write` chưa làm điều này (người bán sửa specs thì sản phẩm vẫn `active`).                                                          | KTS     |
-| C4  | Duyệt shop và cấp vai trò seller                                       | Gộp thành 1 hàm `approve_shop(shop_id)` trong DB. Hiện admin phải duyệt shop rồi tự đổi vai trò ở trang Người dùng; quên bước 2 thì người bán không vào được kênh.          | KTS     |
-| C5  | Shop HcmusWare hiện có `owner_id` là admin                             | Admin quản lý sản phẩm HcmusWare ở trang admin như cũ, không qua kênh người bán, để không phải cho admin thêm vai trò seller.                                               | KTS     |
+Các câu hỏi BA nêu ở bản 1 đã được chốt. C1 trả lời luôn câu hỏi mở "Người bán có được tự tạo thương hiệu mới?" trong kế hoạch giai đoạn 2.
+Phần DB làm trong **migration Tuần 2** của KTS (`supabase/migrations/20261130000000_g2_tuan2_...sql`), Test2 thêm vào `npm run test:rls`.
+
+| Mã  | Câu hỏi                                    | Quyết định                                                                                                                                                                                                                             | Việc cho KTS (Tuần 2)                                                                                                                                                                                                    |
+| --- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| C1  | Người bán có tự tạo thương hiệu mới không? | **Không.** Chỉ chọn từ danh sách; chưa có thì "Thương hiệu khác" + gõ tên. Admin tạo thương hiệu lúc duyệt. Lý do: tránh trùng "Asus"/"ASUS" và thương hiệu rác. Schema hiện tại đã hỗ trợ (`sync_product_brand` để `brand_id` trống). | Hàm duyệt sản phẩm chặn khi `brand_id` trống.                                                                                                                                                                            |
+| C2  | Lưu lý do từ chối / trả lại ở đâu?         | Cột `review_note text` (≤ 500 ký tự) cho `shops` và `products`. Shop thêm trạng thái **`rejected`**, không xóa dòng: giữ được lý do, và vì `owner_id` là unique nên "đăng ký lại" = sửa rồi gửi lại chính dòng đó.                     | Thêm cột, thêm `rejected` vào check của `shops.status`; `guard_shop_write` cho chủ shop đổi `rejected` → `pending` (chỉ chiều này), tự xóa `review_note` khi gửi lại. Người bán gửi lại sản phẩm cũng xóa `review_note`. |
+| C3  | Sửa thông số có phải duyệt lại không?      | **Có.** Người bán đổi `name`, `category_id`, `brand_id`/`brand` hoặc `specs` của sản phẩm thì về `pending`. Đổi giá, tồn kho, mô tả, ảnh thì không.                                                                                    | `guard_product_write`: nhánh người bán, nếu các cột trên đổi thì `status := 'pending'`, `approved_at := null`.                                                                                                           |
+| C4  | Duyệt shop và cấp vai trò seller           | Gộp vào một hàm DB, chạy trong một transaction. Từ chối và khóa/mở khóa cũng qua hàm, không cho frontend update thẳng `shops.status`.                                                                                                  | `approve_shop(p_shop_id)`, `reject_shop(p_shop_id, p_note)`, `set_shop_locked(p_shop_id, p_locked)`; chỉ admin gọi được; chặn khóa shop HcmusWare.                                                                       |
+| C5  | Shop HcmusWare có chủ là admin             | Admin quản lý sản phẩm HcmusWare ở `/admin` như giai đoạn 1, **không** vào kênh người bán, không cấp thêm vai trò seller cho admin. Giữ đúng code hiện tại (`AREA_ROLES.seller = ['seller']`).                                         | Không cần làm thêm.                                                                                                                                                                                                      |
