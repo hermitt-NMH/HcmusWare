@@ -5,7 +5,7 @@ import { authErrorMessage } from '../lib/authErrors'
 import { safeNext } from '../lib/safeNext'
 
 const inputClass =
-  'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
+  'h-11 w-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
 
 function Field({ label, ...props }) {
   return (
@@ -82,7 +82,7 @@ export default function Login({ mode = 'login' }) {
 
   return (
     <div className="mx-auto max-w-md">
-      <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+      <div className="rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm sm:p-8">
         <h1 className="text-2xl font-bold">{isRegister ? 'Tạo tài khoản' : 'Đăng nhập'}</h1>
         <p className="mt-1 text-sm text-slate-500">
           {isRegister
@@ -93,7 +93,7 @@ export default function Login({ mode = 'login' }) {
         <button
           type="button"
           onClick={handleGoogle}
-          className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white text-sm font-medium hover:bg-slate-50"
+          className="mt-6 flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-surface text-sm font-medium hover:bg-slate-50"
         >
           <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
             <path
@@ -181,7 +181,7 @@ export default function Login({ mode = 'login' }) {
           {isRegister ? 'Đã có tài khoản?' : 'Chưa có tài khoản?'}{' '}
           <Link
             to={switchTo}
-            className="inline-flex min-h-11 items-center font-medium text-blue-700 hover:underline"
+            className="inline-flex min-h-11 items-center font-medium text-blue-700 dark:text-blue-300 hover:underline"
           >
             {isRegister ? 'Đăng nhập' : 'Đăng ký ngay'}
           </Link>

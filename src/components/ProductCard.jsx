@@ -11,7 +11,7 @@ export default function ProductCard({ product, eager = false }) {
   return (
     <Link
       to={`/san-pham/${id}`}
-      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:-translate-y-0.5 hover:shadow-md"
+      className="group flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-surface transition hover:-translate-y-0.5 hover:shadow-md"
     >
       <div
         className={`relative flex aspect-square items-center justify-center overflow-hidden ${image_url ? 'bg-white' : `bg-gradient-to-br ${categoryBg(categories?.slug)}`}`}
@@ -35,17 +35,21 @@ export default function ProductCard({ product, eager = false }) {
           className={`h-full w-full object-contain transition duration-300 group-hover:scale-105 ${image_url ? 'p-2' : 'p-6'} ${outOfStock ? 'opacity-50 grayscale' : ''}`}
         />
         {brand && (
-          <span className="absolute left-2 top-2 rounded-md bg-slate-900/70 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white">
+          <span className="absolute left-2 top-2 rounded-md bg-gray-900/70 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-white">
             {brand}
           </span>
         )}
       </div>
       <div className="flex flex-1 flex-col gap-1 border-t border-slate-100 p-3">
-        <h3 className="line-clamp-2 text-sm font-medium text-slate-900 group-hover:text-blue-700">
+        <h3 className="line-clamp-2 text-sm font-medium text-slate-900 group-hover:text-blue-700 dark:group-hover:text-blue-300">
           {name}
         </h3>
-        <p className="mt-auto pt-2 font-semibold text-red-600">{formatPrice(price)}</p>
-        <p className={`text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700'}`}>
+        <p className="mt-auto pt-2 font-semibold text-red-600 dark:text-red-400">
+          {formatPrice(price)}
+        </p>
+        <p
+          className={`text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700 dark:text-green-400'}`}
+        >
           {outOfStock ? 'Hết hàng' : `Còn ${stock} sản phẩm`}
         </p>
       </div>

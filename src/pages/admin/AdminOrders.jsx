@@ -33,8 +33,8 @@ export default function AdminOrders() {
       aria-pressed={filter === value}
       className={`inline-flex h-10 shrink-0 items-center gap-1 rounded-full border px-3 text-sm ${
         filter === value
-          ? 'border-slate-900 bg-slate-900 text-white'
-          : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+          ? 'border-gray-900 bg-gray-900 text-white dark:border-blue-600 dark:bg-blue-600'
+          : 'border-slate-300 bg-surface text-slate-700 hover:bg-slate-50'
       }`}
     >
       {label}
@@ -53,7 +53,7 @@ export default function AdminOrders() {
             setChanged({})
             setReload((n) => n + 1)
           }}
-          className="ml-auto inline-flex h-10 shrink-0 items-center rounded-lg px-3 text-sm text-blue-700 hover:bg-blue-50"
+          className="ml-auto inline-flex h-10 shrink-0 items-center rounded-lg px-3 text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-50"
         >
           Tải lại
         </button>
@@ -108,7 +108,7 @@ function OrderCard({ order: o, onUpdated }) {
   }
 
   return (
-    <li className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+    <li className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
           <p className="flex flex-wrap items-center gap-2">
@@ -117,7 +117,7 @@ function OrderCard({ order: o, onUpdated }) {
           </p>
           <p className="text-xs text-slate-500">{formatDateTime(o.created_at)}</p>
         </div>
-        <p className="text-lg font-bold text-red-600">{formatPrice(o.total)}</p>
+        <p className="text-lg font-bold text-red-600 dark:text-red-400">{formatPrice(o.total)}</p>
       </div>
 
       <div className="mt-2 grid gap-1 sm:grid-cols-2">
@@ -128,7 +128,7 @@ function OrderCard({ order: o, onUpdated }) {
         </p>
         <p className="text-slate-600 sm:text-right">
           {PAYMENT_METHODS[o.payment_method]?.short} ·{' '}
-          <span className={o.paid_at ? 'font-medium text-green-700' : ''}>
+          <span className={o.paid_at ? 'font-medium text-green-700 dark:text-green-400' : ''}>
             {paymentStatusLabel(o)}
           </span>
         </p>
@@ -139,7 +139,7 @@ function OrderCard({ order: o, onUpdated }) {
           type="button"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
-          className="inline-flex h-10 items-center rounded-lg px-2 text-blue-700 hover:bg-blue-50"
+          className="inline-flex h-10 items-center rounded-lg px-2 text-blue-700 dark:text-blue-300 hover:bg-blue-50"
         >
           {open ? 'Ẩn' : 'Xem'} {count} sản phẩm
         </button>
@@ -149,7 +149,7 @@ function OrderCard({ order: o, onUpdated }) {
             value={o.status}
             disabled={saving || isFinalStatus(o.status)}
             onChange={(e) => change(e.target.value)}
-            className="h-10 rounded-lg border border-slate-300 bg-white px-2 disabled:bg-slate-100"
+            className="h-10 rounded-lg border border-slate-300 bg-surface px-2 disabled:bg-slate-100"
           >
             {nextStatuses(o.status, canPayOnline(o)).map((s) => (
               <option key={s} value={s}>
@@ -159,7 +159,7 @@ function OrderCard({ order: o, onUpdated }) {
           </select>
         </label>
       </div>
-      {error && <p className="mt-2 text-red-600">{error}</p>}
+      {error && <p className="mt-2 text-red-600 dark:text-red-400">{error}</p>}
 
       {open && (
         <ul className="mt-2 divide-y divide-slate-100 rounded-lg bg-slate-50 px-3">

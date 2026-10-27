@@ -10,16 +10,18 @@ export default function OrderHistory({ userId }) {
   const orders = useAsync(() => getMyOrders(userId), [userId])
 
   return (
-    <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
+    <section className="space-y-3 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6">
       <h2 className="text-lg font-semibold">Đơn hàng của tôi</h2>
       {orders.loading && <p className="text-sm text-slate-500">Đang tải…</p>}
       {orders.error && (
-        <p className="text-sm text-red-600">Không tải được đơn hàng: {orders.error.message}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">
+          Không tải được đơn hàng: {orders.error.message}
+        </p>
       )}
       {orders.data && !orders.data.length && (
         <p className="text-sm text-slate-500">
           Bạn chưa có đơn hàng nào.{' '}
-          <Link to="/san-pham" className="text-blue-700 hover:underline">
+          <Link to="/san-pham" className="text-blue-700 dark:text-blue-300 hover:underline">
             Mua sắm ngay
           </Link>
         </p>
@@ -40,12 +42,18 @@ export default function OrderHistory({ userId }) {
                   </p>
                   <p className="text-xs text-slate-500">
                     {formatDateTime(o.created_at)} · {count} sản phẩm ·{' '}
-                    <span className={canPayOnline(o) ? 'font-medium text-amber-700' : ''}>
+                    <span
+                      className={
+                        canPayOnline(o) ? 'font-medium text-amber-700 dark:text-amber-300' : ''
+                      }
+                    >
                       {paymentStatusLabel(o)}
                     </span>
                   </p>
                 </div>
-                <span className="shrink-0 font-semibold text-red-600">{formatPrice(o.total)}</span>
+                <span className="shrink-0 font-semibold text-red-600 dark:text-red-400">
+                  {formatPrice(o.total)}
+                </span>
                 <span aria-hidden="true" className="text-slate-400">
                   ›
                 </span>

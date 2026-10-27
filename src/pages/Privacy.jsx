@@ -57,7 +57,10 @@ export default function Privacy() {
         <h2 className="text-lg font-semibold">Liên hệ</h2>
         <p className="mt-2 text-slate-700">
           Email:{' '}
-          <a href="mailto:hoangbensan@gmail.com" className="text-blue-700 hover:underline">
+          <a
+            href="mailto:hoangbensan@gmail.com"
+            className="text-blue-700 dark:text-blue-300 hover:underline"
+          >
             hoangbensan@gmail.com
           </a>
         </p>

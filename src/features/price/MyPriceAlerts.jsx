@@ -27,14 +27,16 @@ export default function MyPriceAlerts({ userId }) {
   return (
     <section
       id="canh-bao-gia"
-      className="scroll-mt-36 space-y-3 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
+      className="scroll-mt-36 space-y-3 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
       <h2 className="text-lg font-semibold">Cảnh báo giá</h2>
       {alerts.loading && <p className="text-sm text-slate-500">Đang tải…</p>}
       {alerts.error && (
-        <p className="text-sm text-red-600">Không tải được: {alerts.error.message}</p>
+        <p className="text-sm text-red-600 dark:text-red-400">
+          Không tải được: {alerts.error.message}
+        </p>
       )}
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       {!alerts.loading && !alerts.error && !list.length && (
         <p className="text-sm text-slate-500">
           Chưa có cảnh báo nào. Mở trang một sản phẩm và đặt "giá mong muốn" để được báo khi giảm
@@ -49,7 +51,7 @@ export default function MyPriceAlerts({ userId }) {
               <div className="min-w-0 flex-1">
                 <Link
                   to={`/san-pham/${a.product_id}`}
-                  className="line-clamp-1 font-medium hover:text-blue-700"
+                  className="line-clamp-1 font-medium hover:text-blue-700 dark:hover:text-blue-300"
                 >
                   {a.products.name}
                 </Link>
@@ -57,12 +59,16 @@ export default function MyPriceAlerts({ userId }) {
                   Hiện tại {formatPrice(a.products.price)} · mong muốn ≤{' '}
                   {formatPrice(a.target_price)}
                 </p>
-                {reached && <p className="text-xs font-medium text-green-700">✓ Đã đạt giá</p>}
+                {reached && (
+                  <p className="text-xs font-medium text-green-700 dark:text-green-400">
+                    ✓ Đã đạt giá
+                  </p>
+                )}
               </div>
               <button
                 type="button"
                 onClick={() => remove(a.id)}
-                className="inline-flex h-10 shrink-0 items-center rounded-lg px-3 text-slate-500 hover:bg-slate-100 hover:text-red-600"
+                className="inline-flex h-10 shrink-0 items-center rounded-lg px-3 text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
               >
                 Xóa
               </button>

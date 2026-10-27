@@ -13,11 +13,12 @@ export default function Home() {
       <section className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 px-6 py-10 text-white sm:px-10">
         <h1 className="text-2xl font-bold sm:text-3xl">Tự build PC, không lo lắp sai</h1>
         <p className="mt-2 max-w-xl text-blue-100">
-          Chọn đủ 8 linh kiện, hệ thống tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.
+          Chọn đủ 8 linh kiện, hệ thống tự kiểm tra socket, chuẩn RAM, kích thước và công suất
+          nguồn.
         </p>
         <Link
           to="/build-pc"
-          className="mt-5 inline-block rounded-lg bg-white px-5 py-2.5 font-semibold text-blue-700 hover:bg-blue-50"
+          className="mt-5 inline-block rounded-lg bg-white px-5 py-2.5 font-semibold text-blue-700 hover:bg-blue-100"
         >
           Bắt đầu build
         </Link>
@@ -44,7 +45,7 @@ export default function Home() {
               <Link
                 key={c.id}
                 to={`/danh-muc/${c.slug}`}
-                className="group flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white p-4 text-center text-sm font-medium hover:border-blue-400 hover:text-blue-700"
+                className="group flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-surface p-4 text-center text-sm font-medium hover:border-blue-400 hover:text-blue-700 dark:hover:text-blue-300"
               >
                 <span
                   className={`flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${categoryBg(c.slug)}`}
@@ -65,7 +66,10 @@ export default function Home() {
       <section>
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-lg font-semibold">Sản phẩm mới</h2>
-          <Link to="/san-pham" className="inline-flex min-h-11 items-center text-sm text-blue-700 hover:underline">
+          <Link
+            to="/san-pham"
+            className="inline-flex min-h-11 items-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
+          >
             Xem tất cả
           </Link>
         </div>

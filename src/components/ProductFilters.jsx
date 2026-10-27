@@ -89,7 +89,7 @@ function PriceInputs({ min, max, onApply }) {
       />
       <button
         type="submit"
-        className="h-11 shrink-0 rounded-md bg-slate-800 px-3 text-sm font-medium text-white hover:bg-slate-700"
+        className="h-11 shrink-0 rounded-md bg-gray-800 px-3 text-sm font-medium text-white hover:bg-gray-700"
       >
         Áp dụng
       </button>
@@ -119,7 +119,7 @@ export default function ProductFilters({
           <button
             type="button"
             onClick={onClear}
-            className="min-h-11 text-sm text-blue-700 hover:underline"
+            className="min-h-11 text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
             Xóa tất cả ({activeCount})
           </button>
