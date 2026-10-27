@@ -97,9 +97,11 @@ export function cpuScore(cpu, purpose) {
 }
 
 const cheapestFirst = (a, b) => a.price - b.price || a.id - b.id
-const cheapest = (list, ok = () => true) => [...list].sort(cheapestFirst).find(ok) ?? null
+// list đã sắp rẻ → đắt (suggestBuilds sắp một lần), nên phần tử hợp lệ đầu tiên là rẻ nhất.
+const cheapest = (list, ok = () => true) => list.find(ok) ?? null
 
 // Lắp đủ cấu hình quanh một cặp CPU + VGA bằng linh kiện rẻ nhất vẫn hợp lệ. Không lắp được → null.
+// groups: kết quả groupBySlug, mỗi nhóm đã sắp theo cheapestFirst.
 export function completeBuild(cpu, vga, groups, purpose) {
   const need = PURPOSES[purpose]
   const cpuS = cpu.specs ?? {}
@@ -169,6 +171,7 @@ export function suggestBuilds(products, { budget, purpose = 'gaming' } = {}) {
 
   // Chỉ dùng sản phẩm còn hàng, có giá.
   const groups = groupBySlug(products.filter((p) => p.stock > 0 && p.price > 0))
+  for (const list of Object.values(groups)) list.sort(cheapestFirst)
 
   const maxCpu = Math.max(1, ...groups.cpu.map((c) => cpuScore(c, purpose)))
   const maxGpu = Math.max(1, ...groups.vga.map(gpuScore))
