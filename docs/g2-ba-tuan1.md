@@ -55,7 +55,7 @@ Gợi ý cho Dev1 (F17):
 
 ## 2. Nhóm có đăng ký được Zalo OA không? (F12)
 
-### Kết luận: **Không đăng ký được OA đủ tính năng cho F12. Đề xuất bỏ F12** (đúng phương án trong bảng rủi ro của kế hoạch).
+### Kết luận: **Không đăng ký được OA đủ tính năng cho F12. Đã chốt bỏ F12 khỏi giai đoạn 2** (đúng phương án trong bảng rủi ro của kế hoạch).
 
 | F12 cần                                         | Điều kiện của Zalo                                                                                                                                            | Nhóm có không |
 | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------- |
@@ -69,11 +69,15 @@ Nguồn:
 [Mobihome – Hướng dẫn khởi tạo Zalo OA](https://mobihome.vn/huong-dan/huong-dan-khoi-tao-zalo-official-account/),
 [CGV Telecom – ZNS là gì, quy trình đăng ký](https://cgvtelecom.vn/zalo-notification-service-zns-la-gi-quy-trinh-dang-ky-luu-y-quan-trong-cho-doanh-nghiep/).
 
-Lưu ý: kết luận dựa trên tài liệu công khai, chưa ai trong nhóm thử đăng ký thật. Nếu PM muốn chắc chắn, một bạn dùng số điện thoại của mình vào [oa.zalo.me](https://oa.zalo.me) thử tạo OA (mất khoảng 10 phút) và chụp màn hình bước yêu cầu giấy ĐKKD để đưa vào slide báo cáo.
+Lưu ý: kết luận dựa trên tài liệu công khai, chưa ai trong nhóm thử đăng ký thật. Muốn có minh chứng cho slide báo cáo thì một bạn dùng số điện thoại của mình vào [oa.zalo.me](https://oa.zalo.me) thử tạo OA (mất khoảng 10 phút) và chụp màn hình bước yêu cầu giấy ĐKKD.
 
-### Thay thế đề xuất (không bắt buộc, PM quyết định)
+### Quyết định
 
-- Giữ thông báo **trong web** đã có từ giai đoạn 1 (`PriceAlertNotifier`), mở rộng thêm thông báo đổi trạng thái đơn.
-- Nếu Tuần 5 còn thời gian: gửi **email** cảnh báo giá và trạng thái đơn qua Supabase Edge Function (đã nằm trong mục "nếu dư thời gian" của giai đoạn 1). Không cần giấy tờ, có gói miễn phí.
+- **Bỏ F12 (Thông báo Zalo)** khỏi phạm vi giai đoạn 2: đăng ký rườm rà, cần giấy ĐKKD mà nhóm không có, ZNS tính phí. Ghi F12 vào backlog.
+- Thay thế: giữ thông báo **trong web** đã có từ giai đoạn 1 (`PriceAlertNotifier`), mở rộng thêm thông báo đổi trạng thái đơn.
+- Không bắt buộc: nếu Tuần 5 còn thời gian, gửi **email** cảnh báo giá và trạng thái đơn qua Supabase Edge Function. Không cần giấy tờ, có gói miễn phí.
 
-Việc tiếp theo: PM cập nhật bảng GitHub Projects (bỏ thẻ F12 của KTS ở Tuần 5 hoặc đổi sang email), báo lý do ở buổi báo cáo.
+Việc tiếp theo:
+
+- PM: cập nhật kế hoạch giai đoạn 2 (phạm vi còn 9 tính năng; xóa việc "KTS: thông báo Zalo (F12)" ở Tuần 5; bảng rủi ro ghi "Không đăng ký được Zalo OA" là đã xảy ra, đã xử lý), bỏ thẻ F12 trên GitHub Projects, báo lý do ở buổi báo cáo.
+- KTS: Tuần 5 dùng thời gian của F12 để sửa lỗi hoặc làm email nếu PM đồng ý.
