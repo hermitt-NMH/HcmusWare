@@ -7,6 +7,8 @@ import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import NotFound from './pages/NotFound'
 import PriceAlertNotifier from './features/price/PriceAlertNotifier'
+import RoleRoute from './components/RoleRoute'
+import { AREA_ROLES } from './lib/roles'
 
 // Trang ít người mở ngay từ đầu thì tải sau (lazy): mở trang chủ không phải tải code của chúng.
 // Thêm trang mới (Builder, admin...) cũng nên khai báo kiểu này.
@@ -19,6 +21,7 @@ const Checkout = lazy(() => import('./pages/Checkout'))
 const MockPayment = lazy(() => import('./pages/MockPayment'))
 const OrderDetail = lazy(() => import('./pages/OrderDetail'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
+const SellerChannel = lazy(() => import('./pages/seller/SellerChannel'))
 
 // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
 const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>
@@ -46,7 +49,23 @@ export default function App() {
             <Route path="/thanh-toan" element={<Checkout />} />
             <Route path="/thanh-toan/mo-phong/:id" element={<MockPayment />} />
             <Route path="/don-hang/:id" element={<OrderDetail />} />
-            <Route path="/admin/*" element={<Admin />} />
+            {/* Trang theo vai trò: RoleRoute chặn sai vai trò (bảo vệ thật nằm ở RLS trong DB) */}
+            <Route
+              path="/admin/*"
+              element={
+                <RoleRoute allow={AREA_ROLES.admin}>
+                  <Admin />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/kenh-nguoi-ban/*"
+              element={
+                <RoleRoute allow={AREA_ROLES.seller}>
+                  <SellerChannel />
+                </RoleRoute>
+              }
+            />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>

@@ -287,3 +287,32 @@ export async function updateOrderStatus(id, status) {
   if (error) throw error
   return data
 }
+
+// ---------- Phân quyền (Giai đoạn 2 – Tuần 1) ----------
+
+// Danh sách người dùng kèm email, vai trò, shop. Hàm trong DB tự chặn nếu không phải admin.
+export async function getAdminUsers(search = '') {
+  const { data, error } = await supabase.rpc('admin_list_users', {
+    p_search: search.trim() || null,
+    p_limit: 100,
+  })
+  if (error) throw error
+  return data
+}
+
+// Chỉ admin; DB chặn tự đổi vai trò của chính mình.
+export async function setUserRole(userId, role) {
+  const { error } = await supabase.rpc('set_user_role', { p_user_id: userId, p_role: role })
+  if (error) throw error
+}
+
+// Shop của người đang đăng nhập (mỗi người tối đa 1 shop). Chưa có thì null.
+export async function getMyShop(userId) {
+  const { data, error } = await supabase
+    .from('shops')
+    .select('id, name, slug, description, logo_url, status, created_at')
+    .eq('owner_id', userId)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
