@@ -22,7 +22,7 @@ export default function SaveBuild({ build, ids, ramQty }) {
       <p className="text-center text-xs text-slate-500">
         <Link
           to="/dang-nhap?next=%2Fbuild-pc"
-          className="font-medium text-blue-700 hover:underline"
+          className="font-medium text-blue-700 dark:text-blue-300 hover:underline"
         >
           Đăng nhập
         </Link>{' '}
@@ -40,13 +40,13 @@ export default function SaveBuild({ build, ids, ramQty }) {
           value={shareUrl(saved.share_code)}
           onFocus={(e) => e.target.select()}
           aria-label="Link chia sẻ"
-          className="h-10 w-full rounded-md border border-green-200 bg-white px-2 text-xs"
+          className="h-10 w-full rounded-md border border-green-200 bg-surface px-2 text-xs"
         />
         <div className="flex flex-wrap gap-2">
-          <CopyLinkButton url={shareUrl(saved.share_code)} className="bg-white" />
+          <CopyLinkButton url={shareUrl(saved.share_code)} className="bg-surface" />
           <Link
             to="/tai-khoan#cau-hinh"
-            className="inline-flex h-10 items-center px-2 text-sm text-blue-700 hover:underline"
+            className="inline-flex h-10 items-center px-2 text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
             Xem cấu hình đã lưu
           </Link>
@@ -73,7 +73,7 @@ export default function SaveBuild({ build, ids, ramQty }) {
           setName(suggestBuildName(build))
           setOpen(true)
         }}
-        className="h-11 w-full rounded-lg border border-blue-600 font-medium text-blue-700 hover:bg-blue-50"
+        className="h-11 w-full rounded-lg border border-blue-600 font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50"
       >
         Lưu cấu hình & chia sẻ
       </button>
@@ -107,7 +107,7 @@ export default function SaveBuild({ build, ids, ramQty }) {
           className="h-11 w-full rounded-lg border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none"
         />
       </label>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       <div className="flex gap-2">
         <button
           type="submit"

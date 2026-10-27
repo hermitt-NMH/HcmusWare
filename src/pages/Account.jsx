@@ -5,14 +5,15 @@ import OrderHistory from '../features/orders/OrderHistory'
 import SavedBuilds from '../features/builder/SavedBuilds'
 import MyPriceAlerts from '../features/price/MyPriceAlerts'
 import { PHONE_RE } from '../features/orders/orders'
+import { roleLabel, roleShortcut } from '../lib/roles'
 
 const inputClass =
-  'h-11 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm focus:border-blue-500 focus:outline-none'
+  'h-11 w-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
 
 // Trang tài khoản: hồ sơ giao hàng, lịch sử đơn hàng, cấu hình đã lưu, cảnh báo giá, đăng xuất.
 // Số điện thoại để trống cũng được (PHONE_RE dùng chung với trang thanh toán).
 export default function Account() {
-  const { user, profile, loading, signOut } = useAuth()
+  const { user, profile, role, loading, signOut } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
 
@@ -27,6 +28,7 @@ export default function Account() {
   if (!user)
     return <Navigate to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`} replace />
 
+  const shortcut = roleShortcut(role)
   const handleSignOut = async () => {
     await signOut()
     navigate('/', { replace: true })
@@ -42,20 +44,20 @@ export default function Account() {
         <button
           type="button"
           onClick={handleSignOut}
-          className="h-11 rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium hover:bg-slate-50"
+          className="h-11 rounded-lg border border-slate-300 bg-surface px-4 text-sm font-medium hover:bg-slate-50"
         >
           Đăng xuất
         </button>
       </div>
 
-      {profile?.role === 'admin' && (
+      {shortcut && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          <span>Bạn đang dùng tài khoản quản trị (admin).</span>
+          <span>Bạn đang dùng tài khoản {roleLabel(role).toLowerCase()}.</span>
           <Link
-            to="/admin"
+            to={shortcut.to}
             className="inline-flex h-10 items-center rounded-lg bg-amber-600 px-4 font-semibold text-white hover:bg-amber-700"
           >
-            Vào trang quản trị
+            Vào {shortcut.label.toLowerCase()}
           </Link>
         </div>
       )}
@@ -112,7 +114,7 @@ function ProfileForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6"
+      className="space-y-4 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
       <div>
         <h2 className="text-lg font-semibold">Thông tin giao hàng</h2>
@@ -148,7 +150,7 @@ function ProfileForm() {
           placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
           value={form.address}
           onChange={set('address')}
-          className="w-full rounded-lg border border-slate-300 bg-white p-3 text-sm focus:border-blue-500 focus:outline-none"
+          className="w-full rounded-lg border border-slate-300 bg-surface p-3 text-sm focus:border-blue-500 focus:outline-none"
         />
       </label>
 

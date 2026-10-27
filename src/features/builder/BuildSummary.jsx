@@ -31,10 +31,12 @@ export default function BuildSummary({
         : null
 
   return (
-    <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+    <div className="space-y-4 rounded-xl border border-slate-200 bg-surface p-4">
       <div className="flex items-baseline justify-between gap-2">
         <span className="text-slate-600">Tổng cộng</span>
-        <span className="text-2xl font-bold text-red-600">{formatPrice(totalPrice)}</span>
+        <span className="text-2xl font-bold text-red-600 dark:text-red-400">
+          {formatPrice(totalPrice)}
+        </span>
       </div>
 
       {selectedCount > 0 && (
@@ -97,7 +99,7 @@ export default function BuildSummary({
           <button
             type="button"
             onClick={onReset}
-            className="flex min-h-11 w-full items-center justify-center text-sm text-slate-500 hover:text-red-600"
+            className="flex min-h-11 w-full items-center justify-center text-sm text-slate-500 hover:text-red-600 dark:hover:text-red-400"
           >
             Làm lại từ đầu
           </button>

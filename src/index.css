@@ -1,7 +1,79 @@
 @import 'tailwindcss';
 
+/* Biến thể dark: theo class "dark" trên <html> (do index.html / src/lib/theme.js đặt), không theo cài đặt máy */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: 'Be Vietnam Pro', ui-sans-serif, system-ui, sans-serif;
+  /* Nền của thẻ, khung, ô nhập. Dùng bg-surface thay cho bg-white (bg-white luôn trắng ở cả 2 chế độ,
+     chỉ dùng cho khung ảnh sản phẩm vì ảnh có nền trắng). */
+  --color-surface: #fff;
+}
+
+/* Màu biểu đồ giá (PriceChart.jsx đọc các biến này) */
+:root {
+  --chart-line: #2563eb;
+  --chart-fill: rgba(37, 99, 235, 0.08);
+  --chart-grid: #e2e8f0;
+  --chart-tick: #64748b;
+  --chart-target: #16a34a;
+  --chart-point-border: #fff;
+}
+
+/* ---------- Chế độ tối ----------
+   Cách làm: đổi giá trị bảng màu trung tính (slate) và các sắc độ nhạt dùng làm nền/viền cảnh báo,
+   nên các class sẵn có (bg-slate-50, text-slate-500, border-slate-200, bg-red-50...) tự đổi màu
+   mà không phải thêm dark: vào hàng trăm chỗ. Slate được ĐẢO: số nhỏ (nền) thành tối, số lớn (chữ) thành sáng.
+   - Nền tối cố định đặt chữ trắng lên (nhãn trên ảnh, tab đang chọn...): dùng gray-*, không dùng slate.
+   - Màu nhấn dùng chung cho chữ và nền (blue-700, red-600, green-700, amber-700) KHÔNG đổi ở đây
+     (nút hover:bg-blue-700 phải giữ màu đậm) → chữ dùng thêm dark:, vd text-blue-700 dark:text-blue-300.
+   Trang mới: dùng bg-surface, slate cho chữ/viền, thêm dark: cho chữ màu nhấn là đủ. */
+.dark {
+  --color-surface: #111a2e;
+
+  --color-slate-50: #0a0f1c;
+  --color-slate-100: #1c2638;
+  --color-slate-200: #2c3a50;
+  --color-slate-300: #45536a;
+  --color-slate-400: #7c8aa0;
+  --color-slate-500: #98a5b8;
+  --color-slate-600: #b4c0d0;
+  --color-slate-700: #cbd5e1;
+  --color-slate-800: #e2e8f0;
+  --color-slate-900: #f1f5f9;
+  --color-slate-950: #f8fafc;
+
+  /* Nền/viền nhạt của thông báo, nhãn trạng thái */
+  --color-blue-50: #172554;
+  --color-red-50: #3b1219;
+  --color-red-100: #4c1520;
+  --color-red-200: #7f1d1d;
+  --color-red-300: #991b1b;
+  --color-green-50: #0b2e1c;
+  --color-green-100: #14532d;
+  --color-green-200: #166534;
+  --color-green-300: #15803d;
+  --color-amber-50: #2d1f06;
+  --color-amber-100: #451a03;
+  --color-amber-200: #78350f;
+  --color-indigo-100: #312e81;
+
+  /* Chữ đậm trên nền nhạt ở trên (chỉ dùng làm màu chữ) */
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
+  --color-green-800: #86efac;
+  --color-green-900: #bbf7d0;
+  --color-amber-800: #fcd34d;
+  --color-amber-900: #fde68a;
+  --color-blue-800: #bfdbfe;
+  --color-indigo-800: #c7d2fe;
+
+  --chart-line: #60a5fa;
+  --chart-fill: rgba(96, 165, 250, 0.12);
+  --chart-grid: #2c3a50;
+  --chart-tick: #98a5b8;
+  --chart-target: #4ade80;
+  --chart-point-border: #111a2e;
 }
 
 body {
