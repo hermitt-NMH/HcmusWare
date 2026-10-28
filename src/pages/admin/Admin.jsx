@@ -3,13 +3,14 @@ import AdminProducts from './AdminProducts'
 import AdminOrders from './AdminOrders'
 import AdminUsers from './AdminUsers'
 import AdminReview from './AdminReview'
+import AdminBrands from './AdminBrands'
 
 const tabClass = ({ isActive }) =>
   `inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-medium ${
     isActive ? 'bg-gray-900 text-white dark:bg-blue-600' : 'text-slate-600 hover:bg-slate-100'
   }`
 
-// Trang quản trị /admin/san-pham, /admin/duyet, /admin/don-hang, /admin/nguoi-dung.
+// Trang quản trị /admin/san-pham, /admin/duyet, /admin/thuong-hieu, /admin/don-hang, /admin/nguoi-dung.
 // Kiểm tra vai trò do RoleRoute bọc ngoài (App.jsx) đảm nhận.
 export default function Admin() {
   return (
@@ -23,6 +24,9 @@ export default function Admin() {
           <NavLink to="/admin/duyet" className={tabClass}>
             Duyệt
           </NavLink>
+          <NavLink to="/admin/thuong-hieu" className={tabClass}>
+            Thương hiệu
+          </NavLink>
           <NavLink to="/admin/don-hang" className={tabClass}>
             Đơn hàng
           </NavLink>
@@ -35,6 +39,7 @@ export default function Admin() {
         <Route index element={<Navigate to="san-pham" replace />} />
         <Route path="san-pham" element={<AdminProducts />} />
         <Route path="duyet" element={<AdminReview />} />
+        <Route path="thuong-hieu" element={<AdminBrands />} />
         <Route path="don-hang" element={<AdminOrders />} />
         <Route path="nguoi-dung" element={<AdminUsers />} />
         <Route path="*" element={<Navigate to="san-pham" replace />} />

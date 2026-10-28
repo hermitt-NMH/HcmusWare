@@ -517,12 +517,46 @@ export async function setProductBrand(id, brandId) {
   if (error) throw error
 }
 
-export async function createBrand(name) {
+export async function createBrand(name, logoUrl = null) {
   const { data, error } = await supabase
     .from('brands')
-    .insert({ name: name.trim(), slug: toSlug(name) })
+    .insert({ name: name.trim(), slug: toSlug(name), logo_url: logoUrl })
     .select('id, name, slug')
     .single()
   if (error) throw error
   return data
+}
+
+// Trang admin /admin/thuong-hieu (US-15.6): mọi thương hiệu kèm số sản phẩm ở MỌI trạng thái
+// (admin đọc được hết), vì sản phẩm nào còn trỏ tới thương hiệu thì DB đều chặn xóa.
+export async function getAdminBrands() {
+  const { data, error } = await supabase
+    .from('brands')
+    .select('id, name, slug, logo_url, products(count)')
+    .order('name')
+  if (error) throw error
+  return data.map(({ products, ...b }) => ({ ...b, product_count: products[0]?.count ?? 0 }))
+}
+
+// Sửa tên / logo. Đổi tên thì đổi luôn slug (để chặn trùng như lúc thêm); trigger brands_sync_name
+// trong DB tự chép tên mới sang cột chữ products.brand (bộ lọc, tìm kiếm đọc cột này).
+export async function updateBrand(id, { name, logo_url }) {
+  const { data, error } = await supabase
+    .from('brands')
+    .update({ name, slug: toSlug(name), logo_url })
+    .eq('id', id)
+    .select('id, name, slug, logo_url')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function deleteBrand(id) {
+  const { error } = await supabase.from('brands').delete().eq('id', id)
+  if (error) throw error
+}
+
+// Logo thương hiệu nằm chung bucket ảnh, thư mục "thuong-hieu/" (chỉ admin ghi được thư mục không phải shop).
+export function uploadBrandLogo(file) {
+  return uploadShopImage('thuong-hieu', file)
 }
