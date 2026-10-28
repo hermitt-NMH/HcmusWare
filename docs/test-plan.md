@@ -211,3 +211,62 @@ Trước khi chạy: `npx supabase migration list` thấy đủ 5 migration ở 
 | `npx vitest run`, `npm run lint`             | 102/102 đạt, lint sạch                                                    |
 | Vercel – `npm run test:ui`                   | 35/35 đạt                                                                 |
 | Vercel + Supabase online – `test:e2e:online` | 13/13 đạt; đơn thử #10–#12 đã hủy, kho trả về như cũ, vẫn đủ 128 sản phẩm |
+
+## Test case – Phân quyền 3 vai trò và giao diện sáng/tối (Giai đoạn 2, Tuần 1)
+
+Theo US F13, F18 trong [user-story-g2.md](user-story-g2.md). Mỗi vai trò thử mở trang và đọc/ghi dữ liệu của vai trò khác ở 2 tầng:
+
+- Giao diện: `npm run test:roles` (`scripts/role-test.js`), các ca PQ, ND, TH, CT, TT dưới đây. Script tự tạo tài khoản `qa-*@hcmusware.test` (khách, người bán có shop chờ duyệt, admin) và tự xóa khi xong.
+- DB: `npm run test:rls` (`scripts/rls-test.js`), RLS01–RLS27 gọi thẳng REST/RPC, bỏ qua giao diện: chưa đăng nhập (RLS01–03), khách hàng (RLS04–10), người bán (RLS11–19), admin (RLS20–27).
+
+Chạy lại cả 2 bộ ở mỗi Pull Request có migration (rủi ro "viết lại RLS làm lộ dữ liệu" trong kế hoạch giai đoạn 2). Chạy trên Vercel thì `npm run db:backup` trước.
+
+| Mã   | Vai trò, cỡ màn hình                      | Bước                                                                                                      | Kết quả mong đợi                                                                               |
+| ---- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| PQ01 | Chưa đăng nhập, 1366                      | Mở trang chủ                                                                                              | Header có "Đăng nhập"; không có "Tài khoản", "Kênh người bán", "Quản trị"                      |
+| PQ02 | Chưa đăng nhập, 1366                      | Mở `/admin/nguoi-dung` và `/kenh-nguoi-ban/abc`                                                           | Chuyển sang `/dang-nhap?next=…` đúng trang đã mở                                               |
+| PQ03 | Admin, 1366                               | Đăng nhập từ trang ở PQ02                                                                                 | Quay lại đúng `/admin/nguoi-dung`                                                              |
+| PQ04 | Admin, 1366 và 360 (mở menu xổ)           | So các mục menu nhìn thấy, theo thứ tự                                                                    | Giống hệt nhau: Build PC, Giỏ hàng, Quản trị, tên, nút giao diện                               |
+| PQ05 | Admin, 1366                               | Mở `/kenh-nguoi-ban`                                                                                      | "Không có quyền truy cập" (admin quản lý shop HcmusWare ở `/admin`, C5)                        |
+| ND01 | Admin, 1366                               | `/admin/nguoi-dung`, tìm "qa-"                                                                            | Hiện đủ 3 tài khoản test kèm email, ngày tham gia, shop (nếu có)                               |
+| ND02 | Admin, 1366                               | Xem ô vai trò của chính mình                                                                              | Bị khóa, không tự đổi vai trò được                                                             |
+| ND03 | Admin, 1366                               | Tìm theo họ tên "QA Khach"                                                                                | Ra đúng tài khoản khách                                                                        |
+| ND04 | Admin, 1366                               | Đổi vai trò khách → Người bán                                                                             | DB lưu `role = seller`                                                                         |
+| ND05 | Admin, 1366                               | Bấm Tìm lại                                                                                               | Ô vai trò vẫn hiện "Người bán"                                                                 |
+| PQ06 | Khách vừa thành người bán, 1366           | Đăng nhập, mở trang chủ                                                                                   | Header có "Kênh người bán", không có "Quản trị"                                                |
+| PQ07 | Người bán chưa có shop, 1366              | Mở `/kenh-nguoi-ban`                                                                                      | Báo "Tài khoản của bạn chưa có shop…"                                                          |
+| PQ08 | Người bán, 1366                           | Mở `/admin/san-pham`                                                                                      | "Không có quyền truy cập"; trong lúc tải không chớp hiện dữ liệu admin (nút Sửa, Xóa, Tồn kho) |
+| PQ09 | Người bán có shop chờ duyệt, 1366         | Mở `/kenh-nguoi-ban`                                                                                      | Hiện tên shop và "Chờ admin duyệt"                                                             |
+| TH01 | Chưa chọn giao diện, máy để tối           | Mở trang chủ                                                                                              | Trang ở chế độ tối                                                                             |
+| TH02 | Như TH01                                  | Xem nút trên Header                                                                                       | Nút có nhãn "Chuyển sang giao diện sáng"                                                       |
+| TH03 | Như TH01, rồi máy để sáng                 | Bấm nút; chọn lại tối rồi F5 trang sản phẩm                                                               | Bấm: sang sáng và nhớ "light"; F5: đã tối ngay lúc tải xong HTML (không nháy sáng)             |
+| CT-l | Sáng, 1366                                | Đo tương phản mọi chữ trên trang chủ, sản phẩm, Builder, giỏ, tài khoản, kênh người bán, admin, đăng nhập | Không chỗ nào dưới 4,5:1 (chữ lớn 3:1)                                                         |
+| CT-d | Tối, 1366                                 | Như CT-l                                                                                                  | Như CT-l                                                                                       |
+| TT   | Admin và người bán, 360/640/768/1024/1366 | So menu từng cỡ với 1366 (mở menu xổ nếu có); đo chiều rộng header                                        | Cùng mục, cùng thứ tự ở mọi cỡ; header không rộng hơn màn hình (US-13.1)                       |
+| CON  | Tất cả                                    | Theo dõi Console trong suốt lần chạy                                                                      | Không có lỗi đỏ                                                                                |
+
+### Kết quả lần chạy 28/10/2026 – sau PR #125 (main 6282290)
+
+Trước khi chạy: `npm run db:backup` (bản `backups/lfifbzcehpemmhpqkffh-20261028-1141.json`).
+
+| Môi trường                     | Bộ test                                                 | Kết quả                    |
+| ------------------------------ | ------------------------------------------------------- | -------------------------- |
+| Local                          | `npx vitest run`, `npx eslint .`                        | 145/145 đạt, lint sạch     |
+| Local (Supabase local)         | `npm run test:rls`                                      | 27/27 đạt                  |
+| Supabase online                | `npm run test:rls:online`                               | 27/27 đạt                  |
+| Local (build + Supabase local) | `npm run test:e2e` (luồng mua giai đoạn 1)              | 13/13 đạt                  |
+| Local (build + Supabase local) | `npm run test:roles`                                    | 44/44 đạt                  |
+| Vercel + Supabase online       | `npm run test:roles:online`                             | 44/44 đạt, 4 lần liên tiếp |
+| Vercel                         | `BASE_URL=https://hcmusware.vercel.app npm run test:ui` | 35/35 đạt                  |
+
+Test lại lỗi QA G2T1:
+
+| Lỗi             | Ca kiểm tra | Kết quả                                                                                                                   |
+| --------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------- |
+| BUG-G2-01 (#73) | CT-l, CT-d  | Đạt (PR #76)                                                                                                              |
+| BUG-G2-02 (#74) | CT-l, CT-d  | Đạt (PR #76)                                                                                                              |
+| BUG-G2-03 (#75) | PQ04, TT    | Sau PR #76 vẫn lỗi (Build PC, Giỏ hàng đứng trước "Quản trị" ở 360 px; nút giao diện có 2 tên khác nhau). Đạt sau PR #125 |
+
+Phát hiện khi chạy trên Vercel: 2 lần đầu, PQ06 và TT-ban-640 lỗi chập chờn, header chỉ hiện "Tài khoản", chưa có tên và lối tắt vai trò. Đo 30 lần tải trang bằng tài khoản người bán: hồ sơ luôn tải được (30/30), trung vị 0,56 giây, chậm nhất 1,3 giây, Console không lỗi. Script đọc header sau khoảng 0,9 giây nên có lần đọc sớm; đã sửa script để chờ hồ sơ tải xong rồi mới đọc menu. Header nhảy chữ trong lúc tải được ghi thành lỗi giao diện mức Thấp (BUG-G2-04, #126, giao Dev3 ở Tuần 2). Trang `/admin` và `/kenh-nguoi-ban` không bị ảnh hưởng vì `RoleRoute` chờ hồ sơ rồi mới cho vào hoặc chặn (PQ08).
+
+Chưa thử trên điện thoại thật; các lần chạy trên dùng Edge headless.
