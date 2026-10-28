@@ -62,6 +62,16 @@ describe('sellerProductToForm → validateSellerProduct', () => {
     expect(validateSellerProduct({ ...form, price: '1.990.000' }, 'cpu').data.price).toBe(1990000)
   })
 
+  it('giá, tồn kho có phần thập phân → lỗi, không nhân lên (BUG-G2T2-01)', () => {
+    const form = sellerProductToForm(product, categories)
+    expect(
+      validateSellerProduct({ ...form, price: '1290000.00' }, 'cpu').errors.price,
+    ).toBeDefined()
+    expect(validateSellerProduct({ ...form, price: '1500.5' }, 'cpu').errors.price).toBeDefined()
+    expect(validateSellerProduct({ ...form, stock: '1.5' }, 'cpu').errors.stock).toBeDefined()
+    expect(validateSellerProduct({ ...form, price: '1,990,000' }, 'cpu').data.price).toBe(1990000)
+  })
+
   it('tên dưới 5 ký tự, quá 5 ảnh, datasheet http → lỗi', () => {
     const form = sellerProductToForm(product, categories)
     const { errors } = validateSellerProduct(

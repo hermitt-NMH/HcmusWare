@@ -1,6 +1,7 @@
 // Form thêm/sửa sản phẩm của kênh người bán (F14), dạng HÀM THUẦN để test.
 // Trường chung theo docs/thong-so-bat-buoc.md; thông số theo danh mục ở specFields.js.
 import { specsToForm, validateSpecs } from './specFields'
+import { parseWholeNumber } from '../../lib/format'
 
 export const MAX_IMAGES = 5
 export const MAX_IMAGE_BYTES = 2 * 1024 * 1024
@@ -36,21 +37,14 @@ export function sellerProductToForm(product, categories = []) {
   }
 }
 
-const toInt = (v) =>
-  Number(
-    String(v)
-      .trim()
-      .replace(/[.,\s]/g, ''),
-  )
-
 // Kiểm tra cả form. categorySlug: slug của danh mục đang chọn (để kiểm tra thông số).
 // Trả { data, errors, warnings }: data là dòng gửi lên Supabase (chưa có shop_id),
 // errors có khóa "specs.<khóa>" cho lỗi thông số để form báo đúng ô.
 export function validateSellerProduct(form, categorySlug) {
   const errors = {}
   const name = form.name.trim()
-  const price = toInt(form.price)
-  const stock = toInt(form.stock)
+  const price = parseWholeNumber(form.price)
+  const stock = parseWholeNumber(form.stock)
   const otherBrand = form.other_brand.trim()
   const description = form.description.trim()
   const datasheet = form.datasheet_url.trim()

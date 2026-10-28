@@ -1,5 +1,6 @@
 // Form thêm/sửa sản phẩm của trang admin, dạng HÀM THUẦN để test.
 // Form giữ mọi ô dạng chuỗi (giống <input>), khi lưu mới đổi sang đúng kiểu của bảng products.
+import { parseWholeNumber } from '../../lib/format'
 
 // Dòng products → giá trị ban đầu của form. Không có product = thêm mới.
 export function productToForm(product, defaultCategoryId = '') {
@@ -23,7 +24,7 @@ const isUrlOrPath = (v) => v.startsWith('/') || /^https?:\/\/\S+$/i.test(v)
 export function validateProductForm(form) {
   const errors = {}
   const name = form.name.trim()
-  const price = Number(String(form.price).replace(/[.,\s]/g, ''))
+  const price = parseWholeNumber(form.price)
   const stock = Number(form.stock)
   const imageUrl = form.image_url.trim()
   const datasheetUrl = form.datasheet_url.trim()
