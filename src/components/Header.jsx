@@ -183,6 +183,23 @@ export default function Header() {
       <div className={`${open ? 'block' : 'hidden'} border-t border-slate-100 md:block`}>
         <SearchForm className="mx-auto max-w-6xl px-4 pt-3 md:hidden" onDone={close} />
         <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-2 md:flex-row md:overflow-x-auto">
+          {/* Dưới md: phần còn lại của thanh trên, đứng TRƯỚC danh mục / Thương hiệu / Gợi ý
+              để thứ tự giống máy tính (US-13.1, BUG-G2T2-02) */}
+          {shortcut && (
+            <li className="md:hidden">
+              <NavLink to={shortcut.to} className={navClass} onClick={close}>
+                {shortcut.label}
+              </NavLink>
+            </li>
+          )}
+          <li className="md:hidden">
+            <NavLink to={account.to} className={navClass} onClick={close}>
+              {account.label}
+            </NavLink>
+          </li>
+          <li className="border-b border-slate-100 pb-1 md:hidden">
+            <ThemeToggle withLabel />
+          </li>
           {/* Đang tải: chữ nhỏ; lỗi: báo gọn một dòng. Giữ cùng chiều cao để không vỡ thanh menu */}
           {categories.loading && (
             <li className="flex min-h-11 items-center px-3 text-xs text-slate-500">
@@ -211,22 +228,6 @@ export default function Header() {
             <NavLink to="/goi-y-cau-hinh" className={navClass} onClick={close}>
               Gợi ý theo ngân sách
             </NavLink>
-          </li>
-          {/* Dưới md: phần còn lại của thanh trên, cùng thứ tự (US-13.1) */}
-          {shortcut && (
-            <li className="md:hidden">
-              <NavLink to={shortcut.to} className={navClass} onClick={close}>
-                {shortcut.label}
-              </NavLink>
-            </li>
-          )}
-          <li className="md:hidden">
-            <NavLink to={account.to} className={navClass} onClick={close}>
-              {account.label}
-            </NavLink>
-          </li>
-          <li className="md:hidden">
-            <ThemeToggle withLabel />
           </li>
         </ul>
       </div>
