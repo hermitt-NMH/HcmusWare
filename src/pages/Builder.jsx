@@ -693,6 +693,13 @@ function BuilderIntro() {
       <p className="mt-1 text-sm text-slate-500">
         Chọn từng linh kiện, web tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.{' '}
         <Link
+          to="/goi-y-cau-hinh"
+          className="text-blue-700 dark:text-blue-300 underline hover:no-underline"
+        >
+          Chưa biết chọn gì? Gợi ý theo ngân sách
+        </Link>
+        {' · '}
+        <Link
           to="/san-pham"
           className="text-blue-700 dark:text-blue-300 underline hover:no-underline"
         >
