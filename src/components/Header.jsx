@@ -41,16 +41,17 @@ function SearchForm({ className = '', onDone }) {
 
 // Nút đổi giao diện sáng/tối: đang sáng hiện mặt trăng (bấm để tối), đang tối hiện mặt trời.
 // Thanh trên cùng chỉ có icon; withLabel: kèm chữ, dùng trong menu xổ xuống trên điện thoại
-// (thanh trên cùng ở 360px không còn chỗ – BUG-05).
+// (thanh trên cùng ở 360px không còn chỗ – BUG-05). Hai kiểu cùng một tên để menu điện thoại
+// giống hệt máy tính (US-13.1).
 function ThemeToggle({ withLabel = false, className = '' }) {
   const { theme, toggleTheme } = useTheme()
   const dark = theme === 'dark'
-  const label = dark ? 'Giao diện sáng' : 'Giao diện tối'
+  const label = dark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'
   return (
     <button
       type="button"
       onClick={toggleTheme}
-      aria-label={withLabel ? undefined : `Chuyển sang ${label.toLowerCase()}`}
+      aria-label={withLabel ? undefined : label}
       title={withLabel ? undefined : label}
       // className quyết định cách hiện (vd "hidden sm:inline-flex"), mặc định inline-flex
       className={`min-h-11 shrink-0 items-center gap-2 rounded-md text-slate-600 hover:bg-slate-100 ${
@@ -134,13 +135,9 @@ export default function Header() {
 
         <SearchForm className="mx-2 hidden max-w-md flex-1 md:block" />
 
+        {/* Thứ tự menu ở mọi cỡ màn hình (US-13.1): Build PC, Giỏ hàng, lối tắt vai trò, tài khoản,
+            nút giao diện. Dưới md, 3 mục cuối nằm trong menu xổ xuống, vẫn đúng thứ tự đó. */}
         <nav className="ml-auto flex items-center gap-1">
-          {/* Lối tắt theo vai trò, chỉ trên màn rộng (màn nhỏ nằm trong menu bên dưới) */}
-          {shortcut && (
-            <NavLink to={shortcut.to} className={(s) => `${navClass(s)} hidden lg:flex`}>
-              {shortcut.label}
-            </NavLink>
-          )}
           <NavLink to="/build-pc" className={navClass}>
             Build PC
           </NavLink>
@@ -169,10 +166,16 @@ export default function Header() {
               </span>
             )}
           </NavLink>
-          <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 sm:flex`}>
+          {/* Lối tắt theo vai trò: admin → Quản trị, người bán → Kênh người bán */}
+          {shortcut && (
+            <NavLink to={shortcut.to} className={(s) => `${navClass(s)} hidden md:flex`}>
+              {shortcut.label}
+            </NavLink>
+          )}
+          <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 md:flex`}>
             <span className="truncate">{account.label}</span>
           </NavLink>
-          <ThemeToggle className="hidden sm:inline-flex" />
+          <ThemeToggle className="hidden md:inline-flex" />
         </nav>
       </div>
 
@@ -198,20 +201,20 @@ export default function Header() {
               </NavLink>
             </li>
           ))}
-          {/* Cùng thứ tự với thanh trên máy tính: lối tắt vai trò trước, tài khoản sau (US-13.1) */}
+          {/* Dưới md: phần còn lại của thanh trên, cùng thứ tự (US-13.1) */}
           {shortcut && (
-            <li className="lg:hidden">
+            <li className="md:hidden">
               <NavLink to={shortcut.to} className={navClass} onClick={close}>
                 {shortcut.label}
               </NavLink>
             </li>
           )}
-          <li className="sm:hidden">
+          <li className="md:hidden">
             <NavLink to={account.to} className={navClass} onClick={close}>
               {account.label}
             </NavLink>
           </li>
-          <li className="sm:hidden">
+          <li className="md:hidden">
             <ThemeToggle withLabel />
           </li>
         </ul>
