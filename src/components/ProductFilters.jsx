@@ -148,19 +148,26 @@ export default function ProductFilters({
         <PriceInputs min={filters.min} max={filters.max} onApply={onPrice} />
       </Group>
 
-      {facets.brands.length > 1 && (
-        <Group title="Hãng">
-          {facets.brands.map((b) => (
-            <CheckOption
-              key={b.value}
-              checked={filters.brands.includes(b.value)}
-              onChange={() => onToggle('brand', b.value)}
-              label={b.label}
-              count={b.count}
-            />
-          ))}
-        </Group>
-      )}
+      {/* Nhóm chỉ có 1 lựa chọn thì lọc cũng vô nghĩa → ẩn. key: tên tham số trên URL */}
+      {[
+        { title: 'Danh mục', key: 'cat', options: facets.categories, selected: filters.categories },
+        { title: 'Thương hiệu', key: 'brand', options: facets.brands, selected: filters.brands },
+        { title: 'Shop', key: 'shop', options: facets.shops, selected: filters.shops },
+      ]
+        .filter((g) => g.options?.length > 1)
+        .map((g) => (
+          <Group key={g.key} title={g.title}>
+            {g.options.map((o) => (
+              <CheckOption
+                key={o.value}
+                checked={g.selected.includes(o.value)}
+                onChange={() => onToggle(g.key, o.value)}
+                label={o.label}
+                count={o.count}
+              />
+            ))}
+          </Group>
+        ))}
 
       {facets.specs.map((group) => (
         <Group key={group.key} title={group.label}>

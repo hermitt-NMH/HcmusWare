@@ -26,10 +26,12 @@ export async function getCategoryBySlug(slug) {
 // Trang bán hàng (danh sách, chi tiết, giỏ, Builder) chỉ lấy hàng ĐANG BÁN của shop ĐANG HOẠT ĐỘNG.
 // RLS còn cho admin, chủ shop và người đã mua đọc hàng chờ duyệt / đã ẩn (để quản lý, xem lại đơn cũ),
 // nên phải lọc ở đây – không thì những người đó thấy cả hàng không mua được trên web.
-const ON_SALE_SHOP = 'shops!inner(status)'
+// Kèm tên + đường dẫn shop và thương hiệu (F15: "Bán bởi", "Thương hiệu", bộ lọc theo shop).
+const ON_SALE_SHOP = 'shops!inner(status, name, slug), brands(name, slug)'
 const onSale = (query) => query.eq('status', 'active').eq('shops.status', 'active')
 
-export async function getProducts({ categorySlug, limit } = {}) {
+// brandId / shopId: trang thương hiệu, trang shop (F15).
+export async function getProducts({ categorySlug, brandId, shopId, limit } = {}) {
   let query = supabase
     .from('products')
     .select(
@@ -42,6 +44,8 @@ export async function getProducts({ categorySlug, limit } = {}) {
 
   query = onSale(query)
   if (categorySlug) query = query.eq('categories.slug', categorySlug)
+  if (brandId) query = query.eq('brand_id', brandId)
+  if (shopId) query = query.eq('shop_id', shopId)
   if (limit) query = query.limit(limit)
 
   const { data, error } = await query
@@ -58,7 +62,7 @@ export async function getProductById(id) {
     supabase
       .from('products')
       .select(
-        `id, name, brand, price, stock, image_url, datasheet_url, description, specs, categories(slug, name), ${ON_SALE_SHOP}`,
+        `id, name, brand, price, stock, image_url, images, datasheet_url, description, specs, categories(slug, name), ${ON_SALE_SHOP}`,
       )
       .eq('id', id),
   ).maybeSingle()
@@ -376,6 +380,35 @@ export async function uploadShopImage(shopId, file) {
 // Danh sách thương hiệu cho ô chọn (người bán chỉ chọn, không tạo – C1).
 export async function getBrands() {
   const { data, error } = await supabase.from('brands').select('id, name, slug').order('name')
+  if (error) throw error
+  return data
+}
+
+// Trang /thuong-hieu: kèm số sản phẩm đang bán (hàm brand_list đếm như nhau cho mọi người).
+export async function getBrandList() {
+  const { data, error } = await supabase.rpc('brand_list')
+  if (error) throw error
+  return data
+}
+
+export async function getBrandBySlug(slug) {
+  const { data, error } = await supabase
+    .from('brands')
+    .select('id, name, slug, logo_url')
+    .eq('slug', slug)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// Trang /shop/:slug chỉ mở được shop đang hoạt động; chủ shop xem shop chờ duyệt của mình cũng ra 404.
+export async function getShopBySlug(slug) {
+  const { data, error } = await supabase
+    .from('shops')
+    .select('id, name, slug, description, logo_url, created_at')
+    .eq('slug', slug)
+    .eq('status', 'active')
+    .maybeSingle()
   if (error) throw error
   return data
 }

@@ -34,6 +34,9 @@ export function readFilters(params) {
     min: toNumber(params.get('min')),
     max: toNumber(params.get('max')),
     brands: params.getAll('brand'),
+    // F15: lọc theo shop (slug) và theo danh mục (slug, dùng ở trang thương hiệu / trang shop).
+    shops: params.getAll('shop'),
+    categories: params.getAll('cat'),
     inStock: params.get('stock') === '1',
     sort: params.get('sort') ?? 'newest',
     specs,
@@ -56,6 +59,8 @@ export function applyFilters(products, filters) {
     if (filters.min != null && p.price < filters.min) return false
     if (filters.max != null && p.price > filters.max) return false
     if (filters.brands.length && !filters.brands.includes(p.brand)) return false
+    if (filters.shops?.length && !filters.shops.includes(p.shops?.slug)) return false
+    if (filters.categories?.length && !filters.categories.includes(p.categories?.slug)) return false
     if (filters.inStock && !(p.stock > 0)) return false
     // Mỗi nhóm thông số: khớp một trong các giá trị đã tick (HOẶC); giữa các nhóm: VÀ.
     for (const [key, values] of Object.entries(filters.specs)) {
@@ -73,7 +78,7 @@ export function applyFilters(products, filters) {
 }
 
 // Tạo các nhóm ô chọn cho bộ lọc từ chính dữ liệu đang có:
-// danh sách hãng + các thông số có filter: true của danh mục.
+// danh mục (khi chưa ở trang danh mục), thương hiệu, shop + các thông số có filter: true của danh mục.
 // Mỗi lựa chọn kèm số sản phẩm để khách biết trước kết quả.
 export function buildFacets(products, categorySlug) {
   const count = (getValue) => {
@@ -89,6 +94,27 @@ export function buildFacets(products, categorySlug) {
   const brands = [...count((p) => p.brand)]
     .map(([value, { count }]) => ({ value, label: value, count }))
     .sort((a, b) => a.label.localeCompare(b.label))
+
+  // Nhóm theo slug, nhãn là tên (shop / danh mục) lấy từ sản phẩm đầu tiên có slug đó.
+  const named = (getSlug, getName) =>
+    [...count(getSlug)]
+      .map(([value, { count }]) => ({
+        value,
+        label: getName(products.find((p) => getSlug(p) === value)) ?? value,
+        count,
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label, 'vi'))
+  const shops = named(
+    (p) => p.shops?.slug,
+    (p) => p.shops?.name,
+  )
+  // Trang danh mục đã lọc sẵn một danh mục → không cần nhóm này.
+  const categories = categorySlug
+    ? []
+    : named(
+        (p) => p.categories?.slug,
+        (p) => p.categories?.name,
+      )
 
   const specs = (SPEC_FIELDS[categorySlug] ?? [])
     .filter((f) => f.filter)
@@ -111,7 +137,7 @@ export function buildFacets(products, categorySlug) {
     // Nhóm chỉ có 1 lựa chọn thì lọc cũng vô nghĩa → ẩn.
     .filter((g) => g.options.length > 1)
 
-  return { brands, specs }
+  return { brands, shops, categories, specs }
 }
 
 // Đếm số bộ lọc đang bật (hiện trên nút "Bộ lọc" ở điện thoại).
@@ -120,6 +146,8 @@ export function countActiveFilters(filters) {
     (filters.min != null ? 1 : 0) +
     (filters.max != null ? 1 : 0) +
     filters.brands.length +
+    (filters.shops?.length ?? 0) +
+    (filters.categories?.length ?? 0) +
     (filters.inStock ? 1 : 0) +
     Object.values(filters.specs).reduce((sum, v) => sum + v.length, 0)
   )

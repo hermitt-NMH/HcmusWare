@@ -42,8 +42,14 @@ function DetailView({ product }) {
     description,
     specs,
     categories,
+    brands,
+    shops,
+    images,
   } = product
   const slug = categories?.slug
+  const gallery = images?.length ? images : image_url ? [image_url] : []
+  const [imageIndex, setImageIndex] = useState(0)
+  const mainImage = gallery[imageIndex] ?? image_url
   const fallback = categoryImage(slug)
   const outOfStock = stock <= 0
   const rows = specRows(slug, specs)
@@ -73,20 +79,44 @@ function DetailView({ product }) {
       </nav>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <div
-          className={`flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-slate-200 ${image_url ? 'bg-white' : `bg-gradient-to-br ${categoryBg(slug)}`}`}
-        >
-          <img
-            src={image_url || fallback}
-            alt={name}
-            width="600"
-            height="600"
-            fetchPriority="high"
-            onError={(e) => {
-              if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback
-            }}
-            className={`h-full w-full object-contain ${image_url ? 'p-6' : 'p-16'}`}
-          />
+        <div className="space-y-2">
+          <div
+            className={`flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-slate-200 ${mainImage ? 'bg-white' : `bg-gradient-to-br ${categoryBg(slug)}`}`}
+          >
+            <img
+              src={mainImage || fallback}
+              alt={name}
+              width="600"
+              height="600"
+              fetchPriority="high"
+              onError={(e) => {
+                if (!e.currentTarget.src.endsWith(fallback)) e.currentTarget.src = fallback
+              }}
+              className={`h-full w-full object-contain ${mainImage ? 'p-6' : 'p-16'}`}
+            />
+          </div>
+          {/* Sản phẩm người bán đăng có tới 5 ảnh (F14) */}
+          {gallery.length > 1 && (
+            <div className="flex gap-2 overflow-x-auto">
+              {gallery.map((url, i) => (
+                <button
+                  key={url}
+                  type="button"
+                  onClick={() => setImageIndex(i)}
+                  aria-label={`Xem ảnh ${i + 1}`}
+                  aria-pressed={i === imageIndex}
+                  className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white ${i === imageIndex ? 'border-blue-600' : 'border-slate-200'}`}
+                >
+                  <img
+                    src={url}
+                    alt=""
+                    loading="lazy"
+                    className="h-full w-full object-contain p-1"
+                  />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex flex-col gap-4">
@@ -97,6 +127,35 @@ function DetailView({ product }) {
               </p>
             )}
             <h1 className="mt-1 text-2xl font-bold text-slate-900">{name}</h1>
+            {/* F15: thương hiệu và shop bán, có link tới trang tương ứng */}
+            <dl className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
+              {brands && (
+                <div className="flex gap-1">
+                  <dt className="text-slate-500">Thương hiệu:</dt>
+                  <dd>
+                    <Link
+                      to={`/thuong-hieu/${brands.slug}`}
+                      className="font-medium text-blue-700 hover:underline dark:text-blue-300"
+                    >
+                      {brands.name}
+                    </Link>
+                  </dd>
+                </div>
+              )}
+              {shops && (
+                <div className="flex gap-1">
+                  <dt className="text-slate-500">Bán bởi:</dt>
+                  <dd>
+                    <Link
+                      to={`/shop/${shops.slug}`}
+                      className="font-medium text-blue-700 hover:underline dark:text-blue-300"
+                    >
+                      {shops.name}
+                    </Link>
+                  </dd>
+                </div>
+              )}
+            </dl>
           </div>
 
           <p className="text-3xl font-bold text-red-600 dark:text-red-400">{formatPrice(price)}</p>
@@ -107,7 +166,12 @@ function DetailView({ product }) {
             {outOfStock ? 'Hết hàng' : `Còn hàng – ${stock} sản phẩm`}
           </p>
 
-          {description && <p className="text-sm leading-relaxed text-slate-600">{description}</p>}
+          {/* Mô tả người bán nhập: hiện dạng chữ (React tự thoát HTML), giữ xuống dòng */}
+          {description && (
+            <p className="whitespace-pre-line text-sm leading-relaxed text-slate-600">
+              {description}
+            </p>
+          )}
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <AddToCartButton product={product} />
