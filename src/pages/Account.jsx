@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import OrderHistory from '../features/orders/OrderHistory'
 import SavedBuilds from '../features/builder/SavedBuilds'
 import MyPriceAlerts from '../features/price/MyPriceAlerts'
+import MyShopCard from '../features/seller/MyShopCard'
 import { PHONE_RE } from '../features/orders/orders'
 import { roleLabel, roleShortcut } from '../lib/roles'
 
@@ -61,6 +62,15 @@ export default function Account() {
           </Link>
         </div>
       )}
+
+      {location.state?.notice && (
+        <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-green-800">
+          {location.state.notice}
+        </p>
+      )}
+
+      {/* Shop của tôi: mở shop, chờ duyệt, bị từ chối (Giai đoạn 2 – F14) */}
+      <MyShopCard />
 
       {/* key: khi hồ sơ tải xong thì form khởi tạo lại với dữ liệu mới */}
       <ProfileForm key={profile?.id ?? 'loading'} />
