@@ -22,6 +22,7 @@ const MockPayment = lazy(() => import('./pages/MockPayment'))
 const OrderDetail = lazy(() => import('./pages/OrderDetail'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const SellerChannel = lazy(() => import('./pages/seller/SellerChannel'))
+const OpenShop = lazy(() => import('./pages/OpenShop'))
 
 // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
 const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>
@@ -43,6 +44,14 @@ export default function App() {
             <Route path="/dang-nhap" element={<Login key="login" mode="login" />} />
             <Route path="/dang-ky" element={<Login key="register" mode="register" />} />
             <Route path="/tai-khoan" element={<Account />} />
+            <Route
+              path="/tai-khoan/mo-shop"
+              element={
+                <RoleRoute allow={AREA_ROLES.account}>
+                  <OpenShop />
+                </RoleRoute>
+              }
+            />
             <Route path="/chinh-sach-bao-mat" element={<Privacy />} />
             <Route path="/build-pc" element={<Builder />} />
             <Route path="/gio-hang" element={<Cart />} />
