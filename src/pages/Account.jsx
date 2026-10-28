@@ -55,7 +55,7 @@ export default function Account() {
           <span>Bạn đang dùng tài khoản {roleLabel(role).toLowerCase()}.</span>
           <Link
             to={shortcut.to}
-            className="inline-flex h-10 items-center rounded-lg bg-amber-600 px-4 font-semibold text-white hover:bg-amber-700"
+            className="inline-flex h-10 items-center rounded-lg bg-amber-700 px-4 font-semibold text-white hover:bg-orange-800"
           >
             Vào {shortcut.label.toLowerCase()}
           </Link>

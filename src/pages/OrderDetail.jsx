@@ -73,7 +73,7 @@ function OrderView() {
               <div
                 className={`h-1.5 rounded-full ${i <= stepIndex ? 'bg-blue-600' : 'bg-slate-200'}`}
               />
-              <span className={i <= stepIndex ? 'font-medium text-slate-900' : 'text-slate-400'}>
+              <span className={i <= stepIndex ? 'font-medium text-slate-900' : 'text-slate-500'}>
                 {ORDER_STATUS[s].label}
               </span>
             </li>

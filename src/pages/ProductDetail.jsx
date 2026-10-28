@@ -122,7 +122,7 @@ function DetailView({ product }) {
                 {/\.pdf($|\?)/i.test(datasheet_url) ? 'Tải datasheet (PDF)' : 'Xem thông số hãng ↗'}
               </a>
             ) : (
-              <span className="inline-flex h-12 items-center justify-center rounded-lg border border-dashed border-slate-300 px-5 text-sm text-slate-400">
+              <span className="inline-flex h-12 items-center justify-center rounded-lg border border-dashed border-slate-300 px-5 text-sm text-slate-500">
                 Chưa có datasheet
               </span>
             )}

@@ -24,7 +24,7 @@ function CheckOption({ checked, onChange, label, count, type = 'checkbox', name 
         className="h-4 w-4 shrink-0 accent-blue-600"
       />
       <span className="flex-1">{label}</span>
-      {count != null && <span className="text-xs text-slate-400">{count}</span>}
+      {count != null && <span className="text-xs text-slate-500">{count}</span>}
     </label>
   )
 }
@@ -75,7 +75,7 @@ function PriceInputs({ min, max, onApply }) {
         onChange={(e) => setDraft({ ...draft, min: e.target.value })}
         className={inputClass}
       />
-      <span className="text-slate-400">–</span>
+      <span className="text-slate-500">–</span>
       <input
         type="number"
         inputMode="decimal"
