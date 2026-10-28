@@ -201,6 +201,17 @@ export default function Header() {
               </NavLink>
             </li>
           ))}
+          {/* Giai đoạn 2: trang thương hiệu (F15) và gợi ý cấu hình theo ngân sách (F10) */}
+          <li className="shrink-0 border-t border-slate-100 pt-1 md:ml-auto md:border-t-0 md:pt-0">
+            <NavLink to="/thuong-hieu" className={navClass} onClick={close}>
+              Thương hiệu
+            </NavLink>
+          </li>
+          <li className="shrink-0">
+            <NavLink to="/goi-y-cau-hinh" className={navClass} onClick={close}>
+              Gợi ý theo ngân sách
+            </NavLink>
+          </li>
           {/* Dưới md: phần còn lại của thanh trên, cùng thứ tự (US-13.1) */}
           {shortcut && (
             <li className="md:hidden">

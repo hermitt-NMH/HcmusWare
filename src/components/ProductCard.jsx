@@ -4,7 +4,7 @@ import { categoryBg, categoryImage, productSrcSet } from '../lib/images'
 
 // eager: thẻ ở hàng đầu (thấy ngay khi mở trang) tải ảnh luôn, không lazy, để LCP nhanh hơn.
 export default function ProductCard({ product, eager = false }) {
-  const { id, name, brand, price, stock, image_url, categories } = product
+  const { id, name, brand, price, stock, image_url, categories, shops } = product
   const outOfStock = stock <= 0
   const fallback = categoryImage(categories?.slug)
 
@@ -44,6 +44,10 @@ export default function ProductCard({ product, eager = false }) {
         <h3 className="line-clamp-2 text-sm font-medium text-slate-900 group-hover:text-blue-700 dark:group-hover:text-blue-300">
           {name}
         </h3>
+        {/* Shop bán (F15); shop chính HcmusWare thì không cần ghi */}
+        {shops?.slug && shops.slug !== 'hcmusware' && (
+          <p className="line-clamp-1 text-xs text-slate-500">{shops.name}</p>
+        )}
         <p className="mt-auto pt-2 font-semibold text-red-600 dark:text-red-400">
           {formatPrice(price)}
         </p>

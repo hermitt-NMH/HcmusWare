@@ -1,4 +1,5 @@
 import { supabase } from './supabase'
+import { toSlug } from './slug'
 
 // Gom các truy vấn Supabase hay dùng vào một chỗ để các trang gọi lại.
 
@@ -25,10 +26,12 @@ export async function getCategoryBySlug(slug) {
 // Trang bán hàng (danh sách, chi tiết, giỏ, Builder) chỉ lấy hàng ĐANG BÁN của shop ĐANG HOẠT ĐỘNG.
 // RLS còn cho admin, chủ shop và người đã mua đọc hàng chờ duyệt / đã ẩn (để quản lý, xem lại đơn cũ),
 // nên phải lọc ở đây – không thì những người đó thấy cả hàng không mua được trên web.
-const ON_SALE_SHOP = 'shops!inner(status)'
+// Kèm tên + đường dẫn shop và thương hiệu (F15: "Bán bởi", "Thương hiệu", bộ lọc theo shop).
+const ON_SALE_SHOP = 'shops!inner(status, name, slug), brands(name, slug)'
 const onSale = (query) => query.eq('status', 'active').eq('shops.status', 'active')
 
-export async function getProducts({ categorySlug, limit } = {}) {
+// brandId / shopId: trang thương hiệu, trang shop (F15).
+export async function getProducts({ categorySlug, brandId, shopId, limit } = {}) {
   let query = supabase
     .from('products')
     .select(
@@ -41,6 +44,8 @@ export async function getProducts({ categorySlug, limit } = {}) {
 
   query = onSale(query)
   if (categorySlug) query = query.eq('categories.slug', categorySlug)
+  if (brandId) query = query.eq('brand_id', brandId)
+  if (shopId) query = query.eq('shop_id', shopId)
   if (limit) query = query.limit(limit)
 
   const { data, error } = await query
@@ -57,7 +62,7 @@ export async function getProductById(id) {
     supabase
       .from('products')
       .select(
-        `id, name, brand, price, stock, image_url, datasheet_url, description, specs, categories(slug, name), ${ON_SALE_SHOP}`,
+        `id, name, brand, price, stock, image_url, images, datasheet_url, description, specs, categories(slug, name), ${ON_SALE_SHOP}`,
       )
       .eq('id', id),
   ).maybeSingle()
@@ -326,9 +331,198 @@ export async function setUserRole(userId, role) {
 export async function getMyShop(userId) {
   const { data, error } = await supabase
     .from('shops')
-    .select('id, name, slug, description, logo_url, status, created_at')
+    .select(SHOP_FIELDS)
     .eq('owner_id', userId)
     .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// ---------- Kênh người bán, thương hiệu (Giai đoạn 2 – Tuần 2) ----------
+
+const SHOP_FIELDS = 'id, name, slug, description, logo_url, status, review_note, created_at'
+
+// Đăng ký mở shop. owner_id và status do trigger guard_shop_write trong DB tự đặt (chờ duyệt).
+export async function createShop(data) {
+  const { data: shop, error } = await supabase
+    .from('shops')
+    .insert(data)
+    .select(SHOP_FIELDS)
+    .single()
+  if (error) throw error
+  return shop
+}
+
+// Sửa tên, mô tả, logo. resubmit: shop bị từ chối gửi lại → chờ duyệt (DB xóa lý do cũ).
+export async function updateShop(id, data, { resubmit = false } = {}) {
+  const { data: shop, error } = await supabase
+    .from('shops')
+    .update(resubmit ? { ...data, status: 'pending' } : data)
+    .eq('id', id)
+    .select(SHOP_FIELDS)
+    .single()
+  if (error) throw error
+  return shop
+}
+
+// Tải ảnh lên bucket product-images, thư mục <shop_id>/ (Storage chỉ cho chủ shop ghi vào đây).
+// Trả link công khai của ảnh.
+export async function uploadShopImage(shopId, file) {
+  const ext = { 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp' }[file.type] ?? 'img'
+  const path = `${shopId}/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`
+  const { error } = await supabase.storage
+    .from('product-images')
+    .upload(path, file, { contentType: file.type, cacheControl: '31536000' })
+  if (error) throw error
+  return supabase.storage.from('product-images').getPublicUrl(path).data.publicUrl
+}
+
+// Danh sách thương hiệu cho ô chọn (người bán chỉ chọn, không tạo – C1).
+export async function getBrands() {
+  const { data, error } = await supabase.from('brands').select('id, name, slug').order('name')
+  if (error) throw error
+  return data
+}
+
+// Trang /thuong-hieu: kèm số sản phẩm đang bán (hàm brand_list đếm như nhau cho mọi người).
+export async function getBrandList() {
+  const { data, error } = await supabase.rpc('brand_list')
+  if (error) throw error
+  return data
+}
+
+export async function getBrandBySlug(slug) {
+  const { data, error } = await supabase
+    .from('brands')
+    .select('id, name, slug, logo_url')
+    .eq('slug', slug)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// Trang /shop/:slug chỉ mở được shop đang hoạt động; chủ shop xem shop chờ duyệt của mình cũng ra 404.
+export async function getShopBySlug(slug) {
+  const { data, error } = await supabase
+    .from('shops')
+    .select('id, name, slug, description, logo_url, created_at')
+    .eq('slug', slug)
+    .eq('status', 'active')
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+const SELLER_PRODUCT_FIELDS =
+  'id, category_id, name, brand_id, brand, price, stock, image_url, images, datasheet_url, description, specs, status, approved_at, review_note, created_at, categories(slug, name)'
+
+// Mọi sản phẩm của shop (mọi trạng thái – RLS cho chủ shop đọc).
+export async function getSellerProducts(shopId) {
+  const { data, error } = await supabase
+    .from('products')
+    .select(SELLER_PRODUCT_FIELDS)
+    .eq('shop_id', shopId)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+export async function getSellerProduct(shopId, id) {
+  if (!/^\d+$/.test(String(id)) || !Number.isSafeInteger(Number(id))) return null
+  const { data, error } = await supabase
+    .from('products')
+    .select(SELLER_PRODUCT_FIELDS)
+    .eq('shop_id', shopId)
+    .eq('id', id)
+    .maybeSingle()
+  if (error) throw error
+  return data
+}
+
+// Thêm (không có id) hoặc sửa sản phẩm của shop. Thêm mới luôn chờ duyệt (trigger trong DB).
+// Trả dòng sau khi lưu để biết trạng thái mới (đổi thông số → chờ duyệt lại, C3).
+export async function saveSellerProduct(shopId, id, fields) {
+  const query = id
+    ? supabase.from('products').update(fields).eq('id', id).eq('shop_id', shopId)
+    : supabase.from('products').insert({ ...fields, shop_id: shopId })
+  const { data, error } = await query.select(SELLER_PRODUCT_FIELDS).single()
+  if (error) throw error
+  return data
+}
+
+// Ẩn ('hidden'), hiện lại ('active') hoặc gửi duyệt lại ('pending').
+export async function setSellerProductStatus(id, status) {
+  const { data, error } = await supabase
+    .from('products')
+    .update({ status })
+    .eq('id', id)
+    .select(SELLER_PRODUCT_FIELDS)
+    .single()
+  if (error) throw error
+  return data
+}
+
+// ---------- Admin duyệt shop / sản phẩm (Giai đoạn 2 – Tuần 2) ----------
+
+// status: 'pending' | 'active' | 'locked' | 'rejected' | null (tất cả)
+export async function getAdminShops(status = null) {
+  const { data, error } = await supabase.rpc('admin_list_shops', { p_status: status })
+  if (error) throw error
+  return data
+}
+
+export async function approveShop(id) {
+  const { error } = await supabase.rpc('approve_shop', { p_shop_id: id })
+  if (error) throw error
+}
+
+export async function rejectShop(id, note) {
+  const { error } = await supabase.rpc('reject_shop', { p_shop_id: id, p_note: note })
+  if (error) throw error
+}
+
+export async function setShopLocked(id, locked) {
+  const { error } = await supabase.rpc('set_shop_locked', { p_shop_id: id, p_locked: locked })
+  if (error) throw error
+}
+
+// Sản phẩm chờ duyệt, cũ nhất lên trên.
+export async function getPendingProducts() {
+  const { data, error } = await supabase
+    .from('products')
+    .select(
+      'id, name, brand_id, brand, price, stock, image_url, images, description, datasheet_url, specs, created_at, categories(slug, name), shops(name, slug)',
+    )
+    .eq('status', 'pending')
+    .order('created_at')
+    .order('id')
+  if (error) throw error
+  return data
+}
+
+export async function approveProduct(id) {
+  const { error } = await supabase.rpc('approve_product', { p_product_id: id })
+  if (error) throw error
+}
+
+export async function rejectProduct(id, note) {
+  const { error } = await supabase.rpc('reject_product', { p_product_id: id, p_note: note })
+  if (error) throw error
+}
+
+// Admin gán thương hiệu cho sản phẩm "Thương hiệu khác" trước khi duyệt (C1).
+export async function setProductBrand(id, brandId) {
+  const { error } = await supabase.from('products').update({ brand_id: brandId }).eq('id', id)
+  if (error) throw error
+}
+
+export async function createBrand(name) {
+  const { data, error } = await supabase
+    .from('brands')
+    .insert({ name: name.trim(), slug: toSlug(name) })
+    .select('id, name, slug')
+    .single()
   if (error) throw error
   return data
 }
