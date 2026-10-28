@@ -15,6 +15,8 @@
     "test:e2e:online": "node --env-file=.env.online.local scripts/e2e-tuan5.js",
     "test:rls": "node --env-file=.env.local scripts/rls-test.js",
     "test:rls:online": "node --env-file=.env.online.local scripts/rls-test.js",
+    "test:roles": "node --env-file=.env.local scripts/role-test.js",
+    "test:roles:online": "node --env-file=.env.online.local scripts/role-test.js https://hcmusware.vercel.app",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
