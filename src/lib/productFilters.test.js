@@ -110,3 +110,46 @@ describe('countActiveFilters', () => {
     ).toBe(5)
   })
 })
+
+describe('lọc theo shop và danh mục (F15)', () => {
+  const market = [
+    {
+      ...products[0],
+      shops: { slug: 'hcmusware', name: 'HcmusWare' },
+      categories: { slug: 'cpu', name: 'CPU' },
+    },
+    {
+      ...products[1],
+      shops: { slug: 'linh-kien-mau', name: 'Linh Kiện Mẫu' },
+      categories: { slug: 'cpu', name: 'CPU' },
+    },
+    {
+      ...products[2],
+      id: 7,
+      shops: { slug: 'linh-kien-mau', name: 'Linh Kiện Mẫu' },
+      categories: { slug: 'ram', name: 'RAM' },
+    },
+  ]
+
+  it('?shop= chọn nhiều shop (HOẶC), kết hợp với ?cat= (VÀ)', () => {
+    expect(ids(applyFilters(market, filters('shop=linh-kien-mau')))).toEqual([2, 7])
+    expect(ids(applyFilters(market, filters('shop=linh-kien-mau&shop=hcmusware')))).toEqual([
+      3, 2, 7,
+    ])
+    expect(ids(applyFilters(market, filters('shop=linh-kien-mau&cat=cpu')))).toEqual([2])
+    expect(countActiveFilters(filters('shop=a&cat=cpu&cat=ram'))).toBe(3)
+  })
+
+  it('facet shop / danh mục có tên và số sản phẩm; trang danh mục không có nhóm danh mục', () => {
+    const facets = buildFacets(market)
+    expect(facets.shops).toEqual([
+      { value: 'hcmusware', label: 'HcmusWare', count: 1 },
+      { value: 'linh-kien-mau', label: 'Linh Kiện Mẫu', count: 2 },
+    ])
+    expect(facets.categories.map((c) => [c.value, c.count])).toEqual([
+      ['cpu', 2],
+      ['ram', 1],
+    ])
+    expect(buildFacets(market, 'cpu').categories).toEqual([])
+  })
+})

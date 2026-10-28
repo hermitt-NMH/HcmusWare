@@ -23,6 +23,9 @@ const OrderDetail = lazy(() => import('./pages/OrderDetail'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const SellerChannel = lazy(() => import('./pages/seller/SellerChannel'))
 const OpenShop = lazy(() => import('./pages/OpenShop'))
+const BrandList = lazy(() => import('./pages/BrandList'))
+const BrandPage = lazy(() => import('./pages/BrandPage'))
+const ShopPage = lazy(() => import('./pages/ShopPage'))
 
 // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
 const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>
@@ -52,6 +55,9 @@ export default function App() {
                 </RoleRoute>
               }
             />
+            <Route path="/thuong-hieu" element={<BrandList />} />
+            <Route path="/thuong-hieu/:slug" element={<BrandPage />} />
+            <Route path="/shop/:slug" element={<ShopPage />} />
             <Route path="/chinh-sach-bao-mat" element={<Privacy />} />
             <Route path="/build-pc" element={<Builder />} />
             <Route path="/gio-hang" element={<Cart />} />
