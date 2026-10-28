@@ -681,6 +681,57 @@ let sellerNew
     total(anonBrands) === total(adminBrands) && total(anonBrands) === onSale,
     `brand_list: chưa đăng nhập đếm ${total(anonBrands)}, admin đếm ${total(adminBrands)}, sản phẩm đang bán có thương hiệu: ${onSale}`,
   )
+
+  // US-15.6: admin quản lý thương hiệu. Đổi tên có dấu → products.brand đổi theo, không sinh
+  // thương hiệu thừa (slugify trong DB không bỏ dấu); người bán không sửa/xóa được; còn sản phẩm thì không xóa được.
+  const brand = (
+    await api(admin.token, '/rest/v1/brands', {
+      method: 'POST',
+      body: { name: `RLS TH ${ts}`, slug: `rls-th-${ts}` },
+    })
+  ).data[0]
+  const pBrand = (
+    await svc('/rest/v1/products', {
+      method: 'POST',
+      body: {
+        category_id: cpuCat,
+        name: `RLS thuong hieu ${ts}`,
+        brand_id: brand.id,
+        price: 1000000,
+        stock: 1,
+        specs: { socket: 'AM5', tdp_w: 65, igpu: true },
+        shop_id: shopA.id,
+        status: 'active',
+      },
+    })
+  ).data[0]
+  const sellerEdit = await api(seller.token, `/rest/v1/brands?id=eq.${brand.id}`, {
+    method: 'PATCH',
+    body: { name: 'Bị đổi' },
+  })
+  const sellerDel = await api(seller.token, `/rest/v1/brands?id=eq.${brand.id}`, {
+    method: 'DELETE',
+  })
+  const newName = `Ánh Dương ${ts}`
+  const rename = await api(admin.token, `/rest/v1/brands?id=eq.${brand.id}`, {
+    method: 'PATCH',
+    body: { name: newName, slug: `rls-anh-duong-${ts}` },
+  })
+  const renamed = (await svc(`/rest/v1/products?select=brand,brand_id&id=eq.${pBrand.id}`)).data[0]
+  const extra = (await svc(`/rest/v1/brands?select=id&name=eq.${encodeURIComponent(newName)}`)).data
+    .length
+  const delUsed = await api(admin.token, `/rest/v1/brands?id=eq.${brand.id}`, { method: 'DELETE' })
+  rec(
+    'T2-12',
+    sellerEdit.data?.length === 0 &&
+      sellerDel.data?.length === 0 &&
+      rename.ok &&
+      renamed.brand === newName &&
+      renamed.brand_id === brand.id &&
+      extra === 1 &&
+      delUsed.status === 409,
+    `người bán sửa/xóa thương hiệu: ${sellerEdit.data?.length}/${sellerDel.data?.length} dòng; admin đổi tên có dấu: ${rename.status}, sản phẩm brand="${renamed.brand}", brand_id giữ=${renamed.brand_id === brand.id}, số thương hiệu tên mới=${extra}; xóa khi còn sản phẩm: ${delUsed.status}`,
+  )
 }
 
 // ---------- Dọn dẹp ----------
