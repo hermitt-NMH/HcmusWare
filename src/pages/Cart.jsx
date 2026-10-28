@@ -179,7 +179,7 @@ function CartLine({ item, onQty, onRemove }) {
         type="button"
         onClick={() => onRemove(id)}
         aria-label={`Xóa ${name} khỏi giỏ`}
-        className="-mr-1 -mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
+        className="-mr-1 -mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
       >
         <svg
           width="18"

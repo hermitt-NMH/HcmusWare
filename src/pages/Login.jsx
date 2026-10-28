@@ -116,7 +116,7 @@ export default function Login({ mode = 'login' }) {
           Tiếp tục với Google
         </button>
 
-        <div className="my-5 flex items-center gap-3 text-xs text-slate-400">
+        <div className="my-5 flex items-center gap-3 text-xs text-slate-500">
           <span className="h-px flex-1 bg-slate-200" />
           hoặc dùng email
           <span className="h-px flex-1 bg-slate-200" />

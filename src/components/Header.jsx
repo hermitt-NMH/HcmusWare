@@ -182,7 +182,7 @@ export default function Header() {
         <ul className="mx-auto flex max-w-6xl flex-col gap-1 px-4 py-2 md:flex-row md:overflow-x-auto">
           {/* Đang tải: chữ nhỏ; lỗi: báo gọn một dòng. Giữ cùng chiều cao để không vỡ thanh menu */}
           {categories.loading && (
-            <li className="flex min-h-11 items-center px-3 text-xs text-slate-400">
+            <li className="flex min-h-11 items-center px-3 text-xs text-slate-500">
               Đang tải danh mục…
             </li>
           )}
@@ -198,11 +198,7 @@ export default function Header() {
               </NavLink>
             </li>
           ))}
-          <li className="sm:hidden">
-            <NavLink to={account.to} className={navClass} onClick={close}>
-              {account.label}
-            </NavLink>
-          </li>
+          {/* Cùng thứ tự với thanh trên máy tính: lối tắt vai trò trước, tài khoản sau (US-13.1) */}
           {shortcut && (
             <li className="lg:hidden">
               <NavLink to={shortcut.to} className={navClass} onClick={close}>
@@ -210,6 +206,11 @@ export default function Header() {
               </NavLink>
             </li>
           )}
+          <li className="sm:hidden">
+            <NavLink to={account.to} className={navClass} onClick={close}>
+              {account.label}
+            </NavLink>
+          </li>
           <li className="sm:hidden">
             <ThemeToggle withLabel />
           </li>

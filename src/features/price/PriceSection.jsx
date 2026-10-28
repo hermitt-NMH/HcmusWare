@@ -264,7 +264,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
             aria-invalid={Boolean(error)}
             className="h-11 w-full rounded-lg border border-slate-300 pl-3 pr-8 focus:border-blue-500 focus:outline-none"
           />
-          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500">
             ₫
           </span>
         </div>

@@ -250,7 +250,7 @@ function SlotLabel({ slot, build }) {
         <span className="block whitespace-nowrap font-medium">{slot.label}</span>
         {slot.optional && (
           <span
-            className={`block text-[11px] ${needVga ? 'text-red-600 dark:text-red-400' : 'text-slate-400'}`}
+            className={`block text-[11px] ${needVga ? 'text-red-600 dark:text-red-400' : 'text-slate-500'}`}
           >
             {needVga ? 'Bắt buộc (CPU không có iGPU)' : 'Không bắt buộc'}
           </span>
@@ -357,7 +357,7 @@ function DesktopTable({ all, build, ramQty, statusOf, onSelect, onRemove, onRamQ
                         )}
                       </div>
                     ) : (
-                      <span className="text-slate-400">Chưa chọn</span>
+                      <span className="text-slate-500">Chưa chọn</span>
                     )}
                     {status && <div className="mt-1">{BADGE[status]}</div>}
                   </td>
@@ -384,7 +384,7 @@ function DesktopTable({ all, build, ramQty, statusOf, onSelect, onRemove, onRamQ
                           type="button"
                           onClick={() => onRemove(slot.slug)}
                           aria-label={`Bỏ ${slot.label}`}
-                          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
+                          className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
                         >
                           ✕
                         </button>
@@ -620,7 +620,7 @@ function MobileSteps({
                         ? 'text-red-700'
                         : build[s.slug]
                           ? 'text-slate-900'
-                          : 'text-slate-400'
+                          : 'text-slate-500'
                     }`}
                   >
                     {build[s.slug]?.name ?? 'Chưa chọn'}
@@ -677,7 +677,7 @@ function SlotTitle({ slot, build }) {
       {slot.label}
       {slot.optional && (
         <span
-          className={`ml-1 text-xs font-normal ${needVga ? 'text-red-600 dark:text-red-400' : 'text-slate-400'}`}
+          className={`ml-1 text-xs font-normal ${needVga ? 'text-red-600 dark:text-red-400' : 'text-slate-500'}`}
         >
           ({needVga ? 'bắt buộc vì CPU không có iGPU' : 'không bắt buộc'})
         </span>

@@ -54,7 +54,7 @@ export default function OrderHistory({ userId }) {
                 <span className="shrink-0 font-semibold text-red-600 dark:text-red-400">
                   {formatPrice(o.total)}
                 </span>
-                <span aria-hidden="true" className="text-slate-400">
+                <span aria-hidden="true" className="text-slate-500">
                   ›
                 </span>
               </Link>
