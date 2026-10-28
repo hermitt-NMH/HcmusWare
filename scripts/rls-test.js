@@ -404,11 +404,9 @@ let sellerNew
     approve.data?.[0]?.status === 'active' && approve.data?.[0]?.approved_at && visible,
     `admin duyệt sản phẩm người bán: approved_at=${approve.data?.[0]?.approved_at ? 'có' : 'trống'}, chưa đăng nhập thấy=${visible}`,
   )
-  // Khóa shop A: khách không thấy hàng của shop, người bán mất quyền ghi
-  const lock = await api(admin.token, `/rest/v1/shops?id=eq.${shopA.id}`, {
-    method: 'PATCH',
-    body: { status: 'locked' },
-  })
+  // Khóa shop A: khách không thấy hàng của shop, người bán mất quyền ghi.
+  // Tuần 2: khóa qua hàm set_shop_locked (C4), không PATCH thẳng status.
+  const lock = await rpc(admin.token, 'set_shop_locked', { p_shop_id: shopA.id, p_locked: true })
   const anonSee = await seeProduct(null, pActiveA.id)
   const sellerSee = await seeProduct(seller.token, pActiveA.id)
   const sellerEdit = await api(seller.token, `/rest/v1/products?id=eq.${pActiveA.id}`, {
@@ -417,7 +415,7 @@ let sellerNew
   })
   rec(
     'RLS23',
-    lock.data?.length === 1 && !anonSee && sellerSee && sellerEdit.data?.length === 0,
+    lock.ok && !anonSee && sellerSee && sellerEdit.data?.length === 0,
     `admin khóa shop: ${lock.status}; khách thấy hàng của shop=${anonSee}, chủ shop vẫn thấy=${sellerSee}, chủ shop sửa được ${sellerEdit.data?.length} dòng`,
   )
   // Mua sản phẩm không được bán: gọi thẳng place_order
@@ -481,6 +479,207 @@ let sellerNew
     'RLS27',
     !rename.ok && slug === 'hcmusware',
     `admin đổi đường dẫn shop HcmusWare: ${rename.status} "${errMsg(rename)}", slug hiện tại=${slug}`,
+  )
+}
+
+// ---------- Tuần 2: duyệt shop, duyệt sản phẩm, ảnh (migration 20261130000000) ----------
+{
+  const shopOf = async (owner) =>
+    (await svc(`/rest/v1/shops?select=id,status,review_note&owner_id=eq.${owner.id}`)).data[0]
+  const roleOf = async (u) =>
+    (await svc(`/rest/v1/profiles?select=role&id=eq.${u.id}`)).data[0].role
+  // Shop chờ duyệt của khách (tạo ở RLS07)
+  const custShop = await shopOf(customer)
+
+  const selfApprove = await rpc(customer.token, 'approve_shop', { p_shop_id: custShop.id })
+  const sellerApprove = await rpc(seller.token, 'approve_shop', { p_shop_id: custShop.id })
+  const custList = await rpc(customer.token, 'admin_list_shops')
+  rec(
+    'T2-01',
+    !selfApprove.ok && !sellerApprove.ok && !custList.ok,
+    `khách / người bán gọi approve_shop: ${selfApprove.status} / ${sellerApprove.status}; khách gọi admin_list_shops: ${custList.status}`,
+  )
+
+  const noNote = await rpc(admin.token, 'reject_shop', { p_shop_id: custShop.id, p_note: '  ' })
+  const reject = await rpc(admin.token, 'reject_shop', {
+    p_shop_id: custShop.id,
+    p_note: 'Tên shop chưa rõ ràng',
+  })
+  const seen = (
+    await api(customer.token, `/rest/v1/shops?select=status,review_note&id=eq.${custShop.id}`)
+  ).data[0]
+  rec(
+    'T2-02',
+    !noNote.ok && reject.ok && seen?.status === 'rejected' && seen?.review_note,
+    `admin từ chối không lý do: ${noNote.status}; có lý do: ${reject.status}, khách thấy "${seen?.status}" + lý do "${seen?.review_note}"`,
+  )
+
+  const toActive = await api(customer.token, `/rest/v1/shops?id=eq.${custShop.id}`, {
+    method: 'PATCH',
+    body: { status: 'active' },
+  })
+  const resubmit = await api(customer.token, `/rest/v1/shops?id=eq.${custShop.id}`, {
+    method: 'PATCH',
+    body: { status: 'pending', name: 'Shop khách sửa lại', review_note: 'tự ghi' },
+  })
+  const after = await shopOf(customer)
+  rec(
+    'T2-03',
+    !toActive.ok && resubmit.ok && after.status === 'pending' && after.review_note === null,
+    `khách tự chuyển rejected→active: ${toActive.status}; gửi lại (→pending): ${resubmit.status}, trạng thái=${after.status}, lý do=${after.review_note}`,
+  )
+
+  const direct = await api(admin.token, `/rest/v1/shops?id=eq.${custShop.id}`, {
+    method: 'PATCH',
+    body: { status: 'active' },
+  })
+  const approve = await rpc(admin.token, 'approve_shop', { p_shop_id: custShop.id })
+  const approved = await shopOf(customer)
+  const custRole = await roleOf(customer)
+  rec(
+    'T2-04',
+    !direct.ok && approve.ok && approved.status === 'active' && custRole === 'seller',
+    `admin PATCH thẳng status: ${direct.status} "${errMsg(direct)}"; approve_shop: ${approve.status}, shop=${approved.status}, vai trò chủ shop=${custRole}`,
+  )
+
+  const lockHouse = await rpc(admin.token, 'set_shop_locked', {
+    p_shop_id: houseShop.id,
+    p_locked: true,
+  })
+  const unlockA = await rpc(admin.token, 'set_shop_locked', {
+    p_shop_id: shopA.id,
+    p_locked: false,
+  })
+  const anonSeeA = await seeProduct(null, pActiveA.id)
+  const list = await rpc(admin.token, 'admin_list_shops', { p_status: 'active' })
+  const row = list.data?.find?.((s) => s.id === custShop.id)
+  rec(
+    'T2-05',
+    !lockHouse.ok && unlockA.ok && anonSeeA && row?.owner_email === customer.email,
+    `khóa shop HcmusWare: ${lockHouse.status} "${errMsg(lockHouse)}"; mở khóa shop A: ${unlockA.status}, khách thấy lại hàng=${anonSeeA}; admin_list_shops có email chủ shop=${row?.owner_email === customer.email}`,
+  )
+
+  // C3: người bán đổi giá → vẫn bán; đổi thông số → chờ duyệt lại
+  const price = await api(seller.token, `/rest/v1/products?id=eq.${pActiveA.id}`, {
+    method: 'PATCH',
+    body: { price: 1200000, review_note: 'tự ghi' },
+  })
+  const specs = await api(seller.token, `/rest/v1/products?id=eq.${pActiveA.id}`, {
+    method: 'PATCH',
+    body: { specs: { socket: 'AM5', tdp_w: 105, igpu: true } },
+  })
+  rec(
+    'T2-06',
+    price.data?.[0]?.status === 'active' &&
+      price.data?.[0]?.review_note === null &&
+      specs.data?.[0]?.status === 'pending' &&
+      specs.data?.[0]?.approved_at === null,
+    `người bán đổi giá: trạng thái=${price.data?.[0]?.status}, tự ghi lý do=${price.data?.[0]?.review_note}; đổi thông số: trạng thái=${specs.data?.[0]?.status}, approved_at=${specs.data?.[0]?.approved_at}`,
+  )
+
+  // C1: sản phẩm "Thương hiệu khác" (brand_id trống) không duyệt được
+  const odd = (
+    await api(seller.token, '/rest/v1/products', {
+      method: 'POST',
+      body: {
+        category_id: cpuCat,
+        name: `RLS hang la ${ts}`,
+        brand: `Hang La ${ts}`,
+        price: 1000000,
+        stock: 1,
+        specs: { socket: 'AM5' },
+        shop_id: shopA.id,
+      },
+    })
+  ).data[0]
+  const noBrand = await rpc(admin.token, 'approve_product', { p_product_id: odd.id })
+  const sellerApproveP = await rpc(seller.token, 'approve_product', { p_product_id: pActiveA.id })
+  const okApprove = await rpc(admin.token, 'approve_product', { p_product_id: pActiveA.id })
+  rec(
+    'T2-07',
+    odd.brand_id === null && !noBrand.ok && !sellerApproveP.ok && okApprove.ok,
+    `sản phẩm thương hiệu lạ: brand_id=${odd.brand_id}, admin duyệt: ${noBrand.status} "${errMsg(noBrand)}"; người bán gọi approve_product: ${sellerApproveP.status}; duyệt sản phẩm có thương hiệu: ${okApprove.status}`,
+  )
+
+  // C2: trả lại kèm lý do → ẩn; người bán gửi lại → chờ duyệt, lý do bị xóa
+  const back = await rpc(admin.token, 'reject_product', {
+    p_product_id: odd.id,
+    p_note: 'Chưa có thương hiệu',
+  })
+  const hidden = (await svc(`/rest/v1/products?select=status,review_note&id=eq.${odd.id}`)).data[0]
+  const again = await api(seller.token, `/rest/v1/products?id=eq.${odd.id}`, {
+    method: 'PATCH',
+    body: { status: 'pending' },
+  })
+  rec(
+    'T2-08',
+    back.ok &&
+      hidden.status === 'hidden' &&
+      hidden.review_note &&
+      again.data?.[0]?.status === 'pending' &&
+      again.data?.[0]?.review_note === null,
+    `admin trả lại: ${back.status}, trạng thái=${hidden.status}, lý do="${hidden.review_note}"; người bán gửi lại: ${again.data?.[0]?.status}, lý do=${again.data?.[0]?.review_note}`,
+  )
+
+  // Ảnh: chỉ ghi vào thư mục shop của mình, ≤ 2 MB, chỉ ảnh
+  const png = Buffer.from(
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+    'base64',
+  )
+  const upload = (token, path, body = png, type = 'image/png') =>
+    fetch(`${SB}/storage/v1/object/product-images/${path}`, {
+      method: 'POST',
+      headers: { apikey: ANON, Authorization: `Bearer ${token ?? ANON}`, 'Content-Type': type },
+      body,
+    }).then((r) => r.status)
+  const own = await upload(seller.token, `${shopA.id}/rls-${ts}.png`)
+  const other = await upload(seller.token, `${shopB.id}/rls-${ts}.png`)
+  const anon = await upload(null, `${shopA.id}/rls-anon-${ts}.png`)
+  const big = await upload(seller.token, `${shopA.id}/rls-big-${ts}.png`, Buffer.alloc(2_200_000))
+  const html = await upload(
+    seller.token,
+    `${shopA.id}/rls-${ts}.html`,
+    '<script>alert(1)</script>',
+    'text/html',
+  )
+  rec(
+    'T2-09',
+    own === 200 && other >= 400 && anon >= 400 && big >= 400 && html >= 400,
+    `tải ảnh vào thư mục shop mình: ${own}; shop khác: ${other}; chưa đăng nhập: ${anon}; ảnh 2,2 MB: ${big}; file HTML: ${html}`,
+  )
+  await svc('/storage/v1/object/product-images', {
+    method: 'DELETE',
+    body: { prefixes: [`${shopA.id}/rls-${ts}.png`] },
+  })
+
+  // Hai shop được bán cùng tên sản phẩm (unique theo shop + danh mục)
+  const houseName = (await svc(`/rest/v1/products?select=name,category_id&id=eq.${pHouse.id}`))
+    .data[0]
+  const dup = await api(seller.token, '/rest/v1/products', {
+    method: 'POST',
+    body: { ...houseName, brand: 'AMD', price: 1000000, stock: 1, shop_id: shopA.id },
+  })
+  const dup2 = await api(seller.token, '/rest/v1/products', {
+    method: 'POST',
+    body: { ...houseName, brand: 'AMD', price: 1000000, stock: 1, shop_id: shopA.id },
+  })
+  rec(
+    'T2-10',
+    dup.ok && !dup2.ok,
+    `người bán đăng sản phẩm trùng tên shop HcmusWare: ${dup.status}; trùng tên trong shop mình: ${dup2.status}`,
+  )
+
+  // brand_list đếm như nhau cho mọi người: chỉ hàng đang bán của shop đang hoạt động
+  const anonBrands = (await rpc(null, 'brand_list')).data
+  const adminBrands = (await rpc(admin.token, 'brand_list')).data
+  const total = (list) => list.reduce((n, b) => n + Number(b.product_count), 0)
+  const onSale = (
+    await api(null, '/rest/v1/products?select=id&brand_id=not.is.null', { prefer: 'count=exact' })
+  ).data.length
+  rec(
+    'T2-11',
+    total(anonBrands) === total(adminBrands) && total(anonBrands) === onSale,
+    `brand_list: chưa đăng nhập đếm ${total(anonBrands)}, admin đếm ${total(adminBrands)}, sản phẩm đang bán có thương hiệu: ${onSale}`,
   )
 }
 
