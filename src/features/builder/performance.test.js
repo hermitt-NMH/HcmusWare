@@ -129,6 +129,7 @@ describe.skipIf(!PERF_DATA.games.length)('perfData.js (số liệu BA)', () => {
     expect(PERF_DATA.games).toHaveLength(10)
     for (const g of PERF_DATA.games) {
       expect(sourceIds.has(g.source), g.name).toBe(true)
+      expect(sourceIds.has(g.cpuSource), `${g.name} cpuSource`).toBe(true)
       expect(g.cpuFps, g.name).toBeGreaterThan(0)
       for (const res of ['1080p', '1440p', '4k'])
         expect(g.fps[res], `${g.name} ${res}`).toBeGreaterThan(0)
