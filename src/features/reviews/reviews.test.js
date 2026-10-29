@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  canAnswerAsSeller,
   cleanText,
   formatRating,
   groupThreads,
@@ -108,5 +109,29 @@ describe('ugcErrorMessage', () => {
       /không có quyền/,
     )
     expect(ugcErrorMessage(null)).toBe('Lỗi không xác định.')
+  })
+})
+
+describe('canAnswerAsSeller (US-16.3)', () => {
+  const myShop = { slug: 'linh-kien-sg', status: 'active' }
+
+  it('người bán chỉ trả lời có nhãn trên sản phẩm shop mình đang hoạt động', () => {
+    expect(canAnswerAsSeller({ role: 'seller', myShop, productShopSlug: 'linh-kien-sg' })).toBe(
+      true,
+    )
+    expect(canAnswerAsSeller({ role: 'seller', myShop, productShopSlug: 'hcmusware' })).toBe(false)
+    const locked = { ...myShop, status: 'locked' }
+    expect(
+      canAnswerAsSeller({ role: 'seller', myShop: locked, productShopSlug: 'linh-kien-sg' }),
+    ).toBe(false)
+  })
+
+  it('admin trả lời thay shop HcmusWare; khách thì không', () => {
+    expect(canAnswerAsSeller({ role: 'admin', productShopSlug: 'hcmusware' })).toBe(true)
+    expect(canAnswerAsSeller({ role: 'admin', productShopSlug: 'linh-kien-sg' })).toBe(false)
+    expect(canAnswerAsSeller({ role: 'customer', myShop, productShopSlug: 'linh-kien-sg' })).toBe(
+      false,
+    )
+    expect(canAnswerAsSeller({ role: 'seller', myShop: null, productShopSlug: 'x' })).toBe(false)
   })
 })

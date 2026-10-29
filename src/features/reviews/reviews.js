@@ -63,3 +63,14 @@ export function ugcErrorMessage(error) {
   if (error?.code === '42501') return 'Bạn không có quyền thực hiện thao tác này.'
   return error?.message || 'Lỗi không xác định.'
 }
+
+// Có được trả lời với nhãn "Người bán" không (chỉ để hiện đúng nút; DB kiểm tra lại trong guard_comment_write):
+// người bán của shop đang hoạt động bán sản phẩm này, hoặc admin trên sản phẩm shop HcmusWare (C5).
+export function canAnswerAsSeller({ role, myShop, productShopSlug }) {
+  if (!productShopSlug) return false
+  if (role === 'admin') return productShopSlug === 'hcmusware'
+  return role === 'seller' && myShop?.status === 'active' && myShop.slug === productShopSlug
+}
+
+// Số câu hỏi hiện mỗi lần ("Xem thêm" hiện thêm chừng này) – US-16.2.
+export const QUESTIONS_PAGE = 10

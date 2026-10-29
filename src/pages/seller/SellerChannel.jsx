@@ -7,12 +7,14 @@ import LogoBadge from '../../components/LogoBadge'
 import SellerProducts from './SellerProducts'
 import SellerProductForm from './SellerProductForm'
 import SellerOrders from './SellerOrders'
+import SellerQuestions from './SellerQuestions'
 
 // Kênh người bán /kenh-nguoi-ban. Chỉ vai trò seller vào được (RoleRoute trong App.jsx).
 // /kenh-nguoi-ban                 – thông tin shop + danh sách sản phẩm
 // /kenh-nguoi-ban/san-pham/moi    – đăng sản phẩm
 // /kenh-nguoi-ban/san-pham/:id    – sửa sản phẩm
 // /kenh-nguoi-ban/don-hang        – đơn hàng của shop (Tuần 3)
+// /kenh-nguoi-ban/cau-hoi         – câu hỏi chưa trả lời (Tuần 4)
 export default function SellerChannel() {
   const { user } = useAuth()
   const shop = useAsync(() => getMyShop(user.id), [user.id])
@@ -54,6 +56,14 @@ export default function SellerChannel() {
         }
       />
       <Route
+        path="cau-hoi"
+        element={
+          <SellerPage>
+            <SellerQuestions canEdit={canEdit} />
+          </SellerPage>
+        }
+      />
+      <Route
         path="san-pham/moi"
         element={
           canEdit ? (
@@ -78,10 +88,10 @@ export default function SellerChannel() {
   )
 }
 
-// Khung chung của các trang trong kênh: tiêu đề + 2 tab Sản phẩm / Đơn hàng.
+// Khung chung của các trang trong kênh: tiêu đề + tab Sản phẩm / Đơn hàng / Câu hỏi.
 function SellerPage({ children }) {
   const tab = ({ isActive }) =>
-    `inline-flex h-11 items-center border-b-2 px-3 text-sm font-medium ${
+    `inline-flex h-11 shrink-0 items-center whitespace-nowrap border-b-2 px-3 text-sm font-medium ${
       isActive
         ? 'border-blue-600 text-blue-700 dark:text-blue-300'
         : 'border-transparent text-slate-600 hover:text-slate-900'
@@ -89,12 +99,18 @@ function SellerPage({ children }) {
   return (
     <div className="mx-auto max-w-4xl space-y-4">
       <h1 className="text-xl font-bold sm:text-2xl">Kênh người bán</h1>
-      <nav aria-label="Kênh người bán" className="flex gap-2 border-b border-slate-200">
+      <nav
+        aria-label="Kênh người bán"
+        className="flex gap-1 overflow-x-auto border-b border-slate-200"
+      >
         <NavLink to="/kenh-nguoi-ban" end className={tab}>
           Shop và sản phẩm
         </NavLink>
         <NavLink to="/kenh-nguoi-ban/don-hang" className={tab}>
           Đơn hàng
+        </NavLink>
+        <NavLink to="/kenh-nguoi-ban/cau-hoi" className={tab}>
+          Câu hỏi
         </NavLink>
       </nav>
       {children}

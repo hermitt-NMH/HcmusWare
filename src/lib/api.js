@@ -680,3 +680,43 @@ export async function getShopRating(shopId) {
   if (error) throw error
   return data?.[0] ?? { rating_avg: null, rating_count: 0 }
 }
+
+// ---------- Hỏi đáp (Giai đoạn 2 – Tuần 4, F16) ----------
+// Câu hỏi + 1 cấp trả lời. Nhãn "Người bán" (is_seller) do DB kiểm tra: chỉ chủ shop của sản phẩm.
+
+const COMMENT_FIELDS = 'id, parent_id, user_id, body, is_seller, author_name, hidden, created_at'
+
+// Danh sách phẳng (dùng groupThreads để gom). Admin nhận cả bình luận đã ẩn (RLS).
+export async function getProductComments(productId) {
+  const { data, error } = await supabase
+    .from('comments')
+    .select(COMMENT_FIELDS)
+    .eq('product_id', productId)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// parentId null = câu hỏi mới; có parentId = trả lời câu hỏi đó.
+export async function addComment({ productId, parentId = null, body, isSeller = false }) {
+  const { data, error } = await supabase
+    .from('comments')
+    .insert({ product_id: Number(productId), parent_id: parentId, body, is_seller: isSeller })
+    .select(COMMENT_FIELDS)
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function setCommentHidden(id, hidden) {
+  const { error } = await supabase.rpc('set_comment_hidden', { p_id: id, p_hidden: hidden })
+  if (error) throw error
+}
+
+// Kênh người bán: câu hỏi trên sản phẩm của shop mình chưa có câu trả lời nhãn "Người bán".
+export async function getUnansweredQuestions() {
+  const { data, error } = await supabase.rpc('seller_unanswered_questions')
+  if (error) throw error
+  return data
+}
