@@ -169,10 +169,12 @@ export async function markAlertsNotified(ids) {
 
 // ---------- Đơn hàng (Tuần 5) ----------
 
+// shop_id, payment_code, shops: Giai đoạn 2 – Tuần 3 (mỗi đơn thuộc một shop, nhiều đơn chung mã thanh toán).
 const ORDER_FIELDS =
-  'id, status, payment_method, total, shipping_name, shipping_phone, shipping_address, note, paid_at, created_at'
+  'id, status, payment_method, total, shipping_name, shipping_phone, shipping_address, note, paid_at, created_at, shop_id, payment_code, shops(name, slug)'
 
-// Tạo đơn qua hàm place_order trong DB (giá, tổng tiền, tồn kho do DB tính). Trả id đơn.
+// Tạo đơn qua hàm place_order trong DB (giá, tổng tiền, tồn kho do DB tính).
+// Giỏ có hàng của nhiều shop → mỗi shop một đơn cùng mã thanh toán; trả id đơn đầu tiên.
 export async function placeOrder({ items, name, phone, address, payment, note }) {
   const { data, error } = await supabase.rpc('place_order', {
     p_items: items,
@@ -186,18 +188,33 @@ export async function placeOrder({ items, name, phone, address, payment, note })
   return data
 }
 
+// Trả cả nhóm đơn cùng mã thanh toán với đơn orderId.
 export async function mockPayOrder(orderId) {
   const { error } = await supabase.rpc('mock_pay_order', { p_order_id: orderId })
   if (error) throw error
 }
 
 // Đơn của người đang đăng nhập, mới nhất trước (admin dùng getAdminOrders).
+// Lọc user_id vì RLS còn cho người bán đọc đơn của shop mình.
 export async function getMyOrders(userId) {
   const { data, error } = await supabase
     .from('orders')
     .select(`${ORDER_FIELDS}, order_items(quantity)`)
     .eq('user_id', userId)
     .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Các đơn của mình cùng một lần đặt (cùng mã thanh toán), theo thứ tự tạo.
+export async function getMyOrdersByPaymentCode(userId, code) {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(ORDER_FIELDS)
+    .eq('user_id', userId)
+    .eq('payment_code', code)
+    .order('id')
   if (error) throw error
   return data
 }
@@ -289,15 +306,31 @@ export async function deleteProduct(id) {
   if (error) throw error
 }
 
+const MANAGED_ORDER_FIELDS = `${ORDER_FIELDS}, order_items(id, product_id, quantity, unit_price, products(name))`
+
 export async function getAdminOrders() {
   const { data, error } = await supabase
     .from('orders')
-    .select(`${ORDER_FIELDS}, order_items(id, quantity, unit_price, products(name))`)
+    .select(MANAGED_ORDER_FIELDS)
     .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
   if (error) throw error
   return data
 }
 
+// Đơn của shop (kênh người bán). Lọc shop_id vì RLS còn trả cả đơn người bán tự mua.
+export async function getShopOrders(shopId) {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(MANAGED_ORDER_FIELDS)
+    .eq('shop_id', shopId)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Admin: mọi đơn; người bán: đơn của shop mình đang hoạt động (RLS orders_update).
 export async function updateOrderStatus(id, status) {
   const { data, error } = await supabase
     .from('orders')

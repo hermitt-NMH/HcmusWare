@@ -80,6 +80,29 @@ export function cartToOrderItems(items) {
     .map((it) => ({ product_id: it.id, quantity: it.qty }))
 }
 
+// Một lần đặt hàng có hàng của nhiều shop tạo nhiều đơn cùng payment_code (Giai đoạn 2 – Tuần 3).
+// Gom đơn (đã xếp mới nhất trước) thành từng lần đặt, giữ nguyên thứ tự; trong mỗi lần đặt, đơn
+// xếp theo id (thứ tự tạo). total: cộng mọi đơn, kể cả đơn shop đã hủy (để khớp số khách đã thấy lúc đặt).
+export function groupOrdersByPayment(orders) {
+  const groups = new Map()
+  for (const o of orders) {
+    const key = o.payment_code ?? `#${o.id}`
+    if (!groups.has(key)) groups.set(key, { code: key, created_at: o.created_at, orders: [] })
+    groups.get(key).orders.push(o)
+  }
+  return [...groups.values()].map((g) => ({
+    ...g,
+    orders: g.orders.sort((a, b) => a.id - b.id),
+    total: g.orders.reduce((sum, o) => sum + o.total, 0),
+  }))
+}
+
+// Số tiền còn phải trả online cho cả nhóm: chỉ các đơn còn chờ thanh toán (mock_pay_order cũng
+// chỉ trả các đơn này; đơn shop đã hủy thì bỏ qua).
+export function amountToPay(orders) {
+  return orders.filter(canPayOnline).reduce((sum, o) => sum + o.total, 0)
+}
+
 // Lỗi từ place_order / mock_pay_order là câu tiếng Việt do DB raise → hiện thẳng cho khách.
 // Lỗi mạng thì báo chung.
 export function orderErrorMessage(error) {

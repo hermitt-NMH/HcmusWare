@@ -5,7 +5,7 @@ import { useCart } from '../hooks/useCart'
 import { getProductsByIds, placeOrder } from '../lib/api'
 import { formatPrice } from '../lib/format'
 import { categoryImage, thumbUrl } from '../lib/images'
-import { isUnavailable } from '../features/cart/cart'
+import { cartShops, isUnavailable } from '../features/cart/cart'
 import {
   PAYMENT_METHODS,
   cartToOrderItems,
@@ -82,6 +82,7 @@ function CheckoutForm({ onPlaced }) {
 
   const buyable = items.filter((it) => !isUnavailable(it) && it.price != null)
   const skipped = items.length - buyable.length
+  const shops = cartShops(items)
 
   const set = (key) => (e) => {
     setForm({ ...form, [key]: e.target.value })
@@ -243,6 +244,12 @@ function CheckoutForm({ onPlaced }) {
               </li>
             ))}
           </ul>
+          {shops.length > 1 && (
+            <p className="rounded-md bg-blue-50 p-2 text-xs text-blue-800">
+              Giỏ có hàng của {shops.length} shop ({shops.join(', ')}): mỗi shop là một đơn riêng,
+              giao riêng, nhưng bạn chỉ thanh toán một lần.
+            </p>
+          )}
           {skipped > 0 && (
             <p className="rounded-md bg-amber-50 p-2 text-xs text-amber-800">
               {skipped} sản phẩm hết hàng / ngừng bán không được đặt và vẫn nằm trong giỏ.

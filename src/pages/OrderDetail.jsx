@@ -1,7 +1,7 @@
 import { Link, Navigate, useLocation, useParams, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useAsync } from '../hooks/useAsync'
-import { getOrderById } from '../lib/api'
+import { getMyOrdersByPaymentCode, getOrderById } from '../lib/api'
 import { formatDateTime, formatPrice } from '../lib/format'
 import { categoryImage, thumbUrl } from '../lib/images'
 import OrderStatusBadge from '../components/OrderStatusBadge'
@@ -17,6 +17,7 @@ const STEPS = ['pending', 'confirmed', 'shipping', 'completed']
 
 // Chi tiết một đơn hàng của khách: trạng thái, thanh toán, địa chỉ, từng sản phẩm.
 // ?moi=1: vừa đặt xong → hiện lời cảm ơn.
+// Đặt hàng của nhiều shop cùng lúc → mỗi shop một đơn cùng mã thanh toán; hiện link sang các đơn kia.
 export default function OrderDetail() {
   const { user, loading } = useAuth()
   const location = useLocation()
@@ -29,7 +30,15 @@ export default function OrderDetail() {
 function OrderView() {
   const { id } = useParams()
   const [params] = useSearchParams()
-  const order = useAsync(() => getOrderById(id), [id])
+  const { user } = useAuth()
+  // Đơn + các đơn cùng lần đặt (cùng mã thanh toán, gồm cả đơn này).
+  const order = useAsync(async () => {
+    const o = await getOrderById(id)
+    if (!o) return null
+    // Admin / người bán xem đơn không phải của mình: không có "đơn cùng lần đặt" của họ.
+    const group = o.payment_code ? await getMyOrdersByPaymentCode(user.id, o.payment_code) : []
+    return { ...o, group: group.length ? group : [o] }
+  }, [id, user.id])
 
   if (order.loading) return <p className="py-16 text-center text-slate-500">Đang tải đơn hàng…</p>
   if (order.error)
@@ -44,16 +53,25 @@ function OrderView() {
   const o = order.data
   const isNew = params.get('moi') === '1'
   const stepIndex = STEPS.indexOf(o.status)
+  const others = o.group.filter((x) => x.id !== o.id)
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
       {isNew && (
         <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">
           <p className="text-lg font-semibold">✓ Đặt hàng thành công!</p>
-          <p className="text-sm">
-            Cảm ơn bạn. Mã đơn của bạn là <strong>#{o.id}</strong>. Shop sẽ gọi xác nhận trong giờ
-            hành chính.
-          </p>
+          {others.length ? (
+            <p className="text-sm">
+              Cảm ơn bạn. Giỏ hàng có sản phẩm của {o.group.length} shop nên được tách thành{' '}
+              {o.group.length} đơn (mã thanh toán <strong>{o.payment_code}</strong>), mỗi shop gọi
+              xác nhận đơn của mình trong giờ hành chính.
+            </p>
+          ) : (
+            <p className="text-sm">
+              Cảm ơn bạn. Mã đơn của bạn là <strong>#{o.id}</strong>. Shop sẽ gọi xác nhận trong giờ
+              hành chính.
+            </p>
+          )}
         </div>
       )}
 
@@ -61,6 +79,17 @@ function OrderView() {
         <div>
           <h1 className="text-xl font-bold sm:text-2xl">Đơn hàng #{o.id}</h1>
           <p className="text-sm text-slate-500">Đặt lúc {formatDateTime(o.created_at)}</p>
+          {o.shops && (
+            <p className="text-sm text-slate-600">
+              Bán bởi{' '}
+              <Link
+                to={`/shop/${o.shops.slug}`}
+                className="font-medium text-blue-700 hover:underline dark:text-blue-300"
+              >
+                {o.shops.name}
+              </Link>
+            </p>
+          )}
         </div>
         <OrderStatusBadge status={o.status} />
       </div>
@@ -91,6 +120,27 @@ function OrderView() {
             Thanh toán ngay
           </Link>
         </div>
+      )}
+
+      {others.length > 0 && (
+        <section className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
+          <h2 className="font-semibold">Cùng lần đặt hàng (mã thanh toán {o.payment_code})</h2>
+          <ul className="mt-1 divide-y divide-slate-100">
+            {others.map((x) => (
+              <li key={x.id}>
+                <Link
+                  to={`/don-hang/${x.id}`}
+                  className="-mx-2 flex min-h-11 items-center gap-2 rounded-lg px-2 py-2 hover:bg-slate-50"
+                >
+                  <span className="font-medium">#{x.id}</span>
+                  <OrderStatusBadge status={x.status} />
+                  <span className="min-w-0 flex-1 truncate text-slate-600">{x.shops?.name}</span>
+                  <span className="shrink-0 font-medium">{formatPrice(x.total)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
       )}
 
       <div className="grid gap-4 sm:grid-cols-2">
