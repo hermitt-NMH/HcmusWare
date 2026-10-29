@@ -332,6 +332,8 @@ const preText = await text()
 const pre = (preText.match(/(Test1 QA) · (0901234567)/) ?? []).slice(1)
 await ev(`document.querySelector('input[name=payment]').form.requestSubmit()`)
 await waitFor(`/^\\/don-hang\\/\\d+/.test(location.pathname)`)
+// Ngay sau khi đặt, trang thanh toán còn hiện "Đang mở đơn hàng…" (không khớp notBusy) → chờ nội dung trang đơn.
+await waitFor(`/Đặt hàng thành công/.test(document.body.innerText)`)
 await waitFor(notBusy)
 const o2 = await orderIdFromPath()
 t = await text()
