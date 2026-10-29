@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useCart } from '../hooks/useCart'
 import { maxQty } from '../features/cart/cart'
@@ -57,7 +57,14 @@ function DetailView({ product }) {
   const fallback = categoryImage(slug)
   const outOfStock = stock <= 0
   const rows = specRows(slug, specs)
-  const rating = formatRating(product_ratings?.rating_avg, product_ratings?.rating_count)
+  // Điểm ở đầu trang: lấy cùng sản phẩm, rồi thay bằng điểm mục Đánh giá báo lên sau mỗi lần tải lại
+  // (vừa gửi / sửa / ẩn đánh giá) để 2 chỗ luôn giống nhau. Ghi kèm id: sang sản phẩm khác thì bỏ điểm cũ.
+  const [live, setLive] = useState(null)
+  const onSummary = useCallback((text) => setLive({ id, text }), [id])
+  const rating =
+    live?.id === id
+      ? live.text
+      : formatRating(product_ratings?.rating_avg, product_ratings?.rating_count)
 
   return (
     <div className="space-y-8">
@@ -232,7 +239,7 @@ function DetailView({ product }) {
       {/* key: sang sản phẩm khác thì khung cảnh báo giá làm mới hoàn toàn */}
       <PriceSection key={id} productId={id} currentPrice={price} />
 
-      <ReviewSection key={`r${id}`} productId={id} />
+      <ReviewSection key={`r${id}`} productId={id} onSummary={onSummary} />
 
       <QuestionSection key={`q${id}`} productId={id} shopSlug={shops?.slug} />
 
