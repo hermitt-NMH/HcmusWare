@@ -1,7 +1,7 @@
 # User story – Giai đoạn 2 (F13–F18, F12)
 
 Người phụ trách: BA · Dùng cho: Dev1/Dev2/Dev3/KTS (làm tính năng), Test1/Test2 (test case).
-Phiên bản 1.3 – Tuần 3 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
+Phiên bản 1.4 – Tuần 4 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3; 1.4: chốt C9–C11 cho F16). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
 
 Liên quan:
 
@@ -13,7 +13,7 @@ Quy ước:
 - Mỗi tiêu chí viết dạng **Given / When / Then**. Test1 viết test case từ đúng các dòng này.
 - Tiêu chí có đánh dấu **[DB]** phải đúng cả khi gọi thẳng Supabase bằng anon key + token của vai trò đó (không qua giao diện). Test2 kiểm bằng `npm run test:rls`.
 - **Tuần** = tuần mà tính năng phải chạy được trên Vercel theo kế hoạch.
-- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C8 (BA đề xuất, KTS/PM chốt) và việc cần làm kèm theo.
+- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C11 (BA đề xuất, KTS/PM chốt) và việc cần làm kèm theo.
 
 ## Vai trò
 
@@ -173,6 +173,7 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 - Given có đơn **Hoàn tất** (`completed`) chứa sản phẩm, When mở trang sản phẩm, Then thấy form đánh giá: số sao 1–5 (bắt buộc), nhận xét (không bắt buộc, ≤ 1000 ký tự).
 - Given chưa mua hoặc đơn chưa giao, Then không thấy form, thấy dòng "Chỉ người đã nhận hàng mới đánh giá được". **[DB]** Gửi thẳng đánh giá bị từ chối.
 - Mỗi người 1 đánh giá / sản phẩm; đã đánh giá thì form chuyển thành "Sửa đánh giá của bạn". **[DB]** Gửi lần hai bị từ chối.
+- Người viết sửa được số sao và nhận xét, **không** tự xóa được đánh giá (C10). **[DB]** Xóa thẳng bị từ chối.
 - Đánh giá hiện tên người viết (họ tên rút gọn, ví dụ "Nguyễn V. A."), ngày, số sao, nhãn "Đã mua hàng".
 - Điểm trung bình làm tròn 1 chữ số thập phân, kèm số lượt (ví dụ "4,6 ★ (12)"); hiện trên trang sản phẩm, ProductCard và trang shop.
 
@@ -185,8 +186,10 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 ### US-16.3: Là người bán, tôi muốn trả lời câu hỏi trên sản phẩm của shop mình.
 
 - Câu trả lời của chủ shop có nhãn "Người bán", hiện ngay dưới câu hỏi (chỉ 1 cấp trả lời).
+- Trên sản phẩm shop HcmusWare, admin trả lời với nhãn "Người bán" (C9).
+- Người đã đăng nhập khác (mọi vai trò) cũng trả lời được, không có nhãn (C11).
 - Kênh người bán có mục "Câu hỏi chưa trả lời" của shop mình.
-- **[DB]** Người bán gửi trả lời có nhãn người bán trên sản phẩm của shop khác bị từ chối (vẫn hỏi được như khách thường).
+- **[DB]** Người bán gửi trả lời có nhãn người bán trên sản phẩm của shop khác bị từ chối (vẫn hỏi và trả lời được như khách thường).
 
 ### US-16.4: Là admin, tôi muốn ẩn bình luận và đánh giá vi phạm.
 
@@ -375,3 +378,13 @@ Các câu QA hỏi trong `QA-bao-loi-G2T3.md` (mục "Cần BA chốt") và phư
 | C6  | US-14.7 "theo thứ tự": có được nhảy bước (Chờ xác nhận → Hoàn tất) không? | **Được, chỉ cấm lùi.** Shop nhỏ thường giao ngay trong ngày, bắt bấm đủ 3 lần không thêm giá trị; điều cần chặn là lùi trạng thái (làm sai kho và lịch sử) và sửa đơn đã xong. Giống quy tắc admin dùng từ Tuần 5 giai đoạn 1. | Không cần làm thêm: `nextStatuses` và trigger `handle_order_status_change` đã đúng. Test1 thêm ca: Chờ xác nhận → Hoàn tất đạt, Đang giao → Đã xác nhận bị chặn. |
 | C7  | US-17.2: gõ viết tắt `tp hcm`, `hn` có ra gợi ý không?                    | **Không, ngoài phạm vi giai đoạn 2.** F17 là Should; danh sách viết tắt không có nguồn chuẩn, BA phải tự soạn cho 34 tỉnh và dễ sai. Gõ `ho chi` hoặc `ha noi` đã đủ nhanh. Ghi lại để xem ở giai đoạn sau.                    | Không làm.                                                                                                                                                       |
 | C8  | F09: có cảnh báo "VGA yếu so với CPU" không?                              | **Không, chỉ cảnh báo CPU giữ chân VGA** (ngưỡng 85% ở 1080p). Chi tiết và ví dụ đạt/không đạt: [g2-ba-tuan3-hieu-nang.md](g2-ba-tuan3-hieu-nang.md), mục 6.                                                                   | Đã làm ở PR #148. Dev2 làm giao diện Tuần 4 theo mục 6.                                                                                                          |
+
+## Đã chốt cho F16 (29/10/2026)
+
+Ba quy tắc DEV đề xuất ở PR #153 (mục "Cần BA xác nhận"). BA đã xác nhận, giữ đúng như code đã merge.
+
+| Mã  | Câu hỏi                                                   | Quyết định                                                                                                                                            | Việc cần làm                                                                                                |
+| --- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| C9  | Sản phẩm shop HcmusWare: ai trả lời với nhãn "Người bán"? | **Admin.** Shop HcmusWare có chủ là admin nhưng admin không vào kênh người bán (C5), nên admin gắn nhãn "Người bán" ngay trên trang sản phẩm.         | Không cần làm thêm: đã có ở PR #153 (`is_seller`). Mục "Câu hỏi chưa trả lời" vẫn chỉ ở kênh người bán.     |
+| C10 | Người viết có tự xóa đánh giá không?                      | **Không, chỉ sửa.** Xóa rồi viết lại sẽ lách được việc admin ẩn đánh giá. Đánh giá vi phạm do admin ẩn (US-16.4).                                     | Không cần làm thêm: DB không cấp quyền xóa cho người viết (PR #153). Giao diện không có nút "Xóa".          |
+| C11 | Ai trả lời được câu hỏi?                                  | **Mọi người đã đăng nhập**, kể cả khách đã mua, để chia sẻ kinh nghiệm. Chỉ trả lời của chủ shop (hoặc admin với shop HcmusWare) có nhãn "Người bán". | Không cần làm thêm: đã có ở PR #153, #155. Test1 thêm ca: khách thường trả lời được, trả lời không có nhãn. |
