@@ -79,8 +79,8 @@ describe('detectBottleneck', () => {
     ])
     expect(b).toMatchObject({ part: 'cpu', percent: 30 })
   })
-  it('VGA dùng chưa tới 50% sức CPU → báo VGA yếu', () => {
-    expect(detectBottleneck([{ cpuLimit: 300, gpuLimit: 100 }])).toMatchObject({ part: 'gpu' })
+  it('VGA là giới hạn (kể cả rất xa) → không cảnh báo, đó là trạng thái bình thường (BUG-G2T3-03)', () => {
+    expect(detectBottleneck([{ cpuLimit: 300, gpuLimit: 100 }])).toBeNull()
   })
   it('cân bằng hoặc không có dữ liệu → null', () => {
     expect(detectBottleneck([{ cpuLimit: 110, gpuLimit: 100 }])).toBeNull()
@@ -138,5 +138,20 @@ describe.skipIf(!PERF_DATA.games.length)('perfData.js (số liệu BA)', () => {
   it('linh kiện tham chiếu có điểm 100', () => {
     expect(PERF_DATA.cpus[PERF_DATA.reference.cpu]).toBe(100)
     expect(PERF_DATA.gpus[PERF_DATA.reference.gpu]).toBe(100)
+  })
+  // BUG-G2T3-03: cấu hình gốc và cặp phổ thông từng bị báo "VGA yếu, chọn CPU rẻ hơn".
+  it.each([
+    ['AMD Ryzen 7 9800X3D', 'GeForce RTX 5060 Ti 16GB'],
+    ['Intel Core i5-12400', 'GeForce RTX 4060'],
+    ['AMD Ryzen 5 7600', 'GeForce RTX 4060'],
+  ])('%s + %s: không cảnh báo nghẽn', (c, g) => {
+    expect(estimatePerformance({ cpu: cpu(c), vga: vga(g) }, PERF_DATA).bottleneck).toBeNull()
+  })
+  it('CPU yếu + VGA mạnh (Ryzen 3 3200G + RTX 5080) vẫn cảnh báo CPU', () => {
+    const r = estimatePerformance(
+      { cpu: cpu('AMD Ryzen 3 3200G'), vga: vga('GeForce RTX 5080 16GB') },
+      PERF_DATA,
+    )
+    expect(r.bottleneck.part).toBe('cpu')
   })
 })
