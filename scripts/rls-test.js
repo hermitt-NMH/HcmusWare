@@ -1390,6 +1390,80 @@ let sellerNew
     `câu hỏi mới: chủ shop nhận ${sellerQ.length} → ${sellerQ[0]?.link}; người khác trả lời: khách nhận ${plainReplyNotes}; người bán trả lời: khách nhận ${answered.length} "${answered[0]?.body}" → ${answered[0]?.link}`,
   )
 
+  // ----- Email (US-12.3): chỉ Đang giao / Hoàn tất / Đã hủy và giá giảm; công tắc tắt thì không gửi -----
+  // email_status khác null = đã xếp gửi email (pending/sending/sent, hoặc skipped khi chưa cấu hình gửi).
+  const statusEmail = async (fromId) =>
+    (await since(customer, fromId)).filter((n) => n.type === 'order_status')
+  const beforeShip = await latestId()
+  await api(seller.token, `/rest/v1/orders?id=eq.${order.data}`, {
+    method: 'PATCH',
+    body: { status: 'shipping' },
+  })
+  const shipped = await statusEmail(beforeShip)
+  rec(
+    'T5-08',
+    custStatus[0].email_status === null &&
+      shipped.length === 1 &&
+      shipped[0].email_status !== null &&
+      drop[0].email_status !== null,
+    `Đã xác nhận: email_status=${custStatus[0].email_status}; Đang giao: ${shipped[0]?.email_status}; giá giảm: ${drop[0].email_status}`,
+  )
+
+  const prefs = async (user) =>
+    (await svc(`/rest/v1/profiles?select=email_order_status,email_price_alerts&id=eq.${user.id}`))
+      .data[0]
+  const defaults = await prefs(customer)
+  const otherOff = await api(seller.token, `/rest/v1/profiles?id=eq.${customer.id}`, {
+    method: 'PATCH',
+    body: { email_order_status: false },
+  })
+  const tokenEdit = await api(customer.token, `/rest/v1/profiles?id=eq.${customer.id}`, {
+    method: 'PATCH',
+    body: { email_token: '00000000-0000-4000-8000-000000000000' },
+  })
+  const selfOff = await api(customer.token, `/rest/v1/profiles?id=eq.${customer.id}`, {
+    method: 'PATCH',
+    body: { email_order_status: false },
+  })
+  const beforeDone = await latestId()
+  await api(seller.token, `/rest/v1/orders?id=eq.${order.data}`, {
+    method: 'PATCH',
+    body: { status: 'completed' },
+  })
+  const done = await statusEmail(beforeDone)
+  rec(
+    'T5-09',
+    defaults.email_order_status === true &&
+      defaults.email_price_alerts === true &&
+      otherOff.data?.length === 0 &&
+      !tokenEdit.ok &&
+      selfOff.ok &&
+      done.length === 1 &&
+      done[0].email_status === null,
+    `mặc định bật: ${defaults.email_order_status}/${defaults.email_price_alerts}; người khác tắt hộ: ${otherOff.data?.length} dòng; tự sửa token: ${tokenEdit.status}; tự tắt email đơn: ${selfOff.status} → Hoàn tất vẫn báo trong web (${done.length}), email_status=${done[0]?.email_status}`,
+  )
+
+  const token = (await svc(`/rest/v1/profiles?select=email_token&id=eq.${customer.id}`)).data[0]
+    .email_token
+  const wrong = await rpc(null, 'unsubscribe_email', {
+    p_token: '00000000-0000-4000-8000-000000000000',
+    p_kind: 'gia',
+  })
+  const badKind = await rpc(null, 'unsubscribe_email', { p_token: token, p_kind: 'tat-ca' })
+  const unsub = await rpc(null, 'unsubscribe_email', { p_token: token, p_kind: 'gia' })
+  const after = await prefs(customer)
+  const sellerPrefs = await prefs(seller)
+  rec(
+    'T5-10',
+    wrong.ok &&
+      wrong.data === false &&
+      !badKind.ok &&
+      unsub.data === true &&
+      after.email_price_alerts === false &&
+      sellerPrefs.email_price_alerts === true,
+    `link tắt email token sai: ${wrong.data}; loại lạ: ${badKind.status}; token đúng (chưa đăng nhập): ${unsub.data} → email giá ${after.email_price_alerts}; người khác không bị ảnh hưởng: ${sellerPrefs.email_price_alerts}`,
+  )
+
   await svc(`/rest/v1/orders?shop_id=eq.${shopA.id}`, { method: 'DELETE' })
 }
 
