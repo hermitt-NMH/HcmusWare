@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useAsync } from '../hooks/useAsync'
-import { getProducts, getShopBySlug } from '../lib/api'
+import { getProducts, getShopBySlug, getShopRating } from '../lib/api'
+import { formatRating } from '../features/reviews/reviews'
 import ProductBrowser from '../components/ProductBrowser'
 import ProductGrid from '../components/ProductGrid'
 import LogoBadge from '../components/LogoBadge'
@@ -14,6 +15,10 @@ export default function ShopPage() {
   const shopId = shop.data?.id
   const products = useAsync(
     () => (shopId ? getProducts({ shopId }) : Promise.resolve([])),
+    [shopId ?? 0],
+  )
+  const rating = useAsync(
+    () => (shopId ? getShopRating(shopId) : Promise.resolve(null)),
     [shopId ?? 0],
   )
 
@@ -46,8 +51,13 @@ export default function ShopPage() {
           <dl className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600">
             <div>
               <dt className="sr-only">Đánh giá</dt>
-              {/* Điểm đánh giá trung bình có ở F16 (Tuần 4) */}
-              <dd>Chưa có đánh giá</dd>
+              {/* Điểm trung bình mọi đánh giá (không bị ẩn) trên sản phẩm của shop – F16 */}
+              <dd className="font-medium text-slate-800">
+                {rating.loading
+                  ? '…'
+                  : (formatRating(rating.data?.rating_avg, rating.data?.rating_count) ??
+                    'Chưa có đánh giá')}
+              </dd>
             </div>
             <div className="flex gap-1">
               <dt>Sản phẩm:</dt>

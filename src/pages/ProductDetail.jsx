@@ -10,9 +10,11 @@ import { formatPrice } from '../lib/format'
 import { categoryBg, categoryImage } from '../lib/images'
 import { specRows } from '../lib/specs'
 import PriceSection from '../features/price/PriceSection'
+import ReviewSection from '../features/reviews/ReviewSection'
+import { formatRating } from '../features/reviews/reviews'
 
 // Trang chi tiết: ảnh, giá, tồn kho, bảng thông số, nút tải datasheet, lịch sử giá + cảnh báo giá,
-// sản phẩm tương tự.
+// đánh giá (F16), sản phẩm tương tự.
 export default function ProductDetail() {
   const { id } = useParams()
   const product = useAsync(() => getProductById(id), [id])
@@ -45,6 +47,7 @@ function DetailView({ product }) {
     brands,
     shops,
     images,
+    product_ratings,
   } = product
   const slug = categories?.slug
   const gallery = images?.length ? images : image_url ? [image_url] : []
@@ -53,6 +56,7 @@ function DetailView({ product }) {
   const fallback = categoryImage(slug)
   const outOfStock = stock <= 0
   const rows = specRows(slug, specs)
+  const rating = formatRating(product_ratings?.rating_avg, product_ratings?.rating_count)
 
   return (
     <div className="space-y-8">
@@ -127,6 +131,13 @@ function DetailView({ product }) {
               </p>
             )}
             <h1 className="mt-1 text-2xl font-bold text-slate-900">{name}</h1>
+            {/* Điểm trung bình (F16) – bấm để xuống mục đánh giá */}
+            <a
+              href="#reviews-title"
+              className="mt-1 inline-block text-sm text-slate-600 hover:underline"
+            >
+              {rating ?? 'Chưa có đánh giá'}
+            </a>
             {/* F15: thương hiệu và shop bán, có link tới trang tương ứng */}
             <dl className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
               {brands && (
@@ -219,6 +230,8 @@ function DetailView({ product }) {
 
       {/* key: sang sản phẩm khác thì khung cảnh báo giá làm mới hoàn toàn */}
       <PriceSection key={id} productId={id} currentPrice={price} />
+
+      <ReviewSection key={`r${id}`} productId={id} />
 
       {slug && <RelatedProducts categorySlug={slug} excludeId={id} />}
     </div>
