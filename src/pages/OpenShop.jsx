@@ -202,7 +202,8 @@ function ShopForm({ shop }) {
               {preview ? (
                 <img src={preview} alt="Logo shop" className="h-full w-full object-contain" />
               ) : (
-                <span className="text-2xl font-bold text-slate-500">
+                // Khung luôn nền trắng (logo thường nền trắng) → chữ dùng gray (không đảo màu ở chế độ tối)
+                <span className="text-2xl font-bold text-gray-500">
                   {form.name.trim()[0]?.toUpperCase() ?? '?'}
                 </span>
               )}
