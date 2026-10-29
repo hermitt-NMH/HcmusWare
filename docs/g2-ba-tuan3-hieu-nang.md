@@ -1,7 +1,7 @@
 # BA – Giai đoạn 2, Tuần 3: bảng điểm hiệu năng CPU và GPU (F09)
 
 Người phụ trách: BA · Dùng cho: Dev2 (F09 ước tính FPS, giao diện ở Tuần 4), Test2 (unit test F09).
-Phiên bản 2 – Tuần 3 giai đoạn 2 (bổ sung i5-14500, Ultra 5 235, Ryzen 3 3200G). Số liệu nằm ở `src/features/builder/perfData.js`.
+Phiên bản 3 – Tuần 3 giai đoạn 2 (2: bổ sung i5-14500, Ultra 5 235, Ryzen 3 3200G; 3: chốt quy tắc cảnh báo nghẽn sau QA G2T3, mục 6). Số liệu nằm ở `src/features/builder/perfData.js`.
 
 ## 1. Nguồn đã chọn
 
@@ -128,11 +128,36 @@ Bảng lấy 9% (thận trọng); nếu theo Tom's Hardware thì điểm là 89.
 - RTX 3060 8 GB và 12 GB cùng khóa `RTX 3060` (hàm `chipKey` bỏ dung lượng), nên bản 8 GB đang dùng điểm bản 12 GB và sẽ được ước tính cao hơn thực tế.
 - Kiểm tra nhanh: Ryzen 5 7600 + RTX 4060 ra Cyberpunk 2077 1080p = 75 FPS; TechPowerUp đo RTX 4060 với 9800X3D được 77,8 FPS.
 
-**Gợi ý cho Dev2 (Tuần 4):** cấu hình phổ thông Ryzen 5 7600 + RTX 4060 đang bị báo "VGA yếu so với CPU,
-59% sức mạnh CPU không dùng tới". Về số liệu thì đúng, nhưng đây là cặp hợp lý cho 1080p; nên cân nhắc nới
-ngưỡng `GPU_BOTTLENECK_BELOW` hoặc đổi câu chữ để khách không hiểu là cấu hình bị sai.
+## 6. Cảnh báo nghẽn cổ chai (đã chốt – C8)
 
-## 6. Cập nhật khi có linh kiện mới
+Bản 2 có 2 loại cảnh báo. QA G2T3 (BUG-G2T3-03) đo trên đủ 238 cặp CPU × VGA: 76 cặp bị báo "VGA yếu so với CPU,
+có thể chọn CPU rẻ hơn", **kể cả cấu hình gốc** 9800X3D + RTX 5060 Ti và cặp phổ thông i5-12400 + RTX 4060.
+Lý do: `cpuFps` đo ở 720p khi VGA không giới hạn (CS2 760 FPS), nên ở 1080p gần như cấu hình nào cũng có VGA
+là giới hạn. Khi chơi game, đó là trạng thái bình thường, không phải lỗi cấu hình. Không có ngưỡng nào vừa bỏ
+được các cặp hợp lý vừa giữ được ý nghĩa, nên BA chốt:
+
+- **Chỉ cảnh báo một loại: CPU giữ chân VGA.** Ở 1080p, lấy trung bình 10 game của tỉ lệ
+  `min(1, giới hạn CPU / giới hạn VGA)`. Nếu dưới **0,85** thì cảnh báo, kèm % sức VGA bị mất (= 1 − tỉ lệ).
+- **Không cảnh báo "VGA yếu".** Builder vẫn hiện FPS từng game, nên khách tự thấy VGA yếu qua số FPS thấp.
+- Câu cảnh báo giữ nguyên như trong `performance.js`: "CPU giữ chân VGA: ở 1080p VGA mất khoảng N% sức mạnh…".
+- Kết quả trên 238 cặp: 23 cặp có cảnh báo CPU, 215 cặp không có cảnh báo.
+
+Ví dụ cho Test2 (số liệu thật trong `perfData.js`, Cyberpunk 2077 ở 1080p để đối chiếu):
+
+| CPU + VGA                     | Cảnh báo        | Cyberpunk 2077 1080p   | Ghi chú                                                   |
+| ----------------------------- | --------------- | ---------------------- | --------------------------------------------------------- |
+| Ryzen 7 9800X3D + RTX 5060 Ti | không có        | 114 FPS (VGA giới hạn) | cấu hình gốc                                              |
+| Core i5-12400 + RTX 4060      | không có        | 75 FPS (VGA giới hạn)  | cặp phổ thông, bản 2 báo sai "VGA yếu"                    |
+| Ryzen 7 9800X3D + RX 6500 XT  | không có        | 26 FPS (VGA giới hạn)  | FPS thấp tự nói lên VGA yếu                               |
+| Ryzen 5 7600 + RTX 5080       | không có        | 194 FPS (CPU giới hạn) | sát ngưỡng: vài game CPU giới hạn nhưng trung bình ≥ 0,85 |
+| Core Ultra 5 235 + RTX 5080   | CPU, khoảng 15% | 192 FPS (CPU giới hạn) | vừa qua ngưỡng                                            |
+| Core i5-12400 + RTX 5070 Ti   | CPU, khoảng 18% | 164 FPS (CPU giới hạn) |                                                           |
+| Ryzen 3 3200G + RTX 5080      | CPU, khoảng 56% | 89 FPS (CPU giới hạn)  | lệch nặng nhất                                            |
+
+**Cho Dev2 (giao diện Tuần 4):** cảnh báo CPU hiện màu vàng như cảnh báo tương thích, không phải màu đỏ (cấu hình
+vẫn chạy được). Ghi rõ "Ước tính" và hiện nguồn (`sources`) dưới bảng FPS.
+
+## 7. Cập nhật khi có linh kiện mới
 
 1. Tìm linh kiện trong biểu đồ Relative Performance của bài s1 (VGA) hoặc s2 (CPU). Không có thì tìm bài review (TechPowerUp, hoặc ComputerBase như s7–s9) có cả linh kiện đó **và** một linh kiện đã có trong bảng, rồi quy đổi qua linh kiện chung.
 2. Thêm vào `cpus` / `gpus` trong `perfData.js` với khóa đúng tên trên web (bỏ "AMD"/"Intel", bỏ "GeForce"/"Radeon" và dung lượng), ghi nguồn bằng chú thích; nguồn mới thì thêm vào `sources`.

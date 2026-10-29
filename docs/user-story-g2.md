@@ -1,7 +1,7 @@
 # User story – Giai đoạn 2 (F13–F18, F12)
 
 Người phụ trách: BA · Dùng cho: Dev1/Dev2/Dev3/KTS (làm tính năng), Test1/Test2 (test case).
-Phiên bản 1.2 – Tuần 1 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
+Phiên bản 1.3 – Tuần 3 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
 
 Liên quan:
 
@@ -13,7 +13,7 @@ Quy ước:
 - Mỗi tiêu chí viết dạng **Given / When / Then**. Test1 viết test case từ đúng các dòng này.
 - Tiêu chí có đánh dấu **[DB]** phải đúng cả khi gọi thẳng Supabase bằng anon key + token của vai trò đó (không qua giao diện). Test2 kiểm bằng `npm run test:rls`.
 - **Tuần** = tuần mà tính năng phải chạy được trên Vercel theo kế hoạch.
-- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C5 (BA đề xuất, KTS/PM chốt) và việc DB cho Tuần 2.
+- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C8 (BA đề xuất, KTS/PM chốt) và việc cần làm kèm theo.
 
 ## Vai trò
 
@@ -125,6 +125,8 @@ Luồng đầy đủ xem mục [Luồng mở shop và duyệt sản phẩm](#lu�
 
 - Giỏ có hàng của 2 shop, When đặt hàng, Then tạo 2 đơn (mỗi shop một đơn) cùng một mã thanh toán; khách thấy 2 đơn nhóm theo shop.
 - Người bán chỉ thấy đơn của shop mình (**[DB]**), cập nhật trạng thái theo thứ tự Chờ xác nhận → Đã xác nhận → Đang giao → Hoàn tất (`pending` → `confirmed` → `shipping` → `completed`), hoặc Đã hủy khi chưa hoàn tất.
+- "Theo thứ tự" nghĩa là **chỉ đi tới, được bỏ bước** (C6): Given đơn đang Chờ xác nhận, When người bán chọn Đang giao hoặc Hoàn tất, Then lưu được. Given đơn đang Đang giao, When chọn Chờ xác nhận hoặc Đã xác nhận, Then báo "Không chuyển đơn về trạng thái trước đó" (**[DB]**). Hoàn tất và Đã hủy là trạng thái cuối, không đổi được nữa (**[DB]**).
+- Đơn thanh toán online chưa trả tiền: người bán chỉ hủy được, không xác nhận được (**[DB]**).
 - Admin vẫn xem được mọi đơn.
 
 ---
@@ -217,6 +219,8 @@ Dữ liệu: `public/data/don-vi-hanh-chinh.json` (34 tỉnh/thành, 3.321 xã/p
 
 - Gõ từ 1 ký tự trở lên thì hiện tối đa 8 gợi ý; không cần chờ mạng (dữ liệu nằm trong máy sau lần tải đầu).
 - So khớp bỏ dấu, không phân biệt hoa thường, `đ` = `d`, `òa` = `oà` (dữ liệu có "Khánh Hoà", "Thanh Hoá" kiểu dấu cũ).
+- So khớp bỏ dấu nháy (`'`, `’`) và coi gạch nối `-` như khoảng trắng: dữ liệu có 14 tên như "Xã Cư M'gar", "Phường B'Lao", "Phường Văn Miếu - Quốc Tử Giám", "Phường Cam Ly - Đà Lạt" (BUG-G2T3-01).
+- Không hỗ trợ tên viết tắt (`tp hcm`, `hn`, `q1`) – ngoài phạm vi giai đoạn 2 (C7).
 - Bỏ tiền tố "Tỉnh", "Thành phố", "Phường", "Xã", "Đặc khu" khi so khớp, nhưng vẫn hiện đầy đủ trong gợi ý.
 - Thứ tự gợi ý: khớp từ đầu tên → khớp đầu một từ → chứa chuỗi; cùng nhóm thì xếp A–Z.
 - Ô Phường/Xã chỉ gợi ý trong Tỉnh/Thành đã chọn và bị khóa khi chưa chọn tỉnh; đổi tỉnh thì xóa phường/xã đã chọn.
@@ -225,17 +229,22 @@ Dữ liệu: `public/data/don-vi-hanh-chinh.json` (34 tỉnh/thành, 3.321 xã/p
 
 Ví dụ cho unit test hàm gợi ý (Test2):
 
-| Ô          | Tỉnh đã chọn          | Gõ          | Gợi ý đầu tiên phải là |
-| ---------- | --------------------- | ----------- | ---------------------- |
-| Tỉnh/Thành | –                     | `ho chi`    | Thành phố Hồ Chí Minh  |
-| Tỉnh/Thành | –                     | `KHANH HOA` | Tỉnh Khánh Hoà         |
-| Tỉnh/Thành | –                     | `da nang`   | Thành phố Đà Nẵng      |
-| Tỉnh/Thành | –                     | `dak lak`   | Tỉnh Đắk Lắk           |
-| Phường/Xã  | Thành phố Hồ Chí Minh | `thu duc`   | Phường Thủ Đức         |
-| Phường/Xã  | Thành phố Hồ Chí Minh | `con dao`   | Đặc khu Côn Đảo        |
-| Phường/Xã  | Thành phố Hồ Chí Minh | `ben th`    | Phường Bến Thành       |
-| Phường/Xã  | Thành phố Hà Nội      | `cau giay`  | Phường Cầu Giấy        |
-| Phường/Xã  | Thành phố Hà Nội      | `thu duc`   | (không có gợi ý)       |
+| Ô          | Tỉnh đã chọn          | Gõ                      | Gợi ý đầu tiên phải là                      |
+| ---------- | --------------------- | ----------------------- | ------------------------------------------- |
+| Tỉnh/Thành | –                     | `ho chi`                | Thành phố Hồ Chí Minh                       |
+| Tỉnh/Thành | –                     | `KHANH HOA`             | Tỉnh Khánh Hoà                              |
+| Tỉnh/Thành | –                     | `da nang`               | Thành phố Đà Nẵng                           |
+| Tỉnh/Thành | –                     | `dak lak`               | Tỉnh Đắk Lắk                                |
+| Phường/Xã  | Thành phố Hồ Chí Minh | `thu duc`               | Phường Thủ Đức                              |
+| Phường/Xã  | Thành phố Hồ Chí Minh | `con dao`               | Đặc khu Côn Đảo                             |
+| Phường/Xã  | Thành phố Hồ Chí Minh | `ben th`                | Phường Bến Thành                            |
+| Phường/Xã  | Thành phố Hà Nội      | `cau giay`              | Phường Cầu Giấy                             |
+| Phường/Xã  | Thành phố Hà Nội      | `thu duc`               | (không có gợi ý)                            |
+| Phường/Xã  | Tỉnh Đắk Lắk          | `cu mgar`               | Xã Cư M'gar                                 |
+| Phường/Xã  | Tỉnh Lâm Đồng         | `blao`                  | Phường B'Lao                                |
+| Phường/Xã  | Thành phố Hà Nội      | `van mieu quoc tu giam` | Phường Văn Miếu - Quốc Tử Giám              |
+| Phường/Xã  | Tỉnh Lạng Sơn         | `bac son`               | Xã Bắc Sơn (chữ "Xã" viết hoa, BUG-G2T3-02) |
+| Tỉnh/Thành | –                     | `tp hcm`                | (không có gợi ý – C7)                       |
 
 ### US-17.3: Là khách hàng, tôi muốn trang thanh toán điền sẵn địa chỉ mặc định.
 
@@ -356,3 +365,13 @@ Phần DB làm trong **migration Tuần 2** của KTS (`supabase/migrations/2026
 | C3  | Sửa thông số có phải duyệt lại không?      | **Có.** Người bán đổi `name`, `category_id`, `brand_id`/`brand` hoặc `specs` của sản phẩm thì về `pending`. Đổi giá, tồn kho, mô tả, ảnh thì không.                                                                                    | `guard_product_write`: nhánh người bán, nếu các cột trên đổi thì `status := 'pending'`, `approved_at := null`.                                                                                                           |
 | C4  | Duyệt shop và cấp vai trò seller           | Gộp vào một hàm DB, chạy trong một transaction. Từ chối và khóa/mở khóa cũng qua hàm, không cho frontend update thẳng `shops.status`.                                                                                                  | `approve_shop(p_shop_id)`, `reject_shop(p_shop_id, p_note)`, `set_shop_locked(p_shop_id, p_locked)`; chỉ admin gọi được; chặn khóa shop HcmusWare.                                                                       |
 | C5  | Shop HcmusWare có chủ là admin             | Admin quản lý sản phẩm HcmusWare ở `/admin` như giai đoạn 1, **không** vào kênh người bán, không cấp thêm vai trò seller cho admin. Giữ đúng code hiện tại (`AREA_ROLES.seller = ['seller']`).                                         | Không cần làm thêm.                                                                                                                                                                                                      |
+
+## Đã chốt sau QA G2T3 (29/10/2026)
+
+Các câu QA hỏi trong `QA-bao-loi-G2T3.md` (mục "Cần BA chốt") và phương án DEV chọn cho BUG-G2T3-03 (PR #148). BA đề xuất; PM xác nhận khi duyệt Pull Request này.
+
+| Mã  | Câu hỏi                                                                   | Quyết định                                                                                                                                                                                                                     | Việc cần làm                                                                                                                                                     |
+| --- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| C6  | US-14.7 "theo thứ tự": có được nhảy bước (Chờ xác nhận → Hoàn tất) không? | **Được, chỉ cấm lùi.** Shop nhỏ thường giao ngay trong ngày, bắt bấm đủ 3 lần không thêm giá trị; điều cần chặn là lùi trạng thái (làm sai kho và lịch sử) và sửa đơn đã xong. Giống quy tắc admin dùng từ Tuần 5 giai đoạn 1. | Không cần làm thêm: `nextStatuses` và trigger `handle_order_status_change` đã đúng. Test1 thêm ca: Chờ xác nhận → Hoàn tất đạt, Đang giao → Đã xác nhận bị chặn. |
+| C7  | US-17.2: gõ viết tắt `tp hcm`, `hn` có ra gợi ý không?                    | **Không, ngoài phạm vi giai đoạn 2.** F17 là Should; danh sách viết tắt không có nguồn chuẩn, BA phải tự soạn cho 34 tỉnh và dễ sai. Gõ `ho chi` hoặc `ha noi` đã đủ nhanh. Ghi lại để xem ở giai đoạn sau.                    | Không làm.                                                                                                                                                       |
+| C8  | F09: có cảnh báo "VGA yếu so với CPU" không?                              | **Không, chỉ cảnh báo CPU giữ chân VGA** (ngưỡng 85% ở 1080p). Chi tiết và ví dụ đạt/không đạt: [g2-ba-tuan3-hieu-nang.md](g2-ba-tuan3-hieu-nang.md), mục 6.                                                                   | Đã làm ở PR #148. Dev2 làm giao diện Tuần 4 theo mục 6.                                                                                                          |
