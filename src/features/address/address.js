@@ -6,12 +6,16 @@ export const MAX_ADDRESSES = 10
 export const MAX_SUGGESTIONS = 8
 
 // Bỏ dấu, đ → d, chữ thường, gộp khoảng trắng: "Thủ  Đức" → "thu duc", "Khánh Hoà" = "Khánh Hòa".
+// Bỏ dấu nháy và đổi gạch nối thành khoảng trắng (BUG-G2T3-01): "Cư M'gar" → "cu mgar",
+// "Văn Miếu - Quốc Tử Giám" → "van mieu quoc tu giam" – người dùng thường gõ không có các dấu này.
 export function normalizeVi(text) {
   return String(text ?? '')
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .replace(/đ/gi, 'd')
     .toLowerCase()
+    .replace(/['’]/g, '')
+    .replace(/-/g, ' ')
     .replace(/\s+/g, ' ')
     .trim()
 }
@@ -25,7 +29,7 @@ export function matchKey(fullName) {
 }
 
 // Tên đã bỏ tiền tố nhưng còn dấu, để xếp A–Z theo tiếng Việt.
-const PREFIX_VI_RE = /^(Tỉnh|Thành phố|Phường|Xã|Đặc khu) /
+const PREFIX_VI_RE = /^(Tỉnh|Thành phố|Phường|Xã|Đặc khu) /i
 
 // Chuẩn hóa danh sách một lần cho mỗi mảng (tỉnh, hoặc phường/xã của một tỉnh).
 const indexCache = new WeakMap()

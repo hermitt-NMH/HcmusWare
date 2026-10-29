@@ -27,6 +27,11 @@ describe('normalizeVi / matchKey', () => {
     expect(normalizeVi('Khánh Hoà')).toBe(normalizeVi('Khánh Hòa'))
     expect(normalizeVi('Thanh Hoá')).toBe(normalizeVi('Thanh Hóa'))
   })
+  it('bỏ dấu nháy, gạch nối thành khoảng trắng (BUG-G2T3-01)', () => {
+    expect(normalizeVi("Cư M'gar")).toBe('cu mgar')
+    expect(normalizeVi('Ea H’Leo')).toBe('ea hleo')
+    expect(normalizeVi('Văn Miếu - Quốc Tử Giám')).toBe('van mieu quoc tu giam')
+  })
   it('bỏ tiền tố loại đơn vị', () => {
     expect(matchKey('Thành phố Hồ Chí Minh')).toBe('ho chi minh')
     expect(matchKey('Tỉnh Khánh Hoà')).toBe('khanh hoa')
@@ -59,6 +64,28 @@ describe('suggestUnits – Phường/Xã', () => {
     ['Thành phố Hà Nội', 'cau giay', 'Phường Cầu Giấy'],
   ])('%s, gõ "%s" → %s', (province, q, expected) => {
     expect(first(wardsIn(province), q)).toBe(expected)
+  })
+
+  // BUG-G2T3-01: tên có dấu nháy / gạch nối, gõ không có dấu đó vẫn ra
+  it.each([
+    ['Tỉnh Đắk Lắk', 'cu mgar', "Xã Cư M'gar"],
+    ['Tỉnh Đắk Lắk', 'mdrak', "Xã M'Drắk"],
+    ['Tỉnh Lâm Đồng', 'blao', "Phường B'Lao"],
+    ['Tỉnh Lâm Đồng', 'cam ly da lat', 'Phường Cam Ly - Đà Lạt'],
+    ['Thành phố Hà Nội', 'van mieu quoc tu giam', 'Phường Văn Miếu - Quốc Tử Giám'],
+    ['Thành phố Hà Nội', 'van mieu - quoc', 'Phường Văn Miếu - Quốc Tử Giám'],
+  ])('%s, gõ "%s" → %s', (province, q, expected) => {
+    expect(first(wardsIn(province), q)).toBe(expected)
+  })
+
+  it('mọi tên Phường/Xã viết hoa tiền tố, Lạng Sơn gõ "b" xếp đúng A–Z (BUG-G2T3-02)', () => {
+    for (const [, , wards] of data.provinces)
+      for (const [, name] of wards) expect(name, name).toMatch(/^(Phường|Xã|Đặc khu) /)
+    expect(
+      suggestUnits(wardsIn('Tỉnh Lạng Sơn'), 'b')
+        .slice(0, 4)
+        .map(([, n]) => n),
+    ).toEqual(['Xã Ba Sơn', 'Xã Bắc Sơn', 'Xã Bằng Mạc', 'Xã Bình Gia'])
   })
 
   it('chỉ gợi ý trong tỉnh đã chọn: Hà Nội gõ "thu duc" không có gợi ý', () => {

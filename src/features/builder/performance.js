@@ -17,9 +17,10 @@ export const RESOLUTIONS = ['1080p', '1440p', '4k']
 export const RESOLUTION_LABELS = { '1080p': '1080p', '1440p': '1440p', '4k': '4K' }
 
 // Ngưỡng cảnh báo nghẽn ở 1080p (độ phân giải CPU dễ nghẽn nhất):
-// CPU chỉ cho VGA chạy dưới 85% sức → cảnh báo CPU; VGA chỉ dùng dưới 50% sức CPU → báo VGA yếu.
+// CPU chỉ cho VGA chạy dưới 85% sức → cảnh báo CPU.
+// Không báo "VGA yếu" (BUG-G2T3-03): cpuFps đo ở 720p không giới hạn VGA nên gần như mọi cấu hình
+// đều có VGA là giới hạn – đó là trạng thái bình thường khi chơi game, kể cả cấu hình gốc 9800X3D + 5060 Ti.
 export const CPU_BOTTLENECK_BELOW = 0.85
-export const GPU_BOTTLENECK_BELOW = 0.5
 
 // "AMD Ryzen 5 7600X" → "Ryzen 5 7600X", "Intel Core i5-12400F" → "Core i5-12400F".
 export function cpuKey(name = '') {
@@ -59,7 +60,7 @@ export function fpsLevel(fps) {
 }
 
 // Nghẽn cổ chai từ kết quả 1080p của mọi game: trung bình tỉ lệ (giới hạn nhỏ / giới hạn lớn).
-// Trả null nếu cân bằng.
+// Trả null nếu không có nghẽn CPU.
 export function detectBottleneck(results1080) {
   const rows = results1080.filter(Boolean)
   if (!rows.length) return null
@@ -71,15 +72,6 @@ export function detectBottleneck(results1080) {
       part: 'cpu',
       percent: lost,
       message: `CPU giữ chân VGA: ở 1080p VGA mất khoảng ${lost}% sức mạnh. Ở 1440p/4K ảnh hưởng ít hơn; muốn chơi 1080p nên chọn CPU mạnh hơn.`,
-    }
-  }
-  const cpuUsed = avg((r) => Math.min(1, r.gpuLimit / r.cpuLimit))
-  if (cpuUsed < GPU_BOTTLENECK_BELOW) {
-    const lost = Math.round((1 - cpuUsed) * 100)
-    return {
-      part: 'gpu',
-      percent: lost,
-      message: `VGA yếu so với CPU: khoảng ${lost}% sức mạnh CPU không dùng tới khi chơi game. Có thể chọn CPU rẻ hơn hoặc VGA mạnh hơn.`,
     }
   }
   return null

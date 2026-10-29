@@ -20,6 +20,9 @@ if (!input || !version || !decree) {
 
 const provinces = JSON.parse(readFileSync(input, 'utf8'))
 
+// Nguồn có tên viết thường tiền tố ("xã Bắc Sơn", mã 06325) → viết hoa chữ đầu (BUG-G2T3-02).
+const fixName = (name) => name.trim().charAt(0).toUpperCase() + name.trim().slice(1)
+
 const data = {
   source: 'https://github.com/thanglequoc/vietnamese-provinces-database',
   license: 'MIT © 2021 Thang Le Quoc',
@@ -29,8 +32,10 @@ const data = {
   provinces: provinces
     .map((p) => [
       p.Code,
-      p.FullName,
-      p.Wards.map((w) => [w.Code, w.FullName]).sort((a, b) => a[1].localeCompare(b[1], 'vi')),
+      fixName(p.FullName),
+      p.Wards.map((w) => [w.Code, fixName(w.FullName)]).sort((a, b) =>
+        a[1].localeCompare(b[1], 'vi'),
+      ),
     ])
     .sort((a, b) => a[1].localeCompare(b[1], 'vi')),
 }
