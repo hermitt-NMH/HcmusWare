@@ -25,6 +25,7 @@ const TABLES = [
   'price_alerts',
   'reviews',
   'addresses',
+  'comments',
 ]
 const PAGE = 1000
 
