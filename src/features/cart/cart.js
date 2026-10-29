@@ -2,7 +2,7 @@
 // CartContext gọi các hàm này rồi lưu kết quả vào state + localStorage.
 //
 // Một dòng trong giỏ: bản chụp vài trường của sản phẩm lúc thêm vào giỏ + số lượng.
-// { id, name, brand, price, image_url, slug, stock, qty }
+// { id, name, brand, price, image_url, slug, stock, shop_name, shop_slug, qty }
 // Giá/tồn kho có thể đã đổi trên DB: trang giỏ hàng gọi mergeFreshProducts để cập nhật lại.
 
 export const STORAGE_KEY = 'hcmusware.cart'
@@ -26,8 +26,22 @@ export function toCartItem(product, qty = 1) {
     image_url: product.image_url ?? null,
     slug: product.categories?.slug ?? product.slug ?? null,
     stock: product.stock ?? 0,
+    // Shop bán (Giai đoạn 2): giỏ nhiều shop sẽ tách thành nhiều đơn. Giỏ lưu từ trước chưa có
+    // thì trang thanh toán tải lại sản phẩm (mergeFreshProducts) là có.
+    shop_name: product.shops?.name ?? product.shop_name ?? null,
+    shop_slug: product.shops?.slug ?? product.shop_slug ?? null,
     qty,
   }
+}
+
+// Tên các shop có hàng mua được trong giỏ, theo thứ tự xuất hiện (mỗi shop sẽ là một đơn).
+export function cartShops(items) {
+  const shops = new Map()
+  for (const it of items) {
+    if (isUnavailable(it) || it.price == null || !it.shop_slug) continue
+    if (!shops.has(it.shop_slug)) shops.set(it.shop_slug, it.shop_name ?? it.shop_slug)
+  }
+  return [...shops.values()]
 }
 
 // Thêm nhiều sản phẩm một lần: [{ product, qty }]. Sản phẩm đã có thì cộng dồn.

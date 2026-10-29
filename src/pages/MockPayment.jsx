@@ -2,14 +2,15 @@ import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { useAsync } from '../hooks/useAsync'
-import { getOrderById, mockPayOrder } from '../lib/api'
+import { getMyOrdersByPaymentCode, getOrderById, mockPayOrder } from '../lib/api'
 import { formatPrice } from '../lib/format'
-import { canPayOnline, orderErrorMessage } from '../features/orders/orders'
+import { amountToPay, canPayOnline, orderErrorMessage } from '../features/orders/orders'
 import NotFound from './NotFound'
 
 // Cổng thanh toán MÔ PHỎNG: giả màn hình ngân hàng/ví, không trừ tiền thật.
 // Bấm "Thanh toán" → hàm mock_pay_order trong DB đánh dấu đơn đã trả và chuyển "Đã xác nhận".
 // Thanh toán thật (VNPay sandbox) cần Supabase Edge Function – để ở mục "nếu dư thời gian".
+// Giỏ nhiều shop → nhiều đơn cùng mã thanh toán: trả một lần cho mọi đơn còn chờ trả trong nhóm.
 export default function MockPayment() {
   const { user, loading } = useAuth()
   const location = useLocation()
@@ -22,7 +23,13 @@ export default function MockPayment() {
 function PaymentView() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const order = useAsync(() => getOrderById(id), [id])
+  const { user } = useAuth()
+  const order = useAsync(async () => {
+    const o = await getOrderById(id)
+    if (!o) return null
+    const group = o.payment_code ? await getMyOrdersByPaymentCode(user.id, o.payment_code) : []
+    return { ...o, group: group.length ? group : [o] }
+  }, [id, user.id])
   const [paying, setPaying] = useState(false)
   const [error, setError] = useState('')
 
@@ -37,6 +44,8 @@ function PaymentView() {
   const o = order.data
   // Đã trả / đã hủy / đơn COD → về trang đơn hàng.
   if (!canPayOnline(o)) return <Navigate to={`/don-hang/${o.id}`} replace />
+  const payable = o.group.filter(canPayOnline)
+  const amount = amountToPay(o.group)
 
   const pay = async () => {
     setPaying(true)
@@ -70,13 +79,23 @@ function PaymentView() {
               <dd className="font-medium">HcmusWare</dd>
             </div>
             <div className="flex justify-between gap-2">
-              <dt className="text-slate-500">Mã đơn hàng</dt>
-              <dd className="font-medium">#{o.id}</dd>
+              <dt className="text-slate-500">
+                {payable.length > 1 ? 'Mã thanh toán' : 'Mã đơn hàng'}
+              </dt>
+              <dd className="font-medium">{payable.length > 1 ? o.payment_code : `#${o.id}`}</dd>
             </div>
+            {payable.length > 1 && (
+              <div className="flex justify-between gap-2">
+                <dt className="text-slate-500">Gồm các đơn</dt>
+                <dd className="text-right font-medium">
+                  {payable.map((x) => `#${x.id}`).join(', ')}
+                </dd>
+              </div>
+            )}
             <div className="flex items-baseline justify-between gap-2 border-t border-slate-100 pt-2">
               <dt className="text-slate-500">Số tiền</dt>
               <dd className="text-2xl font-bold text-red-600 dark:text-red-400">
-                {formatPrice(o.total)}
+                {formatPrice(amount)}
               </dd>
             </div>
           </dl>
@@ -91,7 +110,7 @@ function PaymentView() {
             disabled={paying}
             className="h-12 w-full rounded-lg bg-green-600 font-semibold text-white hover:bg-green-700 disabled:opacity-60"
           >
-            {paying ? 'Đang xử lý…' : `Thanh toán ${formatPrice(o.total)}`}
+            {paying ? 'Đang xử lý…' : `Thanh toán ${formatPrice(amount)}`}
           </button>
           <Link
             to={`/don-hang/${o.id}`}

@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import {
+  amountToPay,
   canPayOnline,
   cartToOrderItems,
+  groupOrdersByPayment,
   nextStatuses,
   paymentStatusLabel,
   validateCheckout,
@@ -96,5 +98,49 @@ describe('thanh toán', () => {
     expect(paymentStatusLabel({ ...order, paid_at: 'x' })).toBe('Đã thanh toán')
     expect(paymentStatusLabel({ ...order, status: 'cancelled' })).toBe('Không thanh toán')
     expect(paymentStatusLabel({ ...order, paid_at: 'x', status: 'cancelled' })).toMatch(/hoàn tiền/)
+  })
+})
+
+describe('groupOrdersByPayment', () => {
+  const o = (id, code, total, extra = {}) => ({
+    id,
+    payment_code: code,
+    total,
+    created_at: `2026-12-0${id}T00:00:00Z`,
+    ...extra,
+  })
+
+  it('đơn cùng mã thanh toán gom thành một lần đặt, giữ thứ tự mới nhất trước', () => {
+    // getMyOrders trả mới nhất trước: 3 (TT2), 2 (TT1), 1 (TT1)
+    const groups = groupOrdersByPayment([o(3, 'TT2', 500), o(2, 'TT1', 200), o(1, 'TT1', 100)])
+    expect(groups.map((g) => g.code)).toEqual(['TT2', 'TT1'])
+    expect(groups[1].orders.map((x) => x.id)).toEqual([1, 2])
+    expect(groups[1].total).toBe(300)
+  })
+
+  it('đơn cũ không có mã thanh toán thì mỗi đơn một nhóm', () => {
+    const groups = groupOrdersByPayment([o(2, null, 200), o(1, undefined, 100)])
+    expect(groups.map((g) => g.code)).toEqual(['#2', '#1'])
+  })
+
+  it('danh sách rỗng', () => {
+    expect(groupOrdersByPayment([])).toEqual([])
+  })
+})
+
+describe('amountToPay', () => {
+  const online = { payment_method: 'mock_online', paid_at: null, status: 'pending' }
+  it('chỉ cộng đơn còn chờ thanh toán online, bỏ đơn shop đã hủy', () => {
+    expect(
+      amountToPay([
+        { ...online, total: 100 },
+        { ...online, total: 200, status: 'cancelled' },
+        { ...online, total: 400 },
+      ]),
+    ).toBe(500)
+  })
+  it('đơn COD hoặc đã trả: không còn gì phải trả', () => {
+    expect(amountToPay([{ ...online, total: 100, payment_method: 'cod' }])).toBe(0)
+    expect(amountToPay([{ ...online, total: 100, paid_at: '2026-12-07' }])).toBe(0)
   })
 })

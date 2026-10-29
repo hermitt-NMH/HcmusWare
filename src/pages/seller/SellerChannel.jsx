@@ -1,4 +1,4 @@
-import { Link, Navigate, Route, Routes } from 'react-router-dom'
+import { Link, NavLink, Navigate, Route, Routes } from 'react-router-dom'
 import { useAsync } from '../../hooks/useAsync'
 import { useAuth } from '../../hooks/useAuth'
 import { getMyShop } from '../../lib/api'
@@ -6,12 +6,13 @@ import { SHOP_STATUS } from '../../features/seller/shopForm'
 import LogoBadge from '../../components/LogoBadge'
 import SellerProducts from './SellerProducts'
 import SellerProductForm from './SellerProductForm'
+import SellerOrders from './SellerOrders'
 
 // Kênh người bán /kenh-nguoi-ban. Chỉ vai trò seller vào được (RoleRoute trong App.jsx).
 // /kenh-nguoi-ban                 – thông tin shop + danh sách sản phẩm
 // /kenh-nguoi-ban/san-pham/moi    – đăng sản phẩm
 // /kenh-nguoi-ban/san-pham/:id    – sửa sản phẩm
-// Tuần 3: đơn hàng của shop.
+// /kenh-nguoi-ban/don-hang        – đơn hàng của shop (Tuần 3)
 export default function SellerChannel() {
   const { user } = useAuth()
   const shop = useAsync(() => getMyShop(user.id), [user.id])
@@ -45,6 +46,14 @@ export default function SellerChannel() {
     <Routes>
       <Route index element={<SellerHome shop={shop.data} canEdit={canEdit} />} />
       <Route
+        path="don-hang"
+        element={
+          <SellerPage>
+            <SellerOrders shop={shop.data} canEdit={canEdit} />
+          </SellerPage>
+        }
+      />
+      <Route
         path="san-pham/moi"
         element={
           canEdit ? (
@@ -69,12 +78,34 @@ export default function SellerChannel() {
   )
 }
 
-function SellerHome({ shop, canEdit }) {
-  const status = SHOP_STATUS[shop.status]
+// Khung chung của các trang trong kênh: tiêu đề + 2 tab Sản phẩm / Đơn hàng.
+function SellerPage({ children }) {
+  const tab = ({ isActive }) =>
+    `inline-flex h-11 items-center border-b-2 px-3 text-sm font-medium ${
+      isActive
+        ? 'border-blue-600 text-blue-700 dark:text-blue-300'
+        : 'border-transparent text-slate-600 hover:text-slate-900'
+    }`
   return (
     <div className="mx-auto max-w-4xl space-y-4">
       <h1 className="text-xl font-bold sm:text-2xl">Kênh người bán</h1>
+      <nav aria-label="Kênh người bán" className="flex gap-2 border-b border-slate-200">
+        <NavLink to="/kenh-nguoi-ban" end className={tab}>
+          Shop và sản phẩm
+        </NavLink>
+        <NavLink to="/kenh-nguoi-ban/don-hang" className={tab}>
+          Đơn hàng
+        </NavLink>
+      </nav>
+      {children}
+    </div>
+  )
+}
 
+function SellerHome({ shop, canEdit }) {
+  const status = SHOP_STATUS[shop.status]
+  return (
+    <SellerPage>
       <section className="flex items-start gap-4 rounded-xl border border-slate-200 bg-surface p-5">
         <LogoBadge name={shop.name} url={shop.logo_url} size="h-16 w-16" text="text-2xl" />
         <div className="min-w-0 flex-1 space-y-1">
@@ -106,6 +137,6 @@ function SellerHome({ shop, canEdit }) {
       </section>
 
       <SellerProducts shop={shop} canEdit={canEdit} />
-    </div>
+    </SellerPage>
   )
 }

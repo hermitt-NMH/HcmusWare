@@ -4,11 +4,13 @@ import {
   addManyToCart,
   addToCart,
   cartCount,
+  cartShops,
   cartSubtotal,
   mergeFreshProducts,
   parseStoredCart,
   removeFromCart,
   setItemQty,
+  toCartItem,
 } from './cart'
 
 const cpu = {
@@ -41,6 +43,8 @@ describe('addToCart', () => {
         image_url: '/images/products/cpu.webp',
         slug: 'cpu',
         stock: 20,
+        shop_name: null,
+        shop_slug: null,
         qty: 1,
       },
     ])
@@ -143,5 +147,28 @@ describe('parseStoredCart', () => {
       [1, 2],
       [4, MAX_QTY_PER_ITEM],
     ])
+  })
+})
+
+describe('cartShops', () => {
+  const line = (id, shop, extra = {}) => ({
+    id,
+    name: `SP ${id}`,
+    price: 100,
+    stock: 5,
+    qty: 1,
+    shop_name: shop && `Shop ${shop}`,
+    shop_slug: shop,
+    ...extra,
+  })
+  it('liệt kê mỗi shop một lần, theo thứ tự trong giỏ', () => {
+    expect(cartShops([line(1, 'a'), line(2, 'b'), line(3, 'a')])).toEqual(['Shop a', 'Shop b'])
+  })
+  it('bỏ dòng hết hàng / ngừng bán và dòng chưa biết shop', () => {
+    expect(cartShops([line(1, 'a'), line(2, 'b', { stock: 0 }), line(3, null)])).toEqual(['Shop a'])
+  })
+  it('toCartItem lấy tên shop từ sản phẩm', () => {
+    const it = toCartItem({ id: 1, name: 'X', shops: { name: 'HcmusWare', slug: 'hcmusware' } })
+    expect([it.shop_name, it.shop_slug]).toEqual(['HcmusWare', 'hcmusware'])
   })
 })
