@@ -1103,13 +1103,28 @@ let sellerNew
 
   const unansweredAfter = (await rpc(seller.token, 'seller_unanswered_questions')).data
   const anonList = await rpc(null, 'seller_unanswered_questions')
+  // Sản phẩm bị ẩn thì không trả lời được nữa → câu hỏi của nó không nằm trong danh sách (BUG-G2T4-02).
+  const pHideLater = await mkProduct(shopA, 'A-se-an', 'active')
+  const askHidden = await api(customer.token, '/rest/v1/comments', {
+    method: 'POST',
+    body: { product_id: pHideLater.id, body: 'Hỏi trước khi ẩn' },
+  })
+  await svc(`/rest/v1/products?id=eq.${pHideLater.id}`, {
+    method: 'PATCH',
+    body: { status: 'hidden' },
+  })
+  const hiddenProductListed = (await rpc(seller.token, 'seller_unanswered_questions')).data?.some(
+    (c) => c.id === askHidden.data?.[0]?.id,
+  )
   rec(
     'T4-07',
     unansweredBefore?.some((c) => c.id === q.id) &&
       !otherSellerList?.some((c) => c.id === q.id) &&
       !unansweredAfter?.some((c) => c.id === q.id) &&
-      !anonList.ok,
-    `câu hỏi chưa trả lời: chủ shop thấy ${unansweredBefore?.some((c) => c.id === q.id)}, shop khác thấy ${otherSellerList?.some((c) => c.id === q.id)}; sau khi trả lời còn trong danh sách ${unansweredAfter?.some((c) => c.id === q.id)}; chưa đăng nhập gọi: ${anonList.status}`,
+      !anonList.ok &&
+      askHidden.ok &&
+      hiddenProductListed === false,
+    `câu hỏi chưa trả lời: chủ shop thấy ${unansweredBefore?.some((c) => c.id === q.id)}, shop khác thấy ${otherSellerList?.some((c) => c.id === q.id)}; sau khi trả lời còn trong danh sách ${unansweredAfter?.some((c) => c.id === q.id)}; chưa đăng nhập gọi: ${anonList.status}; câu hỏi của sản phẩm đã ẩn còn trong danh sách ${hiddenProductListed}`,
   )
 
   const thread = (token) =>

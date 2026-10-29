@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useAsync } from '../../hooks/useAsync'
@@ -9,7 +9,9 @@ import { StarInput, Stars } from './Stars'
 
 // Mục "Đánh giá" trên trang sản phẩm (F16 – US-16.1, US-16.4, US-16.5).
 // Form chỉ hiện cho người đã nhận hàng; DB cũng chặn (guard_review_write), nên ẩn form chỉ để tiện.
-export default function ReviewSection({ productId }) {
+// onSummary(text | null): báo điểm mới sau mỗi lần tải (vd vừa gửi / ẩn đánh giá) để đầu trang
+// sản phẩm hiện cùng một điểm với mục này (BUG-G2T4-01).
+export default function ReviewSection({ productId, onSummary }) {
   const { user, role } = useAuth()
   const isAdmin = role === 'admin'
   // reload: tăng lên sau khi gửi / ẩn để tải lại danh sách và điểm trung bình.
@@ -29,6 +31,12 @@ export default function ReviewSection({ productId }) {
   const avg = shown.length ? shown.reduce((s, r) => s + r.rating, 0) / shown.length : null
   const summary = formatRating(avg, shown.length)
   const mine = user ? list.find((r) => r.user_id === user.id) : null
+
+  // Chỉ báo khi đã tải xong (đang tải / lỗi thì đầu trang giữ điểm lấy cùng sản phẩm).
+  const loaded = !reviews.loading && !reviews.error
+  useEffect(() => {
+    if (loaded) onSummary?.(summary)
+  }, [loaded, summary, onSummary])
 
   return (
     <section aria-labelledby="reviews-title" className="space-y-3">
