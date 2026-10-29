@@ -920,6 +920,236 @@ let sellerNew
   await svc(`/rest/v1/orders?user_id=eq.${customer.id}`, { method: 'DELETE' })
 }
 
+// ---------- Tuần 4: đánh giá, hỏi đáp (migration 20261214000000) ----------
+{
+  const p = await mkProduct(shopA, 'A-t4', 'active')
+  // Đơn chèn thẳng bằng service role với trạng thái cho sẵn (không đi qua place_order).
+  const mkOrder = async (user, status) => {
+    const o = (
+      await svc('/rest/v1/orders', {
+        method: 'POST',
+        body: {
+          user_id: user.id,
+          shop_id: shopA.id,
+          status,
+          shipping_name: 'RLS Test',
+          shipping_phone: '0901234567',
+          shipping_address: '227 Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM',
+        },
+      })
+    ).data[0]
+    await svc('/rest/v1/order_items', {
+      method: 'POST',
+      body: { order_id: o.id, product_id: p.id, quantity: 1, unit_price: 1000000 },
+    })
+    return o
+  }
+  const review = (token, body) =>
+    api(token, '/rest/v1/reviews', { method: 'POST', body: { product_id: p.id, ...body } })
+  const rating = async () =>
+    (
+      await api(
+        null,
+        `/rest/v1/product_ratings?select=rating_avg,rating_count&product_id=eq.${p.id}`,
+      )
+    ).data[0] ?? null
+
+  // Người bán 2 có đơn nhưng chưa giao; khách chưa mua gì
+  await mkOrder(seller2, 'shipping')
+  const notBought = await review(customer.token, { rating: 5 })
+  const notDelivered = await review(seller2.token, { rating: 5 })
+  const anonReview = await review(null, { rating: 5 })
+  const canBefore = (await rpc(customer.token, 'can_review', { p_product_id: p.id })).data
+  rec(
+    'T4-01',
+    !notBought.ok &&
+      errMsg(notBought).includes('đã nhận hàng') &&
+      !notDelivered.ok &&
+      !anonReview.ok &&
+      canBefore === false,
+    `chưa mua: ${notBought.status} "${errMsg(notBought)}"; đơn đang giao: ${notDelivered.status}; chưa đăng nhập: ${anonReview.status}; can_review=${canBefore}`,
+  )
+
+  await mkOrder(customer, 'completed')
+  const canAfter = (await rpc(customer.token, 'can_review', { p_product_id: p.id })).data
+  const first = await review(customer.token, {
+    rating: 4,
+    comment: '<script>alert(1)</script>\r\n\r\n\r\n\r\nDòng 2',
+  })
+  const r1 = first.data?.[0]
+  const second = await review(customer.token, { rating: 1 })
+  rec(
+    'T4-02',
+    canAfter === true &&
+      first.ok &&
+      r1?.author_name === 'RLS K.' &&
+      r1?.comment === '<script>alert(1)</script>\n\nDòng 2' &&
+      !second.ok &&
+      errMsg(second).includes('đã đánh giá'),
+    `có đơn Hoàn tất: can_review=${canAfter}, đánh giá: ${first.status}, tên "${r1?.author_name}", nhận xét ${JSON.stringify(r1?.comment)}; lần 2: ${second.status} "${errMsg(second)}"`,
+  )
+
+  const selfHide = await api(customer.token, `/rest/v1/reviews?id=eq.${r1.id}`, {
+    method: 'PATCH',
+    body: { hidden: true },
+  })
+  const selfMove = await api(customer.token, `/rest/v1/reviews?id=eq.${r1.id}`, {
+    method: 'PATCH',
+    body: { product_id: pActiveA.id },
+  })
+  const edit = await api(customer.token, `/rest/v1/reviews?id=eq.${r1.id}`, {
+    method: 'PATCH',
+    body: { rating: 5 },
+  })
+  const otherEdit = await api(seller.token, `/rest/v1/reviews?id=eq.${r1.id}`, {
+    method: 'PATCH',
+    body: { rating: 1 },
+  })
+  const selfDelete = await api(customer.token, `/rest/v1/reviews?id=eq.${r1.id}`, {
+    method: 'DELETE',
+  })
+  rec(
+    'T4-03',
+    !selfHide.ok &&
+      !selfMove.ok &&
+      edit.ok &&
+      edit.data[0]?.rating === 5 &&
+      edit.data[0]?.updated_at &&
+      otherEdit.data?.length === 0 &&
+      selfDelete.data?.length === 0,
+    `khách tự ẩn: ${selfHide.status}, chuyển sang sản phẩm khác: ${selfMove.status}; sửa số sao: ${edit.status} → ${edit.data?.[0]?.rating}; người khác sửa ${otherEdit.data?.length} dòng; tự xóa ${selfDelete.data?.length} dòng`,
+  )
+
+  const shown = await rating()
+  const custHide = await rpc(customer.token, 'set_review_hidden', { p_id: r1.id, p_hidden: true })
+  const sellerHide = await rpc(seller.token, 'set_review_hidden', { p_id: r1.id, p_hidden: true })
+  const adminHide = await rpc(admin.token, 'set_review_hidden', { p_id: r1.id, p_hidden: true })
+  const hiddenRating = await rating()
+  const anonSee = (await api(null, `/rest/v1/reviews?select=id&product_id=eq.${p.id}`)).data.length
+  const ownerSee = (await api(customer.token, `/rest/v1/reviews?select=id&product_id=eq.${p.id}`))
+    .data.length
+  const adminSee = (await api(admin.token, `/rest/v1/reviews?select=id&product_id=eq.${p.id}`)).data
+    .length
+  await rpc(admin.token, 'set_review_hidden', { p_id: r1.id, p_hidden: false })
+  const shopRating = (await rpc(null, 'shop_rating', { p_shop_id: shopA.id })).data?.[0]
+  rec(
+    'T4-04',
+    Number(shown?.rating_avg) === 5 &&
+      shown?.rating_count === 1 &&
+      !custHide.ok &&
+      !sellerHide.ok &&
+      adminHide.ok &&
+      hiddenRating === null &&
+      anonSee === 0 &&
+      ownerSee === 1 &&
+      adminSee === 1 &&
+      Number(shopRating?.rating_avg) === 5 &&
+      shopRating?.rating_count === 1,
+    `điểm ${shown?.rating_avg} (${shown?.rating_count}); khách ẩn: ${custHide.status}, người bán ẩn: ${sellerHide.status}, admin ẩn: ${adminHide.status} → điểm ${JSON.stringify(hiddenRating)}; thấy đánh giá đã ẩn: chưa đăng nhập ${anonSee}, người viết ${ownerSee}, admin ${adminSee}; điểm shop sau khi hiện lại ${shopRating?.rating_avg} (${shopRating?.rating_count})`,
+  )
+
+  const comment = (token, body) =>
+    api(token, '/rest/v1/comments', { method: 'POST', body: { product_id: p.id, ...body } })
+  const anonAsk = await comment(null, { body: 'Hỏi' })
+  const blank = await comment(customer.token, { body: '   \n  ' })
+  const tooLong = await comment(customer.token, { body: 'a'.repeat(1001) })
+  const ask = await comment(customer.token, { body: '  <img src=x onerror=alert(1)>  ' })
+  const q = ask.data?.[0]
+  const sneakyHidden = await comment(customer.token, { body: 'Ẩn sẵn', hidden: true })
+  const pendingAsk = await api(customer.token, '/rest/v1/comments', {
+    method: 'POST',
+    body: { product_id: pPendingA.id, body: 'Hỏi hàng chờ duyệt' },
+  })
+  rec(
+    'T4-05',
+    !anonAsk.ok &&
+      !blank.ok &&
+      !tooLong.ok &&
+      ask.ok &&
+      q?.body === '<img src=x onerror=alert(1)>' &&
+      q?.author_name === 'RLS K.' &&
+      !sneakyHidden.ok &&
+      !pendingAsk.ok,
+    `chưa đăng nhập hỏi: ${anonAsk.status}; chỉ khoảng trắng: ${blank.status}; 1001 ký tự: ${tooLong.status}; hỏi: ${ask.status} → ${JSON.stringify(q?.body)}; tự gửi hidden: ${sneakyHidden.status}; hỏi sản phẩm chờ duyệt: ${pendingAsk.status}`,
+  )
+
+  const unansweredBefore = (await rpc(seller.token, 'seller_unanswered_questions')).data
+  const otherSellerList = (await rpc(seller2.token, 'seller_unanswered_questions')).data
+  const fakeSeller = await comment(seller2.token, {
+    parent_id: q.id,
+    body: 'Shop B',
+    is_seller: true,
+  })
+  const plainReply = await comment(seller2.token, { parent_id: q.id, body: 'Tôi cũng muốn biết' })
+  const custLabel = await comment(customer.token, { parent_id: q.id, body: 'Giả', is_seller: true })
+  const sellerAsk = await comment(seller.token, { body: 'Câu hỏi có nhãn', is_seller: true })
+  const reply = await comment(seller.token, { parent_id: q.id, body: 'Còn hàng', is_seller: true })
+  const nested = await comment(customer.token, {
+    parent_id: reply.data?.[0]?.id,
+    body: 'Trả lời 2 cấp',
+  })
+  rec(
+    'T4-06',
+    !fakeSeller.ok &&
+      plainReply.ok &&
+      plainReply.data[0]?.is_seller === false &&
+      !custLabel.ok &&
+      !sellerAsk.ok &&
+      reply.ok &&
+      reply.data[0]?.author_name === shopA.name &&
+      !nested.ok,
+    `shop khác trả lời có nhãn: ${fakeSeller.status}, không nhãn: ${plainReply.status}; khách gắn nhãn: ${custLabel.status}; người bán đặt câu hỏi có nhãn: ${sellerAsk.status}; chủ shop trả lời: ${reply.status} tên "${reply.data?.[0]?.author_name}"; trả lời 2 cấp: ${nested.status}`,
+  )
+
+  const unansweredAfter = (await rpc(seller.token, 'seller_unanswered_questions')).data
+  const anonList = await rpc(null, 'seller_unanswered_questions')
+  rec(
+    'T4-07',
+    unansweredBefore?.some((c) => c.id === q.id) &&
+      !otherSellerList?.some((c) => c.id === q.id) &&
+      !unansweredAfter?.some((c) => c.id === q.id) &&
+      !anonList.ok,
+    `câu hỏi chưa trả lời: chủ shop thấy ${unansweredBefore?.some((c) => c.id === q.id)}, shop khác thấy ${otherSellerList?.some((c) => c.id === q.id)}; sau khi trả lời còn trong danh sách ${unansweredAfter?.some((c) => c.id === q.id)}; chưa đăng nhập gọi: ${anonList.status}`,
+  )
+
+  const thread = (token) =>
+    api(token, `/rest/v1/comments?select=id&product_id=eq.${p.id}`).then((r) => r.data.length)
+  const custHideC = await rpc(customer.token, 'set_comment_hidden', { p_id: q.id, p_hidden: true })
+  const patchHide = await api(customer.token, `/rest/v1/comments?id=eq.${q.id}`, {
+    method: 'PATCH',
+    body: { hidden: true },
+  })
+  const editBody = await api(customer.token, `/rest/v1/comments?id=eq.${q.id}`, {
+    method: 'PATCH',
+    body: { body: 'Sửa' },
+  })
+  const delOther = await api(seller.token, `/rest/v1/comments?id=eq.${q.id}`, { method: 'DELETE' })
+  const adminHideC = await rpc(admin.token, 'set_comment_hidden', { p_id: q.id, p_hidden: true })
+  const anonCount = await thread(null)
+  const custCount = await thread(customer.token)
+  const adminCount = await thread(admin.token)
+  const replyToHidden = await comment(customer.token, {
+    parent_id: q.id,
+    body: 'Trả lời câu đã ẩn',
+  })
+  rec(
+    'T4-08',
+    !custHideC.ok &&
+      !patchHide.ok &&
+      !editBody.ok &&
+      delOther.data?.length === 0 &&
+      adminHideC.ok &&
+      anonCount === 0 &&
+      custCount === 0 &&
+      adminCount === 3 &&
+      !replyToHidden.ok,
+    `khách ẩn qua hàm: ${custHideC.status}, sửa thẳng cột hidden: ${patchHide.status}, sửa nội dung: ${editBody.status}; người bán xóa ${delOther.data?.length} dòng; admin ẩn câu hỏi: ${adminHideC.status} → chưa đăng nhập thấy ${anonCount}, khách thấy ${custCount}, admin thấy ${adminCount}/3 (câu hỏi + 2 trả lời); trả lời câu đã ẩn: ${replyToHidden.status}`,
+  )
+
+  // Đơn chặn xóa sản phẩm / shop / tài khoản → xóa trước phần dọn dẹp chung.
+  await svc(`/rest/v1/orders?shop_id=eq.${shopA.id}`, { method: 'DELETE' })
+}
+
 // ---------- Dọn dẹp ----------
 for (const u of testUsers) {
   for (const s of (await svc(`/rest/v1/shops?select=id&owner_id=eq.${u.id}`)).data) {
