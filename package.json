@@ -13,6 +13,8 @@
     "test:ui": "node scripts/ui-test.js",
     "test:e2e": "node --env-file=.env.local scripts/e2e-tuan5.js",
     "test:e2e:online": "node --env-file=.env.online.local scripts/e2e-tuan5.js",
+    "test:e2e:g2t2": "node --env-file=.env.local scripts/e2e-g2t2.js",
+    "test:e2e:g2t2:online": "node --env-file=.env.online.local scripts/e2e-g2t2.js",
     "test:e2e:g2t3": "node --env-file=.env.local scripts/e2e-g2t3.js",
     "test:e2e:g2t3:online": "node --env-file=.env.online.local scripts/e2e-g2t3.js",
     "test:e2e:g2t4": "node --env-file=.env.local scripts/e2e-g2t4.js",

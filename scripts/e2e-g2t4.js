@@ -5,6 +5,7 @@
 //   G4-04..05  người bán: "Câu hỏi chưa trả lời" trong kênh người bán, trả lời có nhãn "Người bán"
 //   G4-06..07  admin ẩn đánh giá và câu hỏi (ẩn luôn câu trả lời) → khách không thấy, điểm không tính;
 //              admin thấy "Đã ẩn" + "Hiện lại"
+//   G4-08      thêm 7 kiểu chèn HTML/script và họ tên có HTML: hiện nguyên văn, không chạy (#105)
 // Tự tạo tài khoản, shop, sản phẩm, đơn Hoàn tất (@hcmusware.test); cuối cùng xóa sạch.
 //
 // Cách chạy:
@@ -79,7 +80,9 @@ const buyer = await createUser('mua', 'customer', 'Trần Thị Bích Ngọc')
 const visitor = await createUser('khach', 'customer', 'Lê Văn Hỏi')
 const seller = await createUser('ban', 'seller', 'Phạm Bán Hàng')
 const admin = await createUser('admin', 'admin', 'Quản Trị G2T4')
-const users = [buyer, visitor, seller, admin]
+// Họ tên có HTML: tên hiện dưới câu hỏi cũng phải là chữ thường (#105)
+const hacker = await createUser('xss', 'customer', '<img src=y onerror=alert(7)>Hắc Cơ')
+const users = [buyer, visitor, seller, admin, hacker]
 console.log('Tài khoản test:', users.map((u) => u.email).join(', '))
 
 const cpuCat = (await sb('/rest/v1/categories?select=id&slug=eq.cpu')).data[0].id
@@ -398,6 +401,37 @@ try {
     `chưa đăng nhập: thấy đánh giá đã ẩn=${t.includes('Chạy mát')}, câu hỏi=${t.includes('Còn hàng không shop?')}, câu trả lời=${t.includes(SELLER_REPLY)}; nút "Đăng nhập để hỏi"=${/Đăng nhập để hỏi/.test(t)}`,
   )
 
+  // ===== G4-08 – thêm các kiểu chèn HTML/script (Test1, #105) =====
+  const XSS_MORE = [
+    '<svg onload=alert(3)>',
+    '<a href="javascript:alert(4)">bấm vào đây</a>',
+    '<iframe src="javascript:alert(5)"></iframe>',
+    '"><script>alert(6)</script>',
+    "'; alert(8); //",
+    '[link](javascript:alert(9))',
+    '&lt;b&gt;in đậm&lt;/b&gt; &amp;',
+  ].join('\n')
+  await loginAs(hacker, PRODUCT_PAGE)
+  await ev(fillJs(textareaIn('questions-title'), XSS_MORE))
+  await submitIn('questions-title')
+  await waitFor(`${sectionJs('questions-title')}.innerText.includes('[link](javascript:alert(9))')`)
+  await sleep(800)
+  questions = await section('questions-title')
+  const injected = await ev(
+    `(() => { const s = ${sectionJs('questions-title')}; return [...s.querySelectorAll('svg[onload], iframe, script, img[src="y"], a[href^="javascript"]')].map((e) => e.outerHTML.slice(0, 40)) })()`,
+  )
+  const allLiteral = XSS_MORE.split('\n').every((line) => questions.includes(line))
+  // Tên hiển thị do DB rút gọn từ họ tên; phải hiện đúng chuỗi đó dạng chữ thường
+  const hackerName = (await sb(`/rest/v1/comments?select=author_name&user_id=eq.${hacker.id}`))
+    .data[0]?.author_name
+  const nameLiteral = !!hackerName && questions.includes(hackerName)
+  rec(
+    'G4-08',
+    allLiteral && nameLiteral && injected.length === 0 && dialogs.length === 0,
+    `7 kiểu chèn hiện nguyên văn=${allLiteral}; họ tên có HTML hiện "${hackerName}" dạng chữ=${nameLiteral}; thẻ lạ trong mục hỏi đáp=${injected.length ? JSON.stringify(injected) : 0}; hộp thoại=${dialogs.length}`,
+  )
+  await shot('G4-08-chen-html-360')
+
   // Ảnh chế độ tối trên máy tính để soát bằng mắt (Definition of Done: đọc rõ ở cả 2 chế độ)
   await sb(`/rest/v1/reviews?product_id=eq.${product.id}`, {
     method: 'PATCH',
@@ -415,7 +449,7 @@ try {
   })
   await ev(`localStorage.setItem('hcmusware.theme', 'dark')`)
   await open(PRODUCT_PAGE)
-  await shot('G4-08-trang-san-pham-toi-1280')
+  await shot('G4-09-trang-san-pham-toi-1280')
 
   rec(
     'Console',
