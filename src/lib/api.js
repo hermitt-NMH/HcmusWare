@@ -162,10 +162,32 @@ export async function deletePriceAlert(id) {
   if (error) throw error
 }
 
-// Khách bấm "Đã xem" trên thông báo giảm giá.
-export async function markAlertsNotified(ids) {
-  if (!ids.length) return
-  const { error } = await supabase.from('price_alerts').update({ notified: true }).in('id', ids)
+// ---------- Thông báo (G2 Tuần 5, F12) ----------
+// Thông báo do trigger trong DB tạo; RLS chỉ trả thông báo của người đang đăng nhập.
+
+export async function getMyNotifications(limit = 20) {
+  const { data, error } = await supabase
+    .from('notifications')
+    .select('id, type, title, body, link, read_at, created_at')
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+    .limit(limit)
+  if (error) throw error
+  return data
+}
+
+export async function getUnreadNotificationCount() {
+  const { count, error } = await supabase
+    .from('notifications')
+    .select('id', { count: 'exact', head: true })
+    .is('read_at', null)
+  if (error) throw error
+  return count ?? 0
+}
+
+// ids null = đánh dấu tất cả thông báo chưa đọc của mình.
+export async function markNotificationsRead(ids = null) {
+  const { error } = await supabase.rpc('mark_notifications_read', { p_ids: ids })
   if (error) throw error
 }
 

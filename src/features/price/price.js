@@ -4,7 +4,7 @@
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
-// Tên sự kiện trên window: khung đặt cảnh báo bắn ra để PriceAlertNotifier tải lại.
+// Tên sự kiện trên window: khung đặt cảnh báo bắn ra để chuông thông báo (NotificationBell) tải lại.
 export const ALERTS_CHANGED = 'hcmusware:price-alerts-changed'
 
 // Làm tròn giá tới 10.000 ₫ như giá bán lẻ thật (vd 5.490.000).
@@ -103,11 +103,4 @@ export function validateTargetPrice(target, currentPrice) {
   if (currentPrice != null && target >= currentPrice)
     return 'Giá mong muốn phải thấp hơn giá hiện tại.'
   return ''
-}
-
-// Cảnh báo đã "nổ": giá hiện tại ≤ giá mong muốn và khách chưa bấm "Đã xem".
-// alert: { target_price, notified, products: { price } }
-export function isAlertTriggered(alert) {
-  const price = alert?.products?.price
-  return !alert?.notified && price != null && price <= alert.target_price
 }
