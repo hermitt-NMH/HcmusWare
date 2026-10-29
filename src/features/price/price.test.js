@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest'
 import {
   compactSeries,
   generatePriceSeries,
-  isAlertTriggered,
   parsePriceInput,
   summarizeHistory,
   validateTargetPrice,
@@ -78,12 +77,5 @@ describe('giá mong muốn', () => {
     expect(validateTargetPrice(5000, 100000)).toBeTruthy()
     expect(validateTargetPrice(100000, 100000)).toBeTruthy()
     expect(validateTargetPrice(90000, 100000)).toBe('')
-  })
-
-  it('cảnh báo nổ khi giá ≤ mục tiêu và chưa xem', () => {
-    const alert = { target_price: 100, notified: false, products: { price: 100 } }
-    expect(isAlertTriggered(alert)).toBe(true)
-    expect(isAlertTriggered({ ...alert, products: { price: 101 } })).toBe(false)
-    expect(isAlertTriggered({ ...alert, notified: true })).toBe(false)
   })
 })

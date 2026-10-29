@@ -6,6 +6,7 @@ import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
 import { roleShortcut } from '../lib/roles'
 import { useTheme } from '../hooks/useTheme'
+import NotificationBell from '../features/notifications/NotificationBell'
 
 const navClass = ({ isActive }) =>
   // flex + min-h-11: vùng bấm cao tối thiểu 44px; whitespace-nowrap: chữ không bị ngắt 2 dòng.
@@ -108,8 +109,9 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-surface">
-      {/* px-3 ở điện thoại: px-4 làm thanh này rộng 364px, tràn màn 360px (BUG-05) */}
-      <div className="mx-auto flex max-w-6xl items-center gap-2 px-3 py-3 sm:gap-3 sm:px-4">
+      {/* px-3 ở điện thoại: px-4 làm thanh này rộng 364px, tràn màn 360px (BUG-05).
+          gap-1 (và nav không gap) dưới sm: chừa chỗ cho chuông thông báo (F12) khi giỏ có hàng. */}
+      <div className="mx-auto flex max-w-6xl items-center gap-1 px-3 py-3 sm:gap-3 sm:px-4">
         <button
           type="button"
           className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 md:hidden"
@@ -145,12 +147,16 @@ export default function Header() {
 
         {/* Thứ tự menu ở mọi cỡ màn hình (US-13.1): Build PC, Giỏ hàng, lối tắt vai trò, tài khoản,
             nút giao diện. Dưới md, 3 mục cuối nằm trong menu xổ xuống, vẫn đúng thứ tự đó. */}
-        <nav className="ml-auto flex items-center gap-1">
+        <nav className="ml-auto flex items-center sm:gap-1">
           <NavLink to="/build-pc" className={navClass}>
             Build PC
           </NavLink>
           {/* Điện thoại chỉ hiện icon để header không tràn 360px (BUG-05); từ sm mới hiện chữ */}
-          <NavLink to="/gio-hang" className={navClass} aria-label={`Giỏ hàng, ${count} sản phẩm`}>
+          <NavLink
+            to="/gio-hang"
+            className={(s) => `${navClass(s)} relative`}
+            aria-label={`Giỏ hàng, ${count} sản phẩm`}
+          >
             <svg
               className="sm:hidden"
               width="22"
@@ -168,12 +174,15 @@ export default function Header() {
               <path d="M2 3h3l2.7 12.4a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6" />
             </svg>
             <span className="hidden sm:inline">Giỏ hàng</span>
+            {/* Điện thoại: số đè lên góc icon (như chuông) để thêm chuông mà header vẫn vừa 360px */}
             {count > 0 && (
-              <span className="ml-1 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white">
+              <span className="absolute top-1 right-0 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white sm:static sm:ml-1">
                 {count > 99 ? '99+' : count}
               </span>
             )}
           </NavLink>
+          {/* Chuông thông báo (F12): chỉ khi đã đăng nhập; luôn nằm trên thanh trên cùng, cả ở 360px */}
+          <NotificationBell />
           {/* Lối tắt theo vai trò: admin → Quản trị, người bán → Kênh người bán */}
           {shortcut && (
             <NavLink to={shortcut.to} className={(s) => `${navClass(s)} hidden md:flex`}>

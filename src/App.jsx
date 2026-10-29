@@ -6,7 +6,6 @@ import Home from './pages/Home'
 import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import NotFound from './pages/NotFound'
-import PriceAlertNotifier from './features/price/PriceAlertNotifier'
 import RoleRoute from './components/RoleRoute'
 import { AREA_ROLES } from './lib/roles'
 
@@ -36,7 +35,6 @@ export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <PriceAlertNotifier />
       {/* min-h-dvh: Footer luôn nằm dưới màn hình đầu tiên, không bị đẩy xuống khi dữ liệu tải xong (CLS) */}
       <main className="mx-auto min-h-dvh w-full max-w-6xl flex-1 px-4 py-6">
         <Suspense fallback={PageLoading}>
