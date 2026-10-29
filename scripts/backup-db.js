@@ -26,6 +26,7 @@ const TABLES = [
   'reviews',
   'addresses',
   'comments',
+  'notifications',
 ]
 const PAGE = 1000
 
