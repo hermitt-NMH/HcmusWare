@@ -77,8 +77,11 @@ const rec = (code, ok, detail) => {
 // Dọn tài khoản test của lần chạy hỏng trước (xóa shop trước vì shops.owner_id chặn xóa user).
 const oldUsers = (await svc('/auth/v1/admin/users?per_page=1000')).data.users ?? []
 for (const u of oldUsers.filter((u) => /^rls-[a-z0-9]+-\d+@hcmusware\.test$/.test(u.email))) {
+  // Đơn của lần chạy hỏng chặn xóa sản phẩm, shop, tài khoản (khóa ngoại) → xóa trước.
+  await svc(`/rest/v1/orders?user_id=eq.${u.id}`, { method: 'DELETE' })
   const shops = (await svc(`/rest/v1/shops?select=id&owner_id=eq.${u.id}`)).data
   for (const s of shops) {
+    await svc(`/rest/v1/orders?shop_id=eq.${s.id}`, { method: 'DELETE' })
     await svc(`/rest/v1/products?shop_id=eq.${s.id}`, { method: 'DELETE' })
     await svc(`/rest/v1/shops?id=eq.${s.id}`, { method: 'DELETE' })
   }
@@ -88,8 +91,10 @@ for (const u of oldUsers.filter((u) => /^rls-[a-z0-9]+-\d+@hcmusware\.test$/.tes
 const customer = await createUser('khach', 'customer')
 const seller = await createUser('ban', 'seller')
 const seller2 = await createUser('ban2', 'seller')
+const seller3 = await createUser('ban3', 'seller')
 const admin = await createUser('admin', 'admin')
-console.log('Tài khoản test:', [customer, seller, seller2, admin].map((u) => u.email).join(', '))
+const testUsers = [customer, seller, seller2, seller3, admin]
+console.log('Tài khoản test:', testUsers.map((u) => u.email).join(', '))
 
 const mkShop = async (owner, slug, status) =>
   (
@@ -440,8 +445,8 @@ let sellerNew
     .data.length
   rec(
     'RLS25',
-    buyOk.ok && Number.isInteger(orderId) && sellerSeesOrder === 0,
-    `khách đặt sản phẩm đang bán của shop B: ${buyOk.status} (đơn #${orderId}); người bán B thấy đơn: ${sellerSeesOrder} (Tuần 3 mới mở)`,
+    buyOk.ok && Number.isInteger(orderId) && sellerSeesOrder === 1,
+    `khách đặt sản phẩm đang bán của shop B: ${buyOk.status} (đơn #${orderId}); người bán B thấy đơn của shop mình: ${sellerSeesOrder}`,
   )
   if (orderId) {
     await svc(`/rest/v1/orders?id=eq.${orderId}`, {
@@ -734,8 +739,189 @@ let sellerNew
   )
 }
 
+// ---------- Tuần 3: đơn nhiều shop, sổ địa chỉ (migration 20261207000000) ----------
+{
+  const shopC = await mkShop(seller3, 'rls-c', 'active')
+  const pB = await mkProduct(shopB, 'B-t3', 'active')
+  const pC = await mkProduct(shopC, 'C-t3', 'active')
+  const buy = (payment) =>
+    rpc(customer.token, 'place_order', {
+      p_items: [
+        { product_id: pB.id, quantity: 1 },
+        { product_id: pC.id, quantity: 2 },
+      ],
+      p_shipping_name: 'RLS Test',
+      p_shipping_phone: '0901234567',
+      p_shipping_address: '227 Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM',
+      p_payment_method: payment,
+    })
+  const ORDER_COLS = 'id,shop_id,payment_code,total,status,paid_at'
+  const group = async (token, firstId) => {
+    const code = (await svc(`/rest/v1/orders?select=payment_code&id=eq.${firstId}`)).data[0]
+      ?.payment_code
+    return (
+      await api(token, `/rest/v1/orders?select=${ORDER_COLS}&payment_code=eq.${code}&order=id`)
+    ).data
+  }
+
+  const cod = await buy('cod')
+  const mine = await group(customer.token, cod.data)
+  const oB = mine.find((o) => o.shop_id === shopB.id)
+  const oC = mine.find((o) => o.shop_id === shopC.id)
+  rec(
+    'T3-01',
+    cod.ok &&
+      mine.length === 2 &&
+      /^TT\d+$/.test(mine[0].payment_code) &&
+      mine[0].payment_code === mine[1].payment_code &&
+      oB?.total === 1000000 &&
+      oC?.total === 2000000,
+    `giỏ 2 shop: ${cod.status}, tạo ${mine.length} đơn, mã thanh toán ${mine.map((o) => o.payment_code).join('/')}, tiền shop B=${oB?.total}, shop C=${oC?.total}`,
+  )
+
+  const seen = async (token) =>
+    (await api(token, `/rest/v1/orders?select=id&id=in.(${oB.id},${oC.id})`)).data.map((o) => o.id)
+  const itemsSeen = async (token) =>
+    (await api(token, `/rest/v1/order_items?select=order_id&order_id=in.(${oB.id},${oC.id})`)).data
+      .length
+  const s2 = await seen(seller2.token)
+  const s3 = await seen(seller3.token)
+  const s1 = await seen(seller.token)
+  const adminSeen = await seen(admin.token)
+  rec(
+    'T3-02',
+    s2.length === 1 &&
+      s2[0] === oB.id &&
+      s3.length === 1 &&
+      s3[0] === oC.id &&
+      s1.length === 0 &&
+      adminSeen.length === 2 &&
+      (await itemsSeen(seller2.token)) === 1 &&
+      (await itemsSeen(seller.token)) === 0,
+    `người bán B thấy đơn [${s2}], người bán C thấy [${s3}], người bán A thấy [${s1}], admin thấy ${adminSeen.length}; dòng hàng người bán B / A đọc được: ${await itemsSeen(seller2.token)} / ${await itemsSeen(seller.token)}`,
+  )
+
+  const patch = (token, id, body) =>
+    api(token, `/rest/v1/orders?id=eq.${id}`, { method: 'PATCH', body })
+  const okB = await patch(seller2.token, oB.id, { status: 'confirmed' })
+  const otherShop = await patch(seller2.token, oC.id, { status: 'confirmed' })
+  const total = await patch(seller2.token, oB.id, { total: 1 })
+  const back = await patch(seller2.token, oB.id, { status: 'pending' })
+  const custPatch = await patch(customer.token, oC.id, { status: 'completed' })
+  rec(
+    'T3-03',
+    okB.data?.[0]?.status === 'confirmed' &&
+      otherShop.data?.length === 0 &&
+      !total.ok &&
+      !back.ok &&
+      custPatch.data?.length === 0,
+    `người bán B xác nhận đơn shop mình: ${okB.data?.[0]?.status}; sửa đơn shop C: ${otherShop.data?.length} dòng; sửa tổng tiền: ${total.status}; lùi về chờ xác nhận: ${back.status} "${errMsg(back)}"; khách tự đổi trạng thái: ${custPatch.data?.length} dòng`,
+  )
+
+  const online = await buy('mock_online')
+  const pay = await rpc(customer.token, 'mock_pay_order', { p_order_id: online.data })
+  const paid = await group(customer.token, online.data)
+  const payAgain = await rpc(customer.token, 'mock_pay_order', { p_order_id: paid[1]?.id })
+  const sellerPay = await rpc(seller2.token, 'mock_pay_order', { p_order_id: online.data })
+  rec(
+    'T3-04',
+    online.ok &&
+      pay.ok &&
+      paid.length === 2 &&
+      paid.every((o) => o.paid_at && o.status === 'confirmed') &&
+      !payAgain.ok &&
+      !sellerPay.ok,
+    `thanh toán online 1 lần cho ${paid.length} đơn: ${pay.status}, đã trả ${paid.filter((o) => o.paid_at).length}; trả lại lần 2: ${payAgain.status} "${errMsg(payAgain)}"; người bán gọi thay khách: ${sellerPay.status}`,
+  )
+
+  const lockC = await rpc(admin.token, 'set_shop_locked', { p_shop_id: shopC.id, p_locked: true })
+  const lockedSee = (await seen(seller3.token)).length
+  const lockedEdit = await patch(seller3.token, oC.id, { status: 'cancelled' })
+  rec(
+    'T3-05',
+    lockC.ok && lockedSee === 1 && lockedEdit.data?.length === 0,
+    `shop C bị khóa: chủ shop vẫn xem ${lockedSee} đơn, đổi trạng thái được ${lockedEdit.data?.length} dòng`,
+  )
+
+  // Sổ địa chỉ
+  const addr = (n, extra = {}) => ({
+    recipient_name: `Người nhận ${n}`,
+    phone: '0901234567',
+    province_code: '79',
+    province_name: 'Thành phố Hồ Chí Minh',
+    ward_code: '26743',
+    ward_name: 'Phường Bến Thành',
+    street: `${n} Lê Lợi`,
+    ...extra,
+  })
+  const addAddr = (token, body) => api(token, '/rest/v1/addresses', { method: 'POST', body })
+  const a1 = (await addAddr(customer.token, addr(1, { is_default: false }))).data[0]
+  const a2 = (await addAddr(customer.token, addr(2, { is_default: true }))).data[0]
+  const a3 = (await addAddr(customer.token, addr(3))).data[0]
+  const defaults = async () =>
+    (
+      await svc(`/rest/v1/addresses?select=id&user_id=eq.${customer.id}&is_default=is.true`)
+    ).data.map((a) => a.id)
+  const afterAdd = await defaults()
+  rec(
+    'T3-06',
+    a1?.is_default === true &&
+      a2?.is_default === true &&
+      afterAdd.length === 1 &&
+      afterAdd[0] === a2.id,
+    `địa chỉ đầu tiên tự mặc định: ${a1?.is_default}; thêm địa chỉ mặc định mới → mặc định hiện tại [${afterAdd}] (mong đợi [${a2?.id}])`,
+  )
+
+  const unset = await api(customer.token, `/rest/v1/addresses?id=eq.${a2.id}`, {
+    method: 'PATCH',
+    body: { is_default: false },
+  })
+  await api(customer.token, `/rest/v1/addresses?id=eq.${a2.id}`, { method: 'DELETE' })
+  const afterDel = await defaults()
+  rec(
+    'T3-07',
+    !unset.ok && afterDel.length === 1 && afterDel[0] === a3.id,
+    `bỏ mặc định trực tiếp: ${unset.status}; xóa địa chỉ mặc định → mặc định mới [${afterDel}] (mong đợi địa chỉ thêm gần nhất ${a3.id})`,
+  )
+
+  const otherRead = (
+    await api(seller.token, `/rest/v1/addresses?select=id&user_id=eq.${customer.id}`)
+  ).data.length
+  const otherEdit = await api(seller.token, `/rest/v1/addresses?id=eq.${a1.id}`, {
+    method: 'PATCH',
+    body: { street: 'Bị sửa' },
+  })
+  const otherInsert = await addAddr(seller.token, addr(9, { user_id: customer.id }))
+  const anonRead = (await api(null, '/rest/v1/addresses?select=id')).data.length
+  const steal = await api(customer.token, `/rest/v1/addresses?id=eq.${a1.id}`, {
+    method: 'PATCH',
+    body: { user_id: seller.id },
+  })
+  rec(
+    'T3-08',
+    otherRead === 0 &&
+      otherEdit.data?.length === 0 &&
+      !otherInsert.ok &&
+      anonRead === 0 &&
+      !steal.ok,
+    `người khác đọc ${otherRead}, sửa ${otherEdit.data?.length} địa chỉ của khách, thêm hộ: ${otherInsert.status}; chưa đăng nhập đọc ${anonRead}; khách chuyển địa chỉ sang tài khoản khác: ${steal.status}`,
+  )
+
+  for (let i = 4; i <= 11; i++) await addAddr(customer.token, addr(i))
+  const count = (await svc(`/rest/v1/addresses?select=id&user_id=eq.${customer.id}`)).data.length
+  const badPhone = await addAddr(seller.token, addr(1, { phone: '12345' }))
+  rec(
+    'T3-09',
+    count === 10 && !badPhone.ok,
+    `thêm tới địa chỉ thứ 11 → sổ còn ${count} (tối đa 10); số điện thoại sai: ${badPhone.status}`,
+  )
+
+  // Đơn chặn xóa sản phẩm / shop / tài khoản → xóa trước phần dọn dẹp chung.
+  await svc(`/rest/v1/orders?user_id=eq.${customer.id}`, { method: 'DELETE' })
+}
+
 // ---------- Dọn dẹp ----------
-for (const u of [customer, seller, seller2, admin]) {
+for (const u of testUsers) {
   for (const s of (await svc(`/rest/v1/shops?select=id&owner_id=eq.${u.id}`)).data) {
     await svc(`/rest/v1/products?shop_id=eq.${s.id}`, { method: 'DELETE' })
     await svc(`/rest/v1/shops?id=eq.${s.id}`, { method: 'DELETE' })
