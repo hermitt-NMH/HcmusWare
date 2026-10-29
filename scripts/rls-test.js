@@ -1165,6 +1165,234 @@ let sellerNew
   await svc(`/rest/v1/orders?shop_id=eq.${shopA.id}`, { method: 'DELETE' })
 }
 
+// ---------- G2 Tuần 5: thông báo (F12) ----------
+{
+  // Thông báo mới của một người kể từ id cho trước (đọc bằng service role, không qua RLS).
+  const latestId = async () =>
+    (await svc('/rest/v1/notifications?select=id&order=id.desc&limit=1')).data[0]?.id ?? 0
+  const since = async (user, fromId) =>
+    (await svc(`/rest/v1/notifications?user_id=eq.${user.id}&id=gt.${fromId}&order=id`)).data
+  const start = await latestId()
+  const priceA = (await svc(`/rest/v1/products?select=price&id=eq.${pActiveA.id}`)).data[0].price
+  const vnd = (n) => n.toLocaleString('vi-VN') + ' ₫'
+
+  const order = await rpc(customer.token, 'place_order', {
+    p_items: [{ product_id: pActiveA.id, quantity: 2 }],
+    p_shipping_name: 'RLS Test',
+    p_shipping_phone: '0901234567',
+    p_shipping_address: '227 Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM',
+  })
+  const sellerNew = (await since(seller, start)).filter((n) => n.type === 'order_new')
+  const otherSellerNew = (await since(seller2, start)).filter((n) => n.type === 'order_new')
+  rec(
+    'T5-01',
+    order.ok &&
+      sellerNew.length === 1 &&
+      sellerNew[0].title === `Shop có đơn mới #${order.data}` &&
+      sellerNew[0].body === `2 sản phẩm, ${vnd(priceA * 2)}` &&
+      sellerNew[0].link === '/kenh-nguoi-ban/don-hang' &&
+      otherSellerNew.length === 0,
+    `đặt đơn: ${order.status}; người bán nhận ${sellerNew.length} thông báo "${sellerNew[0]?.title}" – "${sellerNew[0]?.body}" → ${sellerNew[0]?.link}; shop khác nhận ${otherSellerNew.length}`,
+  )
+
+  const afterOrder = await latestId()
+  const confirm = await api(seller.token, `/rest/v1/orders?id=eq.${order.data}`, {
+    method: 'PATCH',
+    body: { status: 'confirmed' },
+  })
+  const custStatus = (await since(customer, afterOrder)).filter((n) => n.type === 'order_status')
+  const sellerSelf = (await since(seller, afterOrder)).filter((n) => n.type === 'order_status')
+  // Khách tự thanh toán online → đơn Đã xác nhận nhưng không tự báo cho chính mình.
+  const online = await rpc(customer.token, 'place_order', {
+    p_items: [{ product_id: pActiveA.id, quantity: 1 }],
+    p_shipping_name: 'RLS Test',
+    p_shipping_phone: '0901234567',
+    p_shipping_address: '227 Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM',
+    p_payment_method: 'mock_online',
+  })
+  const beforePay = await latestId()
+  const pay = await rpc(customer.token, 'mock_pay_order', { p_order_id: online.data })
+  const selfPaid = await since(customer, beforePay)
+  rec(
+    'T5-02',
+    confirm.ok &&
+      custStatus.length === 1 &&
+      custStatus[0].title === `Đơn hàng #${order.data}: Đã xác nhận` &&
+      custStatus[0].link === `/don-hang/${order.data}` &&
+      sellerSelf.length === 0 &&
+      pay.ok &&
+      selfPaid.length === 0,
+    `người bán xác nhận: ${confirm.status} → khách nhận "${custStatus[0]?.title}" → ${custStatus[0]?.link}, người bán tự nhận ${sellerSelf.length}; khách tự thanh toán online: ${pay.status} → tự nhận ${selfPaid.length}`,
+  )
+
+  const notif = custStatus[0]
+  const ownList = (await api(customer.token, '/rest/v1/notifications?select=user_id')).data
+  const otherRead = (await api(seller2.token, `/rest/v1/notifications?select=id&id=eq.${notif.id}`))
+    .data.length
+  const adminRead = (await api(admin.token, `/rest/v1/notifications?select=id&id=eq.${notif.id}`))
+    .data.length
+  const anonRead = await api(null, `/rest/v1/notifications?select=id&id=eq.${notif.id}`)
+  const forge = await api(customer.token, '/rest/v1/notifications', {
+    method: 'POST',
+    body: { user_id: seller.id, type: 'shop_review', title: 'Shop đã bị khóa' },
+  })
+  const forgeRpc = await rpc(customer.token, 'add_notification', {
+    p_user_id: seller.id,
+    p_type: 'shop_review',
+    p_title: 'Giả',
+    p_body: '',
+    p_link: '/',
+  })
+  const editOwn = await api(customer.token, `/rest/v1/notifications?id=eq.${notif.id}`, {
+    method: 'PATCH',
+    body: { title: 'Sửa', read_at: new Date().toISOString() },
+  })
+  const delOwn = await api(customer.token, `/rest/v1/notifications?id=eq.${notif.id}`, {
+    method: 'DELETE',
+  })
+  const stillThere = (await svc(`/rest/v1/notifications?select=id,read_at&id=eq.${notif.id}`)).data
+  rec(
+    'T5-03',
+    ownList.length > 0 &&
+      ownList.every((n) => n.user_id === customer.id) &&
+      otherRead === 0 &&
+      adminRead === 0 &&
+      (anonRead.data?.length ?? 0) === 0 &&
+      !forge.ok &&
+      !forgeRpc.ok &&
+      !editOwn.ok &&
+      (!delOwn.ok || delOwn.data?.length === 0) &&
+      stillThere.length === 1 &&
+      stillThere[0].read_at === null,
+    `khách đọc ${ownList.length} thông báo, đều của mình: ${ownList.every((n) => n.user_id === customer.id)}; người bán khác đọc ${otherRead}, admin đọc ${adminRead}, chưa đăng nhập: ${anonRead.status} ${anonRead.data?.length ?? '-'} dòng; tạo cho người khác: ${forge.status}, qua add_notification: ${forgeRpc.status}; tự sửa: ${editOwn.status}; tự xóa: ${delOwn.status}; còn nguyên chưa đọc: ${stillThere[0]?.read_at === null}`,
+  )
+
+  const otherMark = await rpc(seller2.token, 'mark_notifications_read', { p_ids: [notif.id] })
+  const afterOther = (await svc(`/rest/v1/notifications?select=read_at&id=eq.${notif.id}`)).data[0]
+  const markOne = await rpc(customer.token, 'mark_notifications_read', { p_ids: [notif.id] })
+  const markAll = await rpc(customer.token, 'mark_notifications_read')
+  const unread = (await api(customer.token, '/rest/v1/notifications?select=id&read_at=is.null'))
+    .data.length
+  const anonMark = await rpc(null, 'mark_notifications_read')
+  rec(
+    'T5-04',
+    otherMark.ok &&
+      otherMark.data === 0 &&
+      afterOther.read_at === null &&
+      markOne.data === 1 &&
+      markAll.ok &&
+      unread === 0 &&
+      !anonMark.ok,
+    `người khác đánh dấu: ${otherMark.data} dòng, thông báo vẫn chưa đọc: ${afterOther.read_at === null}; khách đánh dấu 1: ${markOne.data}, tất cả: ${markAll.data} → còn ${unread} chưa đọc; chưa đăng nhập: ${anonMark.status}`,
+  )
+
+  // Giá giảm tới giá mong muốn → báo đúng 1 lần cho mỗi lần đặt giá mong muốn.
+  const pAlert = await mkProduct(shopA, 'A-t5-gia', 'active')
+  const beforePrice = await latestId()
+  await api(customer.token, '/rest/v1/price_alerts', {
+    method: 'POST',
+    body: { user_id: customer.id, product_id: pAlert.id, target_price: 900000 },
+  })
+  const setPrice = (price) =>
+    api(seller.token, `/rest/v1/products?id=eq.${pAlert.id}`, {
+      method: 'PATCH',
+      body: { price },
+    })
+  await setPrice(950000)
+  const notYet = (await since(customer, beforePrice)).length
+  await setPrice(850000)
+  const drop = await since(customer, beforePrice)
+  await setPrice(800000)
+  const dropAgain = (await since(customer, beforePrice)).length
+  const alert = (
+    await api(customer.token, `/rest/v1/price_alerts?select=notified&product_id=eq.${pAlert.id}`)
+  ).data[0]
+  rec(
+    'T5-05',
+    notYet === 0 &&
+      drop.length === 1 &&
+      drop[0].type === 'price_drop' &&
+      drop[0].body.includes('850.000 ₫') &&
+      drop[0].link === `/san-pham/${pAlert.id}` &&
+      dropAgain === 1 &&
+      alert?.notified === true,
+    `giá 950.000 (muốn ≤ 900.000): ${notYet} thông báo; giá 850.000: ${drop.length} "${drop[0]?.body}" → ${drop[0]?.link}; giảm tiếp 800.000: tổng ${dropAgain}; notified=${alert?.notified}`,
+  )
+
+  // Khách mở shop → admin duyệt → người bán đăng sản phẩm → admin trả lại → admin khóa shop.
+  const opener = await createUser('mo', 'customer')
+  testUsers.push(opener)
+  const shopD = await mkShop(opener, 'rls-d', 'pending')
+  const beforeShop = await latestId()
+  await rpc(admin.token, 'approve_shop', { p_shop_id: shopD.id })
+  const login = await api(null, '/auth/v1/token?grant_type=password', {
+    method: 'POST',
+    body: { email: opener.email, password: PASS },
+  })
+  opener.token = login.data.access_token // vai trò seller nằm trong token mới
+  const pD = (
+    await api(opener.token, '/rest/v1/products', {
+      method: 'POST',
+      body: {
+        category_id: cpuCat,
+        name: `RLS D ${ts}`,
+        brand: 'AMD',
+        price: 1000000,
+        stock: 5,
+        specs: { socket: 'AM5', tdp_w: 65, igpu: true },
+        shop_id: shopD.id,
+      },
+    })
+  ).data[0]
+  await rpc(admin.token, 'reject_product', { p_product_id: pD.id, p_note: 'Thiếu ảnh' })
+  await rpc(admin.token, 'set_shop_locked', { p_shop_id: shopD.id, p_locked: true })
+  const shopNotes = await since(opener, beforeShop)
+  const titles = shopNotes.map((n) => n.title)
+  const rejected = shopNotes.find((n) => n.title === 'Sản phẩm bị trả lại')
+  const adminGot = (await since(admin, beforeShop)).length
+  rec(
+    'T5-06',
+    titles.join(' | ') === 'Shop đã được duyệt | Sản phẩm bị trả lại | Shop đã bị khóa' &&
+      rejected?.body.includes('Thiếu ảnh') &&
+      rejected?.link === `/kenh-nguoi-ban/san-pham/${pD.id}` &&
+      shopNotes.every((n) => n.type !== 'question_new') &&
+      adminGot === 0,
+    `chủ shop nhận: ${titles.join(' | ')}; lý do trả lại "${rejected?.body}" → ${rejected?.link}; admin (người thao tác) nhận ${adminGot}`,
+  )
+
+  // Hỏi đáp: câu hỏi mới → chủ shop; người bán trả lời → người hỏi; trả lời thường → không báo.
+  const beforeQ = await latestId()
+  const ask = await api(customer.token, '/rest/v1/comments', {
+    method: 'POST',
+    body: { product_id: pActiveA.id, body: 'Còn bảo hành chính hãng không?' },
+  })
+  const qId = ask.data?.[0]?.id
+  const sellerQ = (await since(seller, beforeQ)).filter((n) => n.type === 'question_new')
+  await api(seller2.token, '/rest/v1/comments', {
+    method: 'POST',
+    body: { product_id: pActiveA.id, parent_id: qId, body: 'Tôi cũng muốn biết' },
+  })
+  const plainReplyNotes = (await since(customer, beforeQ)).length
+  await api(seller.token, '/rest/v1/comments', {
+    method: 'POST',
+    body: { product_id: pActiveA.id, parent_id: qId, body: 'Còn, 36 tháng', is_seller: true },
+  })
+  const answered = (await since(customer, beforeQ)).filter((n) => n.type === 'question_answered')
+  rec(
+    'T5-07',
+    ask.ok &&
+      sellerQ.length === 1 &&
+      sellerQ[0].link === '/kenh-nguoi-ban/cau-hoi' &&
+      plainReplyNotes === 0 &&
+      answered.length === 1 &&
+      answered[0].body.endsWith('Còn, 36 tháng') &&
+      answered[0].link === `/san-pham/${pActiveA.id}`,
+    `câu hỏi mới: chủ shop nhận ${sellerQ.length} → ${sellerQ[0]?.link}; người khác trả lời: khách nhận ${plainReplyNotes}; người bán trả lời: khách nhận ${answered.length} "${answered[0]?.body}" → ${answered[0]?.link}`,
+  )
+
+  await svc(`/rest/v1/orders?shop_id=eq.${shopA.id}`, { method: 'DELETE' })
+}
+
 // ---------- Dọn dẹp ----------
 for (const u of testUsers) {
   for (const s of (await svc(`/rest/v1/shops?select=id&owner_id=eq.${u.id}`)).data) {
