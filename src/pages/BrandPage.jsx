@@ -46,7 +46,7 @@ export default function BrandPage() {
         <LogoBadge
           name={brand.data.name}
           url={brand.data.logo_url}
-          size="h-16 w-16"
+          size="h-16 w-32"
           text="text-2xl"
         />
         <div>

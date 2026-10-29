@@ -27,6 +27,9 @@
     "gen-price-history": "node --env-file=.env.local scripts/gen-price-history.js",
     "fetch-images": "node scripts/fetch-images.js",
     "thumbs": "node scripts/make-thumbs.js",
+    "brand-logos": "node scripts/fetch-brand-logos.js",
+    "brand-logos:apply": "node --env-file=.env.local scripts/fetch-brand-logos.js --apply",
+    "brand-logos:apply:online": "node --env-file=.env.online.local scripts/fetch-brand-logos.js --apply",
     "build-dvhc": "node scripts/build-dvhc.js"
   },
   "dependencies": {
