@@ -682,7 +682,7 @@ export async function getShopRating(shopId) {
 }
 
 // ---------- Hỏi đáp (Giai đoạn 2 – Tuần 4, F16) ----------
-// Câu hỏi + 1 cấp trả lời. Nhãn "Người bán" (is_seller) do DB kiểm tra: chỉ chủ shop của sản phẩm.
+// Câu hỏi + 1 cấp trả lời. Nhãn "Người bán" (is_seller) do DB kiểm tra: chủ shop của sản phẩm, hoặc admin trên sản phẩm shop HcmusWare (C9).
 
 const COMMENT_FIELDS = 'id, parent_id, user_id, body, is_seller, author_name, hidden, created_at'
 
