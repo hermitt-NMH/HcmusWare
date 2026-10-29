@@ -593,3 +593,42 @@ export async function deleteBrand(id) {
 export function uploadBrandLogo(file) {
   return uploadShopImage('thuong-hieu', file)
 }
+
+// ---------- Sổ địa chỉ (Giai đoạn 2 – Tuần 3, F17) ----------
+// RLS chỉ cho đọc/ghi địa chỉ của chính mình; trigger trong DB giữ đúng 1 địa chỉ mặc định, tối đa 10.
+
+const ADDRESS_FIELDS =
+  'id, recipient_name, phone, province_code, province_name, ward_code, ward_name, street, is_default, created_at'
+
+// Mặc định lên đầu, còn lại mới nhất trước.
+export async function getMyAddresses() {
+  const { data, error } = await supabase
+    .from('addresses')
+    .select(ADDRESS_FIELDS)
+    .order('is_default', { ascending: false })
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Thêm (id null) hoặc sửa. fields: kết quả validateAddress (+ is_default nếu muốn).
+export async function saveAddress(id, fields) {
+  const query = id
+    ? supabase.from('addresses').update(fields).eq('id', id)
+    : supabase.from('addresses').insert(fields)
+  const { data, error } = await query.select(ADDRESS_FIELDS).single()
+  if (error) throw error
+  return data
+}
+
+// Xóa địa chỉ mặc định → DB tự chọn địa chỉ thêm gần nhất làm mặc định.
+export async function deleteAddress(id) {
+  const { error } = await supabase.from('addresses').delete().eq('id', id)
+  if (error) throw error
+}
+
+export async function setDefaultAddress(id) {
+  const { error } = await supabase.from('addresses').update({ is_default: true }).eq('id', id)
+  if (error) throw error
+}

@@ -232,6 +232,16 @@ async function setCart(json) {
   await ev(`localStorage.setItem('hcmusware.cart', ${JSON.stringify(json)})`)
 }
 const orderIdFromPath = async () => Number((await path()).match(/(\d+)/)?.[1])
+// Ô gợi ý Tỉnh/Thành, Phường/Xã (Giai đoạn 2 – F17): gõ rồi chọn gợi ý đầu tiên. Trả tên đã chọn.
+async function pickSuggestion(inputId, query) {
+  await waitFor(`!document.getElementById('${inputId}')?.disabled`)
+  await ev(fillJs(`document.getElementById('${inputId}')`, query))
+  await waitFor(`!!document.querySelector('#${inputId}-goi-y [role=option]:not([aria-disabled])')`)
+  return ev(`(() => {
+    const o = document.querySelector('#${inputId}-goi-y [role=option]:not([aria-disabled])')
+    o.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, cancelable: true }))
+    return o.innerText.trim() })()`)
+}
 
 // ===== MH01 – 360px: chưa đăng nhập bấm Thanh toán =====
 const [p1, p2] = prods
@@ -276,7 +286,10 @@ rec(
 // ===== MH03 – online mô phỏng =====
 await ev(fillJs(fieldByLabel('Họ tên người nhận'), 'Test1 QA'))
 await ev(fillJs(fieldByLabel('Số điện thoại'), '0901234567'))
-await ev(fillJs(fieldByLabel('Địa chỉ giao hàng'), '227 Nguyễn Văn Cừ, Phường 4, Quận 5, TP.HCM'))
+// Khách mới chưa có sổ địa chỉ → nhập địa chỉ mới bằng gợi ý, "Lưu vào sổ địa chỉ" chọn sẵn.
+await pickSuggestion('thanh-toan-tinh', 'ho chi minh')
+await pickSuggestion('thanh-toan-xa', 'cho quan')
+await ev(fillJs(fieldByLabel('Số nhà và đường'), '227 Nguyễn Văn Cừ'))
 await ev(`document.querySelector('input[value=mock_online]').click()`)
 await sleep(300)
 await ev(`document.querySelector('input[name=payment]').form.requestSubmit()`)
@@ -313,9 +326,10 @@ rec(
 await size(1366)
 await setCart(cartOf([[p1, 1]]))
 await open('/thanh-toan')
-const pre = await ev(
-  `[${fieldByLabel('Họ tên người nhận')}?.value, ${fieldByLabel('Số điện thoại')}?.value]`,
-)
+// Địa chỉ của đơn MH03 đã vào sổ → trang thanh toán điền sẵn địa chỉ mặc định (US-17.3).
+await waitFor(`/Đổi địa chỉ/.test(document.body.innerText)`, 8000)
+const preText = await text()
+const pre = (preText.match(/(Test1 QA) · (0901234567)/) ?? []).slice(1)
 await ev(`document.querySelector('input[name=payment]').form.requestSubmit()`)
 await waitFor(`/^\\/don-hang\\/\\d+/.test(location.pathname)`)
 await waitFor(notBusy)
