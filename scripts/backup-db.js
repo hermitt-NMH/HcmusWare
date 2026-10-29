@@ -14,6 +14,8 @@ import { join } from 'node:path'
 // Theo thứ tự khóa ngoại, để khi khôi phục chèn lại từ trên xuống
 const TABLES = [
   'categories',
+  'brands',
+  'shops',
   'products',
   'price_history',
   'profiles',
@@ -22,6 +24,7 @@ const TABLES = [
   'saved_builds',
   'price_alerts',
   'reviews',
+  'addresses',
 ]
 const PAGE = 1000
 
