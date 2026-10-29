@@ -270,3 +270,73 @@ Test lại lỗi QA G2T1:
 Phát hiện khi chạy trên Vercel: 2 lần đầu, PQ06 và TT-ban-640 lỗi chập chờn, header chỉ hiện "Tài khoản", chưa có tên và lối tắt vai trò. Đo 30 lần tải trang bằng tài khoản người bán: hồ sơ luôn tải được (30/30), trung vị 0,56 giây, chậm nhất 1,3 giây, Console không lỗi. Script đọc header sau khoảng 0,9 giây nên có lần đọc sớm; đã sửa script để chờ hồ sơ tải xong rồi mới đọc menu. Header nhảy chữ trong lúc tải được ghi thành lỗi giao diện mức Thấp (BUG-G2-04, #126, giao Dev3 ở Tuần 2). Trang `/admin` và `/kenh-nguoi-ban` không bị ảnh hưởng vì `RoleRoute` chờ hồ sơ rồi mới cho vào hoặc chặn (PQ08).
 
 Chưa thử trên điện thoại thật; các lần chạy trên dùng Edge headless.
+
+## Test case – Mở shop, đăng sản phẩm, duyệt (Giai đoạn 2, Tuần 2)
+
+Theo US-14.1–14.6 trong [user-story-g2.md](user-story-g2.md), thẻ #91. Chạy bằng `npm run test:e2e:g2t2` (`scripts/e2e-g2t2.js`, Edge headless). Script tự tạo khách `g2t2-chu-*` và admin `g2t2-admin-*`, cuối cùng xóa shop, sản phẩm, ảnh trong bucket và tài khoản. Phía DB (người bán chỉ ghi vào thư mục ảnh của shop mình, ảnh ≤ 2 MB, trả lại phải có lý do) đã có ở `test:rls` T2-01…T2-12.
+
+| Mã    | Vai trò, cỡ màn hình  | Bước                                                                                                          | Kết quả mong đợi                                                                                                           |
+| ----- | --------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| G2-01 | Khách, 360            | `/tai-khoan/mo-shop`, bấm Gửi khi để trống; điền tên, chưa tick "Tôi đã đọc và đồng ý"                        | Ô tên báo lỗi và con trỏ về ô tên; ô đồng ý báo lỗi; DB chưa có shop                                                       |
+| G2-02 | Khách, 360            | Điền mô tả, chọn logo PNG, tick đồng ý, gửi                                                                   | Thấy xem trước logo; về `/tai-khoan` có "Đã gửi đăng ký shop", "Chờ admin duyệt"; DB `pending`                             |
+| G2-03 | Admin, 1366           | `/admin/duyet`, "Từ chối" shop, bấm Gửi khi chưa nhập lý do; nhập lý do rồi gửi                               | Lần đầu báo "Nhập lý do."; sau đó DB `rejected`, lưu đúng lý do                                                            |
+| G2-04 | Khách, 360            | Mở lại `/tai-khoan/mo-shop`, sửa mô tả, gửi lại                                                               | Thấy "Bị từ chối" và lý do; gửi lại → DB `pending`, lý do cũ bị xóa                                                        |
+| G2-05 | Admin 1366, khách 360 | Admin "Duyệt"; chủ shop đăng nhập lại, mở `/kenh-nguoi-ban`                                                   | DB shop `active`, vai trò `seller`; Kênh người bán hiện tên shop                                                           |
+| G2-06 | Người bán, 360        | `/kenh-nguoi-ban/san-pham/moi`, bấm "Đăng và gửi duyệt" khi để trống; chọn CPU; thêm file `.html`, ảnh 2,2 MB | Các ô bắt buộc báo lỗi, con trỏ về "Danh mục"; file HTML báo "phải là JPG, PNG hoặc WebP"; ảnh lớn báo "lớn hơn 2 MB"      |
+| G2-07 | Người bán, 360        | Điền đủ: giá `3.490.000`, kho 7, xung cơ bản `3,8`, mô tả có `<b>`, 1 ảnh; gửi. Đăng xuất, mở trang sản phẩm  | Báo "chờ admin duyệt"; DB `pending`, giá 3490000, xung 3.8, 1 ảnh (BUG-G2T2-01); khách chưa thấy sản phẩm                  |
+| G2-08 | Admin, 1366           | `/admin/duyet?tab=san-pham`, "Trả lại" có lý do                                                               | DB `hidden`, lưu lý do                                                                                                     |
+| G2-09 | Người bán, 360        | Kênh người bán → mở sản phẩm, thêm 1 ảnh, "Lưu và gửi duyệt lại"                                              | Thấy lý do trả lại; nút ghi "Lưu và gửi duyệt lại"; DB `pending`, 2 ảnh                                                    |
+| G2-10 | Admin 1366, khách     | Admin "Duyệt"; khách mở trang sản phẩm và trang shop                                                          | DB `active`; trang sản phẩm có tên, shop, giá 3.490.000, ảnh tải được, mô tả `<b>` hiện nguyên văn; trang shop có sản phẩm |
+| G2-11 | Khách, 1366           | `/build-pc` → CPU "Chọn", tìm tên sản phẩm, chọn                                                              | Có trong danh sách chọn; chọn xong hiện ở dòng CPU                                                                         |
+| G2-12 | Tất cả, 360 và 1366   | Đo chiều rộng 7 trang ở 360 px; chụp trang admin và form sửa sản phẩm ở chế độ tối                            | Không trang nào cuộn ngang; chữ đọc rõ ở chế độ tối (soát ảnh bằng mắt)                                                    |
+
+## Test case – Đơn nhiều shop, sổ địa chỉ (Giai đoạn 2, Tuần 3)
+
+Theo US-14.7, US-17.1–17.3 và quyết định C6, C7 của BA, thẻ #99. Chạy bằng `npm run test:e2e:g2t3` (`scripts/e2e-g2t3.js`, 360 px). Script tạo khách, người bán, shop và sản phẩm thử; cuối cùng hủy đơn (trả kho HcmusWare) và xóa sạch. Phía DB ở `test:rls` T3-01…T3-09.
+
+| Mã    | Vai trò   | Bước                                                                                                                                | Kết quả mong đợi                                                                                                                                                        |
+| ----- | --------- | ----------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| G3-01 | Khách     | Giỏ có hàng HcmusWare + shop thử → thanh toán, nhập địa chỉ bằng gợi ý                                                              | Báo đơn sẽ tách theo shop; 2 đơn cùng mã thanh toán `TT…`; địa chỉ lưu đúng chữ có dấu                                                                                  |
+| G3-02 | Khách     | Trang đơn sau khi đặt                                                                                                               | Báo tách 2 đơn, có mã thanh toán; kho mỗi shop trừ đúng                                                                                                                 |
+| G3-03 | Khách     | `/tai-khoan`                                                                                                                        | Khung "TT… · 2 đơn từ 2 shop", có tên 2 shop                                                                                                                            |
+| G3-06 | Khách     | `/tai-khoan/dia-chi`                                                                                                                | Địa chỉ vừa nhập đã vào sổ, là mặc định, "1/10 địa chỉ"                                                                                                                 |
+| G3-07 | Khách     | Thêm địa chỉ: gõ "KHANH HOA" + Enter; gõ Phường/Xã không có thật                                                                    | Ra "Tỉnh Khánh Hoà", ô Phường/Xã mở; tên lạ báo "Chọn Phường/Xã trong danh sách gợi ý"                                                                                  |
+| G3-08 | Khách     | Thêm địa chỉ với 4 cặp: "ho chi"/"thu duc", "dak lak"/"cu mgar", "Hà Nội"/"Hoàn Kiếm", "HA NOI"/"hoan kiem"                         | Gợi ý đầu tiên đúng: TP Hồ Chí Minh / Phường Thủ Đức; Tỉnh Đắk Lắk / Xã Cư M'gar; TP Hà Nội / Phường Hoàn Kiếm (2 lần)                                                  |
+| G3-04 | Người bán | Kênh người bán → Đơn hàng                                                                                                           | Thấy đơn của shop mình, không thấy đơn HcmusWare cùng mã thanh toán                                                                                                     |
+| G3-05 | Người bán | Đổi đơn sang "Đã xác nhận"                                                                                                          | DB `confirmed`, đơn HcmusWare vẫn `pending`; ô chọn không còn "Chờ xác nhận"                                                                                            |
+| G3-09 | Người bán | C6: đơn "Chờ xác nhận" chọn thẳng "Hoàn tất"; đơn khác chuyển "Đang giao" rồi thử lùi về "Đã xác nhận" ở giao diện và gọi thẳng API | Bỏ bước được (DB `completed`); ô chọn của đơn đang giao không có "Chờ xác nhận"/"Đã xác nhận"; API trả 400 "Không chuyển đơn về trạng thái trước đó", DB vẫn `shipping` |
+
+C7: gõ viết tắt ("tp hcm", "hn") không ra gợi ý là đúng theo quyết định của BA, không phải lỗi.
+
+## Test case – Đánh giá, hỏi đáp, chèn HTML (Giai đoạn 2, Tuần 4)
+
+Theo US-16.1–16.5, thẻ #105. Chạy bằng `npm run test:e2e:g2t4` (`scripts/e2e-g2t4.js`; G4-01…G4-07 do Test2 viết ở PR #156, Test1 thêm G4-08). Phía DB ở `test:rls` T4-01…T4-08.
+
+| Mã    | Vai trò                                              | Bước                                                                                                                                                                                | Kết quả mong đợi                                                                                                                       |
+| ----- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| G4-01 | Khách chưa mua                                       | Trang sản phẩm; hỏi `<img src=x onerror=alert(1)> Còn hàng không shop?`                                                                                                             | Không có form đánh giá; câu hỏi hiện nguyên văn, không có thẻ `<img>`, không bật hộp thoại                                             |
+| G4-02 | Khách đã nhận hàng                                   | Chấm 4 sao, nhận xét có `<script>alert(2)</script>` và nhiều dòng trống                                                                                                             | Hiện nguyên văn, dòng trống gộp còn 1; "4,0 ★ (1)", "Đã mua hàng"; form thành "Sửa đánh giá của bạn"                                   |
+| G4-08 | Khách có họ tên `<img src=y onerror=alert(7)>Hắc Cơ` | Hỏi 1 câu gồm 7 dòng: `<svg onload>`, `<a href="javascript:">`, `<iframe src="javascript:">`, `"><script>`, `'; alert(8); //`, link markdown `javascript:`, HTML entity `&lt;b&gt;` | Cả 7 dòng và tên hiện dạng chữ; mục hỏi đáp không có `svg[onload]`, `iframe`, `script`, `img`, link `javascript:`; không bật hộp thoại |
+
+### Kết quả lần chạy 29/10/2026 – Test1 trả nợ G2 Tuần 2–4, hồi quy Tuần 1–3 (main df38091)
+
+Trước khi chạy online: `npm run db:backup` (bản `backups/lfifbzcehpemmhpqkffh-20261029-1032.json`).
+
+| Bộ test                                     | Local (build + Supabase local) | Vercel + Supabase online |
+| ------------------------------------------- | ------------------------------ | ------------------------ |
+| `npx vitest run`, `npx eslint .`            | 274/274, lint sạch             | –                        |
+| `test:rls`                                  | 56/56                          | 56/56                    |
+| `test:roles` (G2 Tuần 1)                    | 44/44                          | 44/44                    |
+| `test:e2e:g2t2` (Tuần 2, mới)               | 13/13                          | 13/13                    |
+| `test:e2e:g2t3` (Tuần 3, thêm G3-08, G3-09) | 10/10                          | 10/10                    |
+| `test:e2e:g2t4` (Tuần 4, thêm G4-08)        | 9/9                            | 9/9                      |
+| `test:e2e` (luồng mua giai đoạn 1)          | 13/13                          | 13/13                    |
+| `test:ui`                                   | 35/35                          | 35/35                    |
+
+Không phát hiện lỗi mới. Ghi nhận thêm:
+
+- Họ tên có HTML hiển thị an toàn nhưng bị rút gọn thành "<img S. O. C." (rút gọn theo khoảng trắng). Không chạy được code; tên kiểu này không có thật nên không ghi lỗi.
+- `test:e2e` (giai đoạn 1) cố ý giữ lại khách test và đơn đã hủy (kho trả đủ), chỉ xóa admin test. DB online đang có 8 tài khoản `test1-khach-*@hcmusware.test` tích lại từ 22/10. Không ảnh hưởng người dùng, nhưng nên dọn trước buổi bảo vệ cuối.
+- Sau khi chạy, số dòng online của shop, sản phẩm, đánh giá, bình luận, thương hiệu và ảnh trong bucket khớp bản backup; đơn và địa chỉ chỉ tăng đúng phần của `test:e2e` nói trên.
+
+Chưa thử trên điện thoại thật; mọi lần chạy dùng Edge headless giả lập 360 px.

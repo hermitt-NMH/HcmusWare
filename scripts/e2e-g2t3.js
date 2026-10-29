@@ -3,6 +3,9 @@
 //   G3-04..05  người bán chỉ thấy và cập nhật đơn của shop mình (kênh người bán → Đơn hàng)
 //   G3-06..07  sổ địa chỉ: địa chỉ nhập lúc thanh toán đã vào sổ; ô gợi ý dùng bằng bàn phím,
 //              gõ không dấu vẫn ra, gõ tên không có trong danh sách thì báo lỗi
+//   G3-08      gợi ý Tỉnh/Thành, Phường/Xã: gõ có dấu, không dấu, có dấu nháy (Cư M'gar) đều ra đúng
+//   G3-09      C6: người bán bỏ bước (Chờ xác nhận → Hoàn tất) được; Đang giao → Đã xác nhận bị chặn
+//              ở cả giao diện lẫn API
 // Tự tạo khách, người bán, shop và sản phẩm thử (@hcmusware.test); cuối cùng hủy đơn (trả kho) và xóa sạch.
 //
 // Cách chạy:
@@ -360,6 +363,32 @@ try {
   )
   await shot('G3-07-so-dia-chi-360')
 
+  // ===== G3-08 – gõ có dấu / không dấu / thiếu dấu nháy đều ra đúng gợi ý đầu tiên =====
+  const ADDRESS_CASES = [
+    ['ho chi', 'thu duc', 'Thành phố Hồ Chí Minh', 'Phường Thủ Đức'],
+    ['dak lak', 'cu mgar', 'Tỉnh Đắk Lắk', "Xã Cư M'gar"],
+    ['Hà Nội', 'Hoàn Kiếm', 'Thành phố Hà Nội', 'Phường Hoàn Kiếm'],
+    ['HA NOI', 'hoan kiem', 'Thành phố Hà Nội', 'Phường Hoàn Kiếm'],
+  ]
+  const addressResults = []
+  for (const [tinh, xa, wantTinh, wantXa] of ADDRESS_CASES) {
+    await open('/tai-khoan/dia-chi')
+    await ev(
+      `[...document.querySelectorAll('button')].find((b) => /Thêm địa chỉ/.test(b.innerText)).click()`,
+    )
+    const gotTinh = await pickSuggestion('dia-chi-moi-tinh', tinh)
+    const gotXa = await pickSuggestion('dia-chi-moi-xa', xa)
+    addressResults.push({
+      ok: gotTinh === wantTinh && gotXa === wantXa,
+      text: `"${tinh}"/"${xa}" → ${gotTinh} / ${gotXa}`,
+    })
+  }
+  rec(
+    'G3-08',
+    addressResults.every((r) => r.ok),
+    addressResults.map((r) => (r.ok ? '' : 'SAI ') + r.text).join('; '),
+  )
+
   // ===== G3-04/05 – người bán chỉ thấy, xử lý đơn của shop mình =====
   await ev('localStorage.clear()')
   await open('/dang-nhap?next=%2Fkenh-nguoi-ban%2Fdon-hang')
@@ -391,6 +420,80 @@ try {
     `người bán xác nhận: đơn shop mình=${statusOf(sellerOrder.id)}, đơn HcmusWare vẫn=${statusOf(houseOrder.id)}; lựa chọn còn lại=${JSON.stringify(options)}`,
   )
   await shot('G3-05-kenh-nguoi-ban-don-360')
+
+  // ===== G3-09 – C6: Chờ xác nhận → Hoàn tất được; Đang giao → Đã xác nhận bị chặn =====
+  // Đơn thứ 2 của shop thử, tạo thẳng trong DB ở trạng thái Chờ xác nhận
+  const pendingOrder = (
+    await sb('/rest/v1/orders', {
+      method: 'POST',
+      body: {
+        user_id: customer.id,
+        shop_id: shop.id,
+        status: 'pending',
+        total: sellerProduct.price,
+        shipping_name: 'G2T3 QA',
+        shipping_phone: '0901234567',
+        shipping_address: '227 Nguyễn Văn Cừ, Phường Chợ Quán, TP.HCM',
+      },
+    })
+  ).data[0]
+  await sb('/rest/v1/order_items', {
+    method: 'POST',
+    body: {
+      order_id: pendingOrder.id,
+      product_id: sellerProduct.id,
+      quantity: 1,
+      unit_price: sellerProduct.price,
+    },
+  })
+  await open('/kenh-nguoi-ban/don-hang')
+  await waitFor(`!!document.querySelector('select')`)
+  // Ô trạng thái của đơn #id: leo lên tới khối có "#id" và chỉ chứa 1 ô chọn
+  const selectOf = (id) => `(() => {
+    for (const s of document.querySelectorAll('select')) {
+      let el = s.parentElement
+      while (el && el.querySelectorAll('select').length === 1) {
+        if (new RegExp('#${id}\\\\b').test(el.innerText)) return s
+        el = el.parentElement
+      }
+    }
+  })()`
+  const setStatus = async (id, status) => {
+    await ev(fillJs(selectOf(id), status))
+    await waitFor(`${selectOf(id)}?.value === '${status}' && !${selectOf(id)}.disabled`)
+    await sleep(500)
+  }
+  const statusInDb = async (id) =>
+    (await sb(`/rest/v1/orders?select=status&id=eq.${id}`)).data[0]?.status
+  const optionsOf = (id) =>
+    ev(`[...(${selectOf(id)}?.options ?? [])].filter((o) => !o.disabled).map((o) => o.text)`)
+
+  await setStatus(pendingOrder.id, 'completed')
+  const skipped = await statusInDb(pendingOrder.id)
+  await setStatus(sellerOrder.id, 'shipping')
+  const shippingOptions = await optionsOf(sellerOrder.id)
+  // Lách giao diện: gọi thẳng API bằng phiên đăng nhập của người bán trong trình duyệt
+  const backViaApi = await ev(`(async () => {
+    const key = Object.keys(localStorage).find((k) => k.endsWith('-auth-token'))
+    const token = JSON.parse(localStorage.getItem(key)).access_token
+    const res = await fetch(${JSON.stringify(SB)} + '/rest/v1/orders?id=eq.${sellerOrder.id}', {
+      method: 'PATCH',
+      headers: { apikey: ${JSON.stringify(process.env.VITE_SUPABASE_ANON_KEY)}, Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: 'confirmed' }),
+    })
+    const body = await res.json()
+    return res.status + ' ' + (body.message ?? JSON.stringify(body))
+  })()`)
+  const afterBack = await statusInDb(sellerOrder.id)
+  rec(
+    'G3-09',
+    skipped === 'completed' &&
+      !shippingOptions.some((o) => /Chờ xác nhận|Đã xác nhận/.test(o)) &&
+      !/^2/.test(backViaApi) &&
+      afterBack === 'shipping',
+    `Chờ xác nhận → Hoàn tất: DB=${skipped}; Đang giao: lựa chọn còn lại=${JSON.stringify(shippingOptions)}; lùi về Đã xác nhận qua API: ${backViaApi}, DB vẫn=${afterBack}`,
+  )
+  await shot('G3-09-c6-trang-thai-360')
 
   rec(
     'Console',
