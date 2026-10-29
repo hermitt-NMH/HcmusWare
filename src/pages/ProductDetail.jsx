@@ -11,10 +11,11 @@ import { categoryBg, categoryImage } from '../lib/images'
 import { specRows } from '../lib/specs'
 import PriceSection from '../features/price/PriceSection'
 import ReviewSection from '../features/reviews/ReviewSection'
+import QuestionSection from '../features/reviews/QuestionSection'
 import { formatRating } from '../features/reviews/reviews'
 
 // Trang chi tiết: ảnh, giá, tồn kho, bảng thông số, nút tải datasheet, lịch sử giá + cảnh báo giá,
-// đánh giá (F16), sản phẩm tương tự.
+// đánh giá và hỏi đáp (F16), sản phẩm tương tự.
 export default function ProductDetail() {
   const { id } = useParams()
   const product = useAsync(() => getProductById(id), [id])
@@ -232,6 +233,8 @@ function DetailView({ product }) {
       <PriceSection key={id} productId={id} currentPrice={price} />
 
       <ReviewSection key={`r${id}`} productId={id} />
+
+      <QuestionSection key={`q${id}`} productId={id} shopSlug={shops?.slug} />
 
       {slug && <RelatedProducts categorySlug={slug} excludeId={id} />}
     </div>
