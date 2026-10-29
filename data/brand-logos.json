@@ -8,7 +8,18 @@
     "source": "amd.com",
     "darken": true
   },
-  "antec": { "file": "data/brand-logos/antec.svg", "source": "antec.com (logo SVG ở header)" },
+  "angelbird": {
+    "url": "https://www.angelbird.com/static/web/img/AB_Logo.svg",
+    "source": "angelbird.com"
+  },
+  "antec": {
+    "file": "data/brand-logos/antec.svg",
+    "source": "antec.com (logo SVG ở header)"
+  },
+  "apnx": {
+    "url": "https://www.apnx.com/wp-content/uploads/2023/08/APNX-LOGO-BK.svg",
+    "source": "apnx.com"
+  },
   "arctic": {
     "url": "https://commons.wikimedia.org/wiki/Special:FilePath/ARCTIC%20(computer%20cooling)%20logo.png",
     "source": "Wikimedia Commons"
@@ -50,10 +61,17 @@
     "url": "https://www.gskill.com/styles/images/common/logo.png",
     "source": "gskill.com"
   },
-  "gamdias": { "url": "https://www.gamdias.com/img/GD_Logo_252X60.png", "source": "gamdias.com" },
+  "gamdias": {
+    "url": "https://www.gamdias.com/img/GD_Logo_252X60.png",
+    "source": "gamdias.com"
+  },
   "gigabyte": {
     "file": "data/brand-logos/gigabyte.svg",
     "source": "gigabyte.com (logo SVG ở header)"
+  },
+  "hyte": {
+    "file": "data/brand-logos/hyte.png",
+    "source": "support.hyte.com (/hc/theming_assets/01HZP6Z46H52GH14NN8FYP0YPG – Node fetch bị 403, tải tay)"
   },
   "intel": {
     "url": "https://www.intel.com/content/dam/logos/logo-energyblue-1x1.png",
@@ -85,11 +103,18 @@
     "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Micro-Star%20International%20logo2020.svg",
     "source": "Wikimedia Commons"
   },
+  "netac": {
+    "url": "https://upload.wikimedia.org/wikipedia/en/d/d1/Netac_logo.gif",
+    "source": "Wikipedia (netac.com vẽ logo bằng CSS)"
+  },
   "nzxt": {
     "url": "https://nzxt.com/cdn/shop/files/NZXT_logo_cd155b81-7d0e-4299-9b91-ce3e59b639e9.png?v=1773285673&width=600",
     "source": "nzxt.com"
   },
-  "orico": { "url": "https://www.orico.cc/static/index/pc/images/logo.png", "source": "orico.cc" },
+  "orico": {
+    "url": "https://www.orico.cc/static/index/pc/images/logo.png",
+    "source": "orico.cc"
+  },
   "patriot": {
     "url": "https://www.patriotmemory.com/images/nav_logo.png",
     "source": "patriotmemory.com",
@@ -120,6 +145,11 @@
     "url": "https://www.silicon-power.com/images/logo_b.png",
     "source": "silicon-power.com"
   },
+  "silverstone": {
+    "url": "https://www.silverstonetek.com/images/all/logo.png",
+    "source": "silverstonetek.com",
+    "darken": true
+  },
   "teamgroup": {
     "url": "https://www.teamgroupinc.com/public/images/logo.svg",
     "source": "teamgroupinc.com"
@@ -147,7 +177,10 @@
     "source": "xfxforce.com",
     "darken": true
   },
-  "xilence": { "url": "https://www.xilence.net/en/img/xilence.svg", "source": "xilence.net" },
+  "xilence": {
+    "url": "https://www.xilence.net/en/img/xilence.svg",
+    "source": "xilence.net"
+  },
   "zalman": {
     "url": "https://www.zalman.com/resources/img/new/ico_logo.png",
     "source": "zalman.com",
