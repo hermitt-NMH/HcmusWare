@@ -23,6 +23,7 @@ const OrderDetail = lazy(() => import('./pages/OrderDetail'))
 const Admin = lazy(() => import('./pages/admin/Admin'))
 const SellerChannel = lazy(() => import('./pages/seller/SellerChannel'))
 const OpenShop = lazy(() => import('./pages/OpenShop'))
+const AddressBook = lazy(() => import('./pages/AddressBook'))
 const BrandList = lazy(() => import('./pages/BrandList'))
 const BrandPage = lazy(() => import('./pages/BrandPage'))
 const ShopPage = lazy(() => import('./pages/ShopPage'))
@@ -53,6 +54,14 @@ export default function App() {
               element={
                 <RoleRoute allow={AREA_ROLES.account}>
                   <OpenShop />
+                </RoleRoute>
+              }
+            />
+            <Route
+              path="/tai-khoan/dia-chi"
+              element={
+                <RoleRoute allow={AREA_ROLES.account}>
+                  <AddressBook />
                 </RoleRoute>
               }
             />

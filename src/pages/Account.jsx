@@ -75,6 +75,22 @@ export default function Account() {
       {/* key: khi hồ sơ tải xong thì form khởi tạo lại với dữ liệu mới */}
       <ProfileForm key={profile?.id ?? 'loading'} />
 
+      {/* Sổ địa chỉ (Giai đoạn 2 – F17): thay cho ô địa chỉ tự do trong hồ sơ */}
+      <Link
+        to="/tai-khoan/dia-chi"
+        className="flex min-h-14 items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-surface p-5 hover:bg-slate-50 sm:p-6"
+      >
+        <span>
+          <span className="block text-lg font-semibold">Sổ địa chỉ</span>
+          <span className="block text-sm text-slate-500">
+            Lưu tối đa 10 địa chỉ nhận hàng, địa chỉ mặc định được điền sẵn khi thanh toán.
+          </span>
+        </span>
+        <span aria-hidden="true" className="text-xl text-slate-500">
+          ›
+        </span>
+      </Link>
+
       <OrderHistory userId={user.id} />
       <div id="cau-hinh" className="scroll-mt-36">
         <SavedBuilds userId={user.id} />
@@ -89,7 +105,6 @@ function ProfileForm() {
   const [form, setForm] = useState({
     full_name: profile?.full_name ?? '',
     phone: profile?.phone ?? '',
-    address: profile?.address ?? '',
   })
   const [status, setStatus] = useState({ type: '', message: '' })
   const [saving, setSaving] = useState(false)
@@ -104,7 +119,6 @@ function ProfileForm() {
     const data = {
       full_name: form.full_name.trim(),
       phone: form.phone.replace(/[\s.-]/g, ''), // cho phép gõ "090 123 4567"
-      address: form.address.trim(),
     }
     if (!data.full_name) return setStatus({ type: 'error', message: 'Vui lòng nhập họ tên.' })
     if (data.phone && !PHONE_RE.test(data.phone)) {
@@ -127,8 +141,10 @@ function ProfileForm() {
       className="space-y-4 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
       <div>
-        <h2 className="text-lg font-semibold">Thông tin giao hàng</h2>
-        <p className="text-sm text-slate-500">Dùng để điền sẵn khi thanh toán.</p>
+        <h2 className="text-lg font-semibold">Thông tin cá nhân</h2>
+        <p className="text-sm text-slate-500">
+          Điền sẵn tên và số điện thoại khi bạn thêm địa chỉ nhận hàng mới.
+        </p>
       </div>
 
       <label className="block text-sm">
@@ -150,17 +166,6 @@ function ProfileForm() {
           placeholder="0901234567"
           value={form.phone}
           onChange={set('phone')}
-        />
-      </label>
-      <label className="block text-sm">
-        <span className="mb-1 block font-medium text-slate-700">Địa chỉ</span>
-        <textarea
-          rows={3}
-          autoComplete="street-address"
-          placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành"
-          value={form.address}
-          onChange={set('address')}
-          className="w-full rounded-lg border border-slate-300 bg-surface p-3 text-sm focus:border-blue-500 focus:outline-none"
         />
       </label>
 
