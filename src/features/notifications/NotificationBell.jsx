@@ -206,7 +206,7 @@ function NotificationItem({ n, onOpen }) {
           {n.title}
         </span>
         {n.body && <span className="mt-0.5 line-clamp-3 break-words text-slate-600">{n.body}</span>}
-        <span className="mt-0.5 block text-xs text-slate-500">
+        <span className="mt-0.5 block text-xs text-slate-600">
           {timeAgo(n.created_at)}
           {unread && <span className="sr-only"> · chưa đọc</span>}
         </span>
