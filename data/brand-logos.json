@@ -1,0 +1,160 @@
+{
+  "adata": {
+    "url": "https://www.adata.com/images/layout/icon/ADATA-logo.svg",
+    "source": "adata.com"
+  },
+  "amd": {
+    "url": "https://www.amd.com/content/dam/code/images/header/amd-header-logo.svg",
+    "source": "amd.com",
+    "darken": true
+  },
+  "antec": { "file": "data/brand-logos/antec.svg", "source": "antec.com (logo SVG ở header)" },
+  "arctic": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/ARCTIC%20(computer%20cooling)%20logo.png",
+    "source": "Wikimedia Commons"
+  },
+  "asrock": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/ASRock%20logo.svg",
+    "source": "Wikimedia Commons"
+  },
+  "asus": {
+    "file": "data/brand-logos/asus.svg",
+    "source": "asus.com (logo SVG ở header)",
+    "darken": true
+  },
+  "be-quiet": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Be-quiet!%20Logo.svg",
+    "source": "Wikimedia Commons"
+  },
+  "cooler-master": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Cooler%20Master%20black%20logo.svg",
+    "source": "Wikimedia Commons"
+  },
+  "corsair": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Corsair%202020%20logo.svg",
+    "source": "Wikimedia Commons"
+  },
+  "cougar": {
+    "url": "https://cougargaming.com/_cgrwdr_/wwdpp/wp-content/uploads/2023/01/cougar-logo-sm.png",
+    "source": "cougargaming.com"
+  },
+  "crucial": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Crucial%20Logo.png",
+    "source": "Wikimedia Commons"
+  },
+  "enermax": {
+    "url": "https://www.enermax.com/archive/system/seo/ENERMAX_logo_200x200px.webp",
+    "source": "enermax.com"
+  },
+  "g-skill": {
+    "url": "https://www.gskill.com/styles/images/common/logo.png",
+    "source": "gskill.com"
+  },
+  "gamdias": { "url": "https://www.gamdias.com/img/GD_Logo_252X60.png", "source": "gamdias.com" },
+  "gigabyte": {
+    "file": "data/brand-logos/gigabyte.svg",
+    "source": "gigabyte.com (logo SVG ở header)"
+  },
+  "intel": {
+    "url": "https://www.intel.com/content/dam/logos/logo-energyblue-1x1.png",
+    "source": "intel.com"
+  },
+  "jonsbo": {
+    "url": "https://www.jonsbo.com/Upfiles/Base/20187399258.jpg",
+    "source": "jonsbo.com"
+  },
+  "kingston": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Kingston%20Technology%20Corporation%20logo.png",
+    "source": "Wikimedia Commons"
+  },
+  "lian-li": {
+    "url": "https://lian-li.com/wp-content/uploads/2021/08/LIAN-LI-LOGO.svg",
+    "source": "lian-li.com",
+    "darken": true
+  },
+  "mars-gaming": {
+    "url": "https://marsgaming.eu/img/logo-17714143403.svg",
+    "source": "marsgaming.eu",
+    "darken": true
+  },
+  "montech": {
+    "url": "https://www.montechpc.com/images/322355/0/0/100",
+    "source": "montechpc.com"
+  },
+  "msi": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Micro-Star%20International%20logo2020.svg",
+    "source": "Wikimedia Commons"
+  },
+  "nzxt": {
+    "url": "https://nzxt.com/cdn/shop/files/NZXT_logo_cd155b81-7d0e-4299-9b91-ce3e59b639e9.png?v=1773285673&width=600",
+    "source": "nzxt.com"
+  },
+  "orico": { "url": "https://www.orico.cc/static/index/pc/images/logo.png", "source": "orico.cc" },
+  "patriot": {
+    "url": "https://www.patriotmemory.com/images/nav_logo.png",
+    "source": "patriotmemory.com",
+    "darken": true
+  },
+  "pc-power-cooling": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/PC%20Power%20%26%20Cooling%20wordmark.svg",
+    "source": "Wikimedia Commons"
+  },
+  "pny": {
+    "url": "https://www.pny.com/Image%20Library/content-images/logo.png",
+    "source": "pny.com",
+    "darken": true
+  },
+  "sabrent": {
+    "url": "https://sabrent.com/cdn/shop/files/Logo_33af945a-31a6-4b1d-b7c4-b808166ea51e.png?height=140&v=1773723584",
+    "source": "sabrent.com"
+  },
+  "samsung": {
+    "file": "data/brand-logos/samsung.svg",
+    "source": "samsung.com (logo SVG ở header)"
+  },
+  "seasonic": {
+    "url": "https://seasonic.com/wp-content/uploads/2025/06/Homepage-logo.png",
+    "source": "seasonic.com"
+  },
+  "silicon-power": {
+    "url": "https://www.silicon-power.com/images/logo_b.png",
+    "source": "silicon-power.com"
+  },
+  "teamgroup": {
+    "url": "https://www.teamgroupinc.com/public/images/logo.svg",
+    "source": "teamgroupinc.com"
+  },
+  "thermalright": {
+    "url": "https://www.thermalright.com/wp-content/themes/thermalright-redesign/dist/thermalright-logo.svg",
+    "source": "thermalright.com",
+    "darken": true
+  },
+  "thermaltake": {
+    "url": "https://thermaltake.com/cdn/shop/files/Thermaltake_Logo.png?v=1782373758&width=600",
+    "source": "thermaltake.com",
+    "darken": true
+  },
+  "transcend": {
+    "file": "data/brand-logos/transcend.svg",
+    "source": "transcend-info.com (/dist/images/logo.svg – Node fetch lỗi TLS, tải tay)"
+  },
+  "verbatim": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Verbatim%20logo.svg",
+    "source": "Wikimedia Commons"
+  },
+  "xfx": {
+    "url": "https://cdn.prod.website-files.com/5cfd6904982a74dce7f1d35c/5f99d3d9d343f0704239a150_logo.png",
+    "source": "xfxforce.com",
+    "darken": true
+  },
+  "xilence": { "url": "https://www.xilence.net/en/img/xilence.svg", "source": "xilence.net" },
+  "zalman": {
+    "url": "https://www.zalman.com/resources/img/new/ico_logo.png",
+    "source": "zalman.com",
+    "darken": true
+  },
+  "zotac": {
+    "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Logo%20of%20Zotac%20International.svg",
+    "source": "Wikimedia Commons"
+  }
+}

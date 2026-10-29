@@ -42,7 +42,13 @@ export default function BrandList() {
                   to={`/thuong-hieu/${b.slug}`}
                   className={`flex h-full flex-col items-center gap-2 rounded-xl border border-slate-200 bg-surface p-4 text-center transition hover:-translate-y-0.5 hover:shadow-md ${count ? '' : 'opacity-60'}`}
                 >
-                  <LogoBadge name={b.name} url={b.logo_url} size="h-16 w-16" text="text-2xl" />
+                  {/* Ô chữ nhật: logo thương hiệu đa số là chữ dài, ô vuông làm logo bé tí */}
+                  <LogoBadge
+                    name={b.name}
+                    url={b.logo_url}
+                    size="h-16 w-full max-w-36"
+                    text="text-2xl"
+                  />
                   <span className="line-clamp-2 text-sm font-semibold">{b.name}</span>
                   <span className="text-xs text-slate-500">
                     {count ? `${count} sản phẩm` : 'Chưa có sản phẩm'}
