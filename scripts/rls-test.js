@@ -1319,6 +1319,31 @@ let sellerNew
     `giá 950.000 (muốn ≤ 900.000): ${notYet} thông báo; giá 850.000: ${drop.length} "${drop[0]?.body}" → ${drop[0]?.link}; giảm tiếp 800.000: tổng ${dropAgain}; notified=${alert?.notified}`,
   )
 
+  // Giá giảm trong lúc shop bị khóa → chưa báo; mở khóa shop → báo đúng 1 lần (BUG-G2T5-01).
+  const pLocked = await mkProduct(shopA, 'A-t5-khoa', 'active')
+  const beforeLock = await latestId()
+  await api(customer.token, '/rest/v1/price_alerts', {
+    method: 'POST',
+    body: { user_id: customer.id, product_id: pLocked.id, target_price: 900000 },
+  })
+  await rpc(admin.token, 'set_shop_locked', { p_shop_id: shopA.id, p_locked: true })
+  await svc(`/rest/v1/products?id=eq.${pLocked.id}`, { method: 'PATCH', body: { price: 850000 } })
+  const whileLocked = (await since(customer, beforeLock)).length
+  await rpc(admin.token, 'set_shop_locked', { p_shop_id: shopA.id, p_locked: false })
+  const unlocked = await since(customer, beforeLock)
+  const lockedAlert = (
+    await api(customer.token, `/rest/v1/price_alerts?select=notified&product_id=eq.${pLocked.id}`)
+  ).data[0]
+  rec(
+    'T5-11',
+    whileLocked === 0 &&
+      unlocked.length === 1 &&
+      unlocked[0].type === 'price_drop' &&
+      unlocked[0].link === `/san-pham/${pLocked.id}` &&
+      lockedAlert?.notified === true,
+    `giảm giá lúc shop khóa: ${whileLocked} thông báo; mở khóa: ${unlocked.length} "${unlocked[0]?.body}"; notified=${lockedAlert?.notified}`,
+  )
+
   // Khách mở shop → admin duyệt → người bán đăng sản phẩm → admin trả lại → admin khóa shop.
   const opener = await createUser('mo', 'customer')
   testUsers.push(opener)
