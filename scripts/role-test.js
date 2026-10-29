@@ -140,9 +140,9 @@ async function open(p) {
   await sleep(400)
   await waitFor(notBusy)
   await sleep(500)
-  // Đã đăng nhập thì chờ hồ sơ tải xong (header hết nhãn tạm "Tài khoản") rồi mới đọc menu
+  // Đã đăng nhập thì chờ hồ sơ tải xong (header hết ô giữ chỗ, BUG-G2-04) rồi mới đọc menu
   await waitFor(
-    `!Object.keys(localStorage).some((k) => k.endsWith('-auth-token')) || !/Tài khoản/.test(document.querySelector('header')?.innerText || '')`,
+    `!Object.keys(localStorage).some((k) => k.endsWith('-auth-token')) || !document.querySelector('header [aria-label="Đang tải tài khoản"]')`,
     5000,
   )
 }

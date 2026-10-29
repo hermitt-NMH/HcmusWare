@@ -86,7 +86,7 @@ function ThemeToggle({ withLabel = false, className = '' }) {
 export default function Header() {
   const [open, setOpen] = useState(false)
   const categories = useAsync(getCategories)
-  const { user, profile, role } = useAuth()
+  const { user, profile, role, profileLoading } = useAuth()
   const { count } = useCart()
   const close = () => setOpen(false)
   // Lối tắt tới khu vực riêng của vai trò: admin → Quản trị, người bán → Kênh người bán.
@@ -97,6 +97,14 @@ export default function Header() {
   const account = user
     ? { to: '/tai-khoan', label: firstName || 'Tài khoản' }
     : { to: '/dang-nhap', label: 'Đăng nhập' }
+  // Đang tải hồ sơ: ô xám giữ chỗ thay cho chữ "Tài khoản" rồi mới đổi thành tên (BUG-G2-04).
+  const accountPlaceholder = (
+    <span
+      role="status"
+      aria-label="Đang tải tài khoản"
+      className="mx-3 my-3 block h-5 w-20 animate-pulse rounded bg-slate-200"
+    />
+  )
 
   return (
     <header className="sticky top-0 z-20 border-b border-slate-200 bg-surface">
@@ -172,9 +180,13 @@ export default function Header() {
               {shortcut.label}
             </NavLink>
           )}
-          <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 md:flex`}>
-            <span className="truncate">{account.label}</span>
-          </NavLink>
+          {profileLoading ? (
+            <span className="hidden md:block">{accountPlaceholder}</span>
+          ) : (
+            <NavLink to={account.to} className={(s) => `${navClass(s)} hidden max-w-32 md:flex`}>
+              <span className="truncate">{account.label}</span>
+            </NavLink>
+          )}
           <ThemeToggle className="hidden md:inline-flex" />
         </nav>
       </div>
@@ -193,9 +205,13 @@ export default function Header() {
             </li>
           )}
           <li className="md:hidden">
-            <NavLink to={account.to} className={navClass} onClick={close}>
-              {account.label}
-            </NavLink>
+            {profileLoading ? (
+              accountPlaceholder
+            ) : (
+              <NavLink to={account.to} className={navClass} onClick={close}>
+                {account.label}
+              </NavLink>
+            )}
           </li>
           <li className="border-b border-slate-100 pb-1 md:hidden">
             <ThemeToggle withLabel />
