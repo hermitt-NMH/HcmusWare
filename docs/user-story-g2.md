@@ -1,12 +1,13 @@
-# User story – Giai đoạn 2 (F13–F18, F12)
+# User story – Giai đoạn 2 (F13–F18, F12, F11)
 
 Người phụ trách: BA · Dùng cho: Dev1/Dev2/Dev3/KTS (làm tính năng), Test1/Test2 (test case).
-Phiên bản 1.4 – Tuần 4 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3; 1.4: chốt C9–C11 cho F16). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
+Phiên bản 1.5 – Tuần 5 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3; 1.4: chốt C9–C11 cho F16; 1.5: thêm F11 thu cũ đổi mới). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
 
 Liên quan:
 
 - Danh sách thông số bắt buộc khi người bán đăng sản phẩm: [thong-so-bat-buoc.md](thong-so-bat-buoc.md)
 - Bộ dữ liệu đơn vị hành chính và kết luận Zalo OA: [g2-ba-tuan1.md](g2-ba-tuan1.md)
+- Bảng giá thu cũ đổi mới (F11): [g2-ba-tuan5-thu-cu.md](g2-ba-tuan5-thu-cu.md)
 
 Quy ước:
 
@@ -306,6 +307,37 @@ Thông báo được **tạo trong DB** (trigger khi đơn đổi trạng thái,
 - Gửi email lỗi (hết hạn mức, sai địa chỉ) **không** làm hỏng việc đổi trạng thái đơn và không chặn thông báo trong web.
 - Gửi bằng Supabase Edge Function và một dịch vụ email có gói miễn phí (KTS chọn, kiểm tra hạn mức gửi/ngày trước khi làm). Khóa API chỉ để trong secrets của Edge Function, **không** nằm trong code frontend hay repo.
 - Nội dung email chỉ là chữ, có link về web; không chứa địa chỉ nhận hàng hay số điện thoại.
+
+---
+
+## F11 – Thu cũ đổi mới (Could, Tuần 5)
+
+Bảng giá, hệ số, phạm vi và ví dụ tính: [g2-ba-tuan5-thu-cu.md](g2-ba-tuan5-thu-cu.md).
+Ưu tiên **Could**: Tuần 5 trễ thì cắt. Làm theo thứ tự US-11.1 → US-11.2 → US-11.3; thiếu thời gian thì chỉ làm US-11.1 (tra giá).
+Hàm tính giá là **hàm JavaScript thuần** trong `src/features/tradein/` (giống compatibility.js), có unit test đủ 10 ví dụ ở mục 4 của file bảng giá.
+DB (US-11.2) tính lại giá thu trong `place_order` theo cùng bảng, **không tin số tiền frontend gửi lên**.
+
+### US-11.1: Là khách hàng, tôi muốn tra giá thu linh kiện cũ của mình để biết lên đời tốn thêm bao nhiêu.
+
+- Trang `/thu-cu-doi-moi` (link ở Footer và trong trang giỏ hàng), không cần đăng nhập.
+- Given chọn danh mục (CPU, VGA, Mainboard, RAM) → dòng (ô chọn có gõ tìm, gõ không dấu vẫn ra) → tình trạng (Tốt / Trầy xước) → còn bảo hành ≥ 3 tháng (Có / Không); RAM thêm loại và dung lượng, Then hiện ngay giá thu dự kiến.
+- Danh mục SSD, Nguồn, Vỏ case, Tản nhiệt không có trong danh sách; có dòng chữ giải thích vì sao không nhận.
+- Có danh sách "Không nhận" (mục 1 file bảng giá) và dòng "Giá dự kiến, nhân viên kiểm tra khi giao hàng".
+- Thêm được tối đa 4 linh kiện, hiện tổng giá thu dự kiến. 360 px không cuộn ngang, đọc rõ ở cả 2 chế độ sáng/tối.
+
+### US-11.2: Là khách hàng, tôi muốn trừ giá thu vào đơn khi thanh toán.
+
+- Given giỏ có hàng của shop HcmusWare và chọn COD, When ở trang thanh toán bật "Thu cũ đổi mới", Then thêm linh kiện như US-11.1 và thấy dòng "Trừ thu cũ: −X ₫" trong đơn HcmusWare.
+- Số tiền trừ = min(tổng giá thu, 50% tiền hàng HcmusWare). Bị giới hạn thì ghi rõ "Tối đa 50% giá trị đơn HcmusWare".
+- Giỏ không có hàng HcmusWare: không có mục thu cũ, ghi "Chỉ áp dụng cho sản phẩm do HcmusWare bán". Chọn thanh toán online: mục thu cũ bị tắt, ghi "Chỉ áp dụng khi thanh toán khi nhận hàng".
+- **[DB]** Đơn lưu danh sách linh kiện cũ đã khai (mã dòng, tình trạng, bảo hành, giá thu) và số tiền trừ; `place_order` tự tính lại, khách sửa giá qua API thì vẫn dùng giá đúng của bảng. Khai mã dòng không có trong bảng, quá 4 linh kiện, thanh toán online, hoặc không có hàng HcmusWare thì báo lỗi.
+- Trang chi tiết đơn và email/thông báo hiện "Thu cũ: …" và tổng phải trả sau khi trừ.
+
+### US-11.3 (làm nếu kịp): Là admin, tôi muốn xác nhận linh kiện cũ khi giao hàng.
+
+- Đơn có thu cũ: trang `/admin` đơn hàng hiện danh sách linh kiện khách khai.
+- Trước khi chuyển "Hoàn tất", admin chọn "Đúng như khai" hoặc "Tính lại": chọn lại tình trạng / bảo hành từng linh kiện, hoặc "Không thu" → hệ thống tính lại số tiền trừ và tổng đơn.
+- **[DB]** Chỉ admin đổi được phần thu cũ; khách và người bán không sửa được sau khi đặt.
 
 ---
 
