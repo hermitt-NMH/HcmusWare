@@ -26,8 +26,10 @@ export async function getCategoryBySlug(slug) {
 // Trang bán hàng (danh sách, chi tiết, giỏ, Builder) chỉ lấy hàng ĐANG BÁN của shop ĐANG HOẠT ĐỘNG.
 // RLS còn cho admin, chủ shop và người đã mua đọc hàng chờ duyệt / đã ẩn (để quản lý, xem lại đơn cũ),
 // nên phải lọc ở đây – không thì những người đó thấy cả hàng không mua được trên web.
-// Kèm tên + đường dẫn shop và thương hiệu (F15: "Bán bởi", "Thương hiệu", bộ lọc theo shop).
-const ON_SALE_SHOP = 'shops!inner(status, name, slug), brands(name, slug)'
+// Kèm tên + đường dẫn shop và thương hiệu (F15: "Bán bởi", "Thương hiệu", bộ lọc theo shop)
+// và điểm đánh giá trung bình (F16; null khi chưa có lượt nào).
+const ON_SALE_SHOP =
+  'shops!inner(status, name, slug), brands(name, slug), product_ratings(rating_avg, rating_count)'
 const onSale = (query) => query.eq('status', 'active').eq('shops.status', 'active')
 
 // brandId / shopId: trang thương hiệu, trang shop (F15).
@@ -631,4 +633,50 @@ export async function deleteAddress(id) {
 export async function setDefaultAddress(id) {
   const { error } = await supabase.from('addresses').update({ is_default: true }).eq('id', id)
   if (error) throw error
+}
+
+// ---------- Đánh giá (Giai đoạn 2 – Tuần 4, F16) ----------
+// DB chặn người chưa nhận hàng, đánh giá lần 2 và việc tự đổi cột hidden (migration 20261214000000).
+
+const REVIEW_FIELDS = 'id, user_id, rating, comment, author_name, hidden, created_at, updated_at'
+
+// Mới nhất trước. Admin nhận cả đánh giá đã ẩn (RLS), người viết nhận cả đánh giá đã ẩn của mình.
+export async function getProductReviews(productId) {
+  const { data, error } = await supabase
+    .from('reviews')
+    .select(REVIEW_FIELDS)
+    .eq('product_id', productId)
+    .order('created_at', { ascending: false })
+    .order('id', { ascending: false })
+  if (error) throw error
+  return data
+}
+
+// Đã có đơn Hoàn tất chứa sản phẩm chưa (để hiện form). Chưa đăng nhập thì khỏi gọi.
+export async function canReview(productId) {
+  const { data, error } = await supabase.rpc('can_review', { p_product_id: Number(productId) })
+  if (error) throw error
+  return data
+}
+
+// Thêm (id null) hoặc sửa đánh giá của mình. fields: kết quả validateReview.
+export async function saveReview(id, productId, fields) {
+  const query = id
+    ? supabase.from('reviews').update(fields).eq('id', id)
+    : supabase.from('reviews').insert({ product_id: Number(productId), ...fields })
+  const { data, error } = await query.select(REVIEW_FIELDS).single()
+  if (error) throw error
+  return data
+}
+
+export async function setReviewHidden(id, hidden) {
+  const { error } = await supabase.rpc('set_review_hidden', { p_id: id, p_hidden: hidden })
+  if (error) throw error
+}
+
+// Điểm trung bình cả shop: { rating_avg, rating_count } (rating_count = 0 khi chưa có).
+export async function getShopRating(shopId) {
+  const { data, error } = await supabase.rpc('shop_rating', { p_shop_id: shopId })
+  if (error) throw error
+  return data?.[0] ?? { rating_avg: null, rating_count: 0 }
 }

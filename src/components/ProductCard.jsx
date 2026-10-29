@@ -1,10 +1,12 @@
 import { Link } from 'react-router-dom'
 import { formatPrice } from '../lib/format'
 import { categoryBg, categoryImage, productSrcSet } from '../lib/images'
+import { formatRating } from '../features/reviews/reviews'
 
 // eager: thẻ ở hàng đầu (thấy ngay khi mở trang) tải ảnh luôn, không lazy, để LCP nhanh hơn.
 export default function ProductCard({ product, eager = false }) {
-  const { id, name, brand, price, stock, image_url, categories, shops } = product
+  const { id, name, brand, price, stock, image_url, categories, shops, product_ratings } = product
+  const rating = formatRating(product_ratings?.rating_avg, product_ratings?.rating_count)
   const outOfStock = stock <= 0
   const fallback = categoryImage(categories?.slug)
 
@@ -47,6 +49,15 @@ export default function ProductCard({ product, eager = false }) {
         {/* Shop bán (F15); shop chính HcmusWare thì không cần ghi */}
         {shops?.slug && shops.slug !== 'hcmusware' && (
           <p className="line-clamp-1 text-xs text-slate-500">{shops.name}</p>
+        )}
+        {/* Điểm trung bình (F16); chưa có lượt nào thì không ghi gì cho gọn */}
+        {rating && (
+          <p className="text-xs text-slate-600">
+            <span className="text-amber-500" aria-hidden="true">
+              ★
+            </span>{' '}
+            {rating.replace(' ★', '')}
+          </p>
         )}
         <p className="mt-auto pt-2 font-semibold text-red-600 dark:text-red-400">
           {formatPrice(price)}
