@@ -155,3 +155,23 @@ describe.skipIf(!PERF_DATA.games.length)('perfData.js (số liệu BA)', () => {
     expect(r.bottleneck.part).toBe('cpu')
   })
 })
+
+// 7 ví dụ trong docs/g2-ba-tuan3-hieu-nang.md mục 6 (C8) – giao diện Builder hiện đúng các kết quả này.
+describe('C8: 7 ví dụ của BA trên số liệu thật', () => {
+  it.each([
+    ['AMD Ryzen 7 9800X3D', 'GeForce RTX 5060 Ti 16GB', null, 114, 'gpu'],
+    ['Intel Core i5-12400', 'GeForce RTX 4060', null, 75, 'gpu'],
+    ['AMD Ryzen 7 9800X3D', 'Radeon RX 6500 XT', null, 26, 'gpu'],
+    ['AMD Ryzen 5 7600', 'GeForce RTX 5080', null, 194, 'cpu'],
+    ['Intel Core Ultra 5 235', 'GeForce RTX 5080', 15, 192, 'cpu'],
+    ['Intel Core i5-12400', 'GeForce RTX 5070 Ti', 18, 164, 'cpu'],
+    ['AMD Ryzen 3 3200G', 'GeForce RTX 5080', 56, 89, 'cpu'],
+  ])('%s + %s: cảnh báo CPU %s%%, Cyberpunk 1080p %i FPS (%s giới hạn)', (c, g, lost, fps, by) => {
+    const r = estimatePerformance({ cpu: cpu(c), vga: vga(g) }, PERF_DATA)
+    expect(r.status).toBe('ok')
+    expect(r.bottleneck?.percent ?? null).toBe(lost)
+    const cp = r.games.find((x) => x.id === 'cyberpunk-2077').results['1080p']
+    expect(cp.fps).toBe(fps)
+    expect(cp.limitedBy).toBe(by)
+  })
+})
