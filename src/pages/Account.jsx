@@ -4,6 +4,7 @@ import { useAuth } from '../hooks/useAuth'
 import OrderHistory from '../features/orders/OrderHistory'
 import SavedBuilds from '../features/builder/SavedBuilds'
 import MyPriceAlerts from '../features/price/MyPriceAlerts'
+import EmailPrefs from '../features/notifications/EmailPrefs'
 import MyShopCard from '../features/seller/MyShopCard'
 import { PHONE_RE } from '../features/orders/orders'
 import { roleLabel, roleShortcut } from '../lib/roles'
@@ -96,6 +97,8 @@ export default function Account() {
         <SavedBuilds userId={user.id} />
       </div>
       <MyPriceAlerts userId={user.id} />
+      {/* Email thông báo (G2 Tuần 5 – F12) */}
+      <EmailPrefs userId={user.id} email={user.email} />
     </div>
   )
 }

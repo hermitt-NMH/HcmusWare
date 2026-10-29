@@ -191,6 +191,33 @@ export async function markNotificationsRead(ids = null) {
   if (error) throw error
 }
 
+// Công tắc email (US-12.3): email_price_alerts, email_order_status trong profiles của chính mình.
+export async function getEmailPrefs(userId) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('email_price_alerts, email_order_status')
+    .eq('id', userId)
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function setEmailPref(userId, field, on) {
+  if (!['email_price_alerts', 'email_order_status'].includes(field)) throw new Error(field)
+  const { error } = await supabase
+    .from('profiles')
+    .update({ [field]: on })
+    .eq('id', userId)
+  if (error) throw error
+}
+
+// Link "tắt email" cuối thư, không cần đăng nhập. kind: 'gia' | 'don'. Token sai → false.
+export async function unsubscribeEmail(token, kind) {
+  const { data, error } = await supabase.rpc('unsubscribe_email', { p_token: token, p_kind: kind })
+  if (error) throw error
+  return data
+}
+
 // ---------- Đơn hàng (Tuần 5) ----------
 
 // shop_id, payment_code, shops: Giai đoạn 2 – Tuần 3 (mỗi đơn thuộc một shop, nhiều đơn chung mã thanh toán).

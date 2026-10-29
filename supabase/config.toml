@@ -413,3 +413,10 @@ enabled = true
 # formatted with uppercase keywords, indent 2, max width 180, trailing commas,
 # and column/key alignment. Set to "null" to emit raw, unformatted SQL.
 # format_options = "{\"keywordCase\":\"upper\",\"indent\":2,\"maxWidth\":180,\"commaStyle\":\"trailing\"}"
+
+# G2 Tuần 5 (F12 – US-12.3): gửi email thông báo. Gọi từ trigger trong DB (pg_net) bằng x-hook-secret,
+# không có JWT người dùng. Hướng dẫn: supabase/functions/send-email/README.md
+[functions.send-email]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/send-email/index.js"

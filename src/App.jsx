@@ -27,6 +27,7 @@ const BrandList = lazy(() => import('./pages/BrandList'))
 const BrandPage = lazy(() => import('./pages/BrandPage'))
 const ShopPage = lazy(() => import('./pages/ShopPage'))
 const BudgetSuggest = lazy(() => import('./pages/BudgetSuggest'))
+const Unsubscribe = lazy(() => import('./pages/Unsubscribe'))
 
 // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
 const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>
@@ -67,6 +68,8 @@ export default function App() {
             <Route path="/thuong-hieu/:slug" element={<BrandPage />} />
             <Route path="/shop/:slug" element={<ShopPage />} />
             <Route path="/chinh-sach-bao-mat" element={<Privacy />} />
+            {/* Link "tắt email" cuối thư (F12), không cần đăng nhập */}
+            <Route path="/tat-email" element={<Unsubscribe />} />
             <Route path="/build-pc" element={<Builder />} />
             <Route path="/goi-y-cau-hinh" element={<BudgetSuggest />} />
             <Route path="/gio-hang" element={<Cart />} />
