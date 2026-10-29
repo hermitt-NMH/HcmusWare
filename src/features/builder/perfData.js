@@ -54,6 +54,24 @@ export const PERF_DATA = {
       url: 'https://www.techpowerup.com/326342/amd-ryzen-5-7600x3d-beats-ryzen-7-9700x-zen-5-at-gaming',
       note: '7600X3D chậm hơn 7800X3D khoảng 9% trong game',
     },
+    {
+      id: 's7',
+      name: 'ComputerBase – Intel Core Ultra 5 225F und 235 vs. AMD Ryzen 9000 im Test (04/2025)',
+      url: 'https://www.computerbase.de/artikel/prozessoren/intel-core-ultra-5-225f-235-test.92075/seite-2',
+      note: 'Leistungsrating 720p, RTX 5090: Ultra 5 235 (CU) 119 FPS, Ultra 5 245K (CU) 123 FPS',
+    },
+    {
+      id: 's8',
+      name: 'ComputerBase – Intel Core i5-14400F und i5-14500 im Test (02/2024)',
+      url: 'https://www.computerbase.de/artikel/prozessoren/intel-core-i5-14400f-14500-cpu-test.86571/seite-3',
+      note: 'Leistungsrating FPS, RTX 4090: i5-14500 (offen) 73%, i5-12600K 70%, cùng DDR5-4800',
+    },
+    {
+      id: 's9',
+      name: 'ComputerBase – AMD Ryzen 3200G & 3400G im Test (07/2019)',
+      url: 'https://www.computerbase.de/2019-07/amd-ryzen-3200g-3400g-test/2/',
+      note: 'Performancerating Spiele 1080p, VGA rời: Ryzen 3 3200G 73 FPS, Ryzen 5 3600 106 FPS',
+    },
   ],
   // Gốc: Ryzen 7 9800X3D = 100 (s2). Bản F/KF dùng số của bản cùng chip trong bài test (xem tài liệu).
   cpus: {
@@ -67,10 +85,13 @@ export const PERF_DATA = {
     'Core i9-12900F': 78, // = Core i9-12900K (77,7), xung tối đa thấp hơn 100 MHz
     'Core Ultra 5 245KF': 77, // = Core Ultra 5 245K
     'Ryzen 5 7600': 76,
+    'Core Ultra 5 235': 75, // s7: 119 / 123 × Ultra 5 245K (77,4)
+    'Core i5-14500': 72, // s8: 73 / 70 × i5-12600K (69,2)
     'Core i5-12600KF': 69, // = Core i5-12600K
     'Core i5-12400': 64, // = Core i5-12400F
     'Core i3-14100F': 60, // = Core i3-14100
     'Ryzen 5 3600X': 50, // = Ryzen 5 3600 (50,4), xung tối đa cao hơn 200 MHz
+    'Ryzen 3 3200G': 35, // s9: 73 / 106 × Ryzen 5 3600 (50,4)
   },
   // Gốc: RTX 5060 Ti 16 GB = 117% trong biểu đồ 1440p của s1 → điểm = % / 117 × 100.
   gpus: {
