@@ -38,15 +38,25 @@ async function main() {
 
   for (const table of TABLES) {
     const rows = []
+    let missing = false
     for (let from = 0; ; from += PAGE) {
       const { data, error } = await supabase
         .from(table)
         .select('*')
         .order('id')
         .range(from, from + PAGE - 1)
+      // Bảng của migration chưa đẩy lên (vd addresses trước khi db push) → bỏ qua, vẫn sao lưu phần còn lại.
+      if (error?.code === 'PGRST205') {
+        missing = true
+        break
+      }
       if (error) throw new Error(`Đọc bảng ${table} lỗi: ${error.message}`)
       rows.push(...data)
       if (data.length < PAGE) break
+    }
+    if (missing) {
+      console.log(`${table.padEnd(14)} chưa có trên DB này, bỏ qua`)
+      continue
     }
     backup.tables[table] = rows
     console.log(`${table.padEnd(14)} ${rows.length} dòng`)
