@@ -26,6 +26,7 @@ import {
 import PartPicker from '../features/builder/PartPicker'
 import BuildSummary from '../features/builder/BuildSummary'
 import SaveBuild from '../features/builder/SaveBuild'
+import PerformancePanel from '../features/builder/PerformancePanel'
 
 // Cấu hình đang build lưu trong localStorage (chỉ id) để tải lại trang không mất.
 function loadBuild() {
@@ -152,13 +153,23 @@ export default function Builder() {
 
       {/* Máy tính: bảng 8 dòng + tổng kết bên phải (từ 1280 px; nhỏ hơn thì nằm dưới bảng) */}
       <div className="hidden gap-4 md:grid xl:grid-cols-[1fr_320px] xl:items-start">
-        <DesktopTable {...common} />
+        <div className="space-y-4">
+          <DesktopTable {...common} />
+          {/* F09: FPS dự kiến của CPU + VGA đang chọn */}
+          <PerformancePanel build={build} />
+        </div>
         <div className="xl:sticky xl:top-36">{summary}</div>
       </div>
 
       {/* Điện thoại: từng bước */}
       <div className="md:hidden">
-        <MobileSteps key={shared.loadCount} {...common} totalPrice={totalPrice} summary={summary} />
+        <MobileSteps
+          key={shared.loadCount}
+          {...common}
+          totalPrice={totalPrice}
+          summary={summary}
+          performance={<PerformancePanel build={build} />}
+        />
       </div>
     </div>
   )
@@ -468,6 +479,7 @@ function MobileSteps({
   statusOf,
   totalPrice,
   summary,
+  performance, // khung ước tính FPS (F09), hiện ở bước Tổng kết
   onSelect,
   onRemove,
   onRamQty,
@@ -630,6 +642,7 @@ function MobileSteps({
             ))}
           </ul>
           {summary}
+          {performance}
         </section>
       )}
 
