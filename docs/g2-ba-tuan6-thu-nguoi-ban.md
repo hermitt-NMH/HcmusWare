@@ -1,7 +1,7 @@
 # BA – Giai đoạn 2, Tuần 6: cho 5 bạn thử vai người bán đăng 1 sản phẩm
 
 Người phụ trách: BA · Dùng cho: PM (số liệu slide bảo vệ, #123), Dev (lỗi tìm được, #118). Issue #121.
-Phiên bản 1 – kịch bản và phiếu ghi. Hạn chạy: **T5 31/12** trên `hcmusware.vercel.app` (bản sau code freeze).
+Phiên bản 1.1 – kịch bản và phiếu ghi; thêm kết quả chạy thử kịch bản (mục 3a). Hạn chạy: **T5 31/12** trên `hcmusware.vercel.app` (bản sau code freeze).
 Kết quả ghi vào mục 5 của file này rồi mới đóng #121.
 
 ## 1. Câu hỏi cần trả lời
@@ -30,14 +30,15 @@ Thẻ sản phẩm (in hoặc gửi ảnh chụp):
 
 | Ô trên form | Nội dung                                          |
 | ----------- | ------------------------------------------------- |
-| Tên         | Corsair Vengeance RGB Pro 32GB (2x16GB) DDR4-3600 |
 | Danh mục    | RAM                                               |
+| Tên         | Corsair Vengeance RGB Pro 32GB (2x16GB) DDR4-3600 |
 | Thương hiệu | Corsair                                           |
 | Giá         | 2.450.000 ₫                                       |
 | Tồn kho     | 3                                                 |
 | Ảnh         | file đã gửi trước                                 |
 | Thông số    | DDR4 · kit **2 thanh × 16 GB** · bus 3600 MHz     |
 
+Thứ tự dòng trên thẻ giống thứ tự ô trên form (Danh mục đứng đầu vì ô thông số đổi theo danh mục).
 Thẻ cố ý ghi "2 thanh × 16 GB" thay vì "32 GB": ô "Tổng dung lượng kit" là chỗ BA đoán dễ nhập sai nhất ([thong-so-bat-buoc.md](thong-so-bat-buoc.md), mục RAM).
 
 Các bước bạn thử phải đi qua (người quan sát chỉ dùng để ghi, **không** đọc cho bạn thử):
@@ -52,6 +53,26 @@ Các bước bạn thử phải đi qua (người quan sát chỉ dùng để gh
 | 6    | Bấm "Đăng và gửi duyệt", thấy sản phẩm nhãn "Chờ duyệt"  | `/kenh-nguoi-ban`                   |
 
 Sau bước 2, nếu bạn thử hỏi "giờ làm gì?", trả lời "shop đang chờ duyệt, bạn đợi một chút" rồi admin duyệt ngay. Bước 3 trừ khỏi thời gian vì lúc demo thật admin không duyệt tức thì.
+
+## 3a. Chạy thử kịch bản (30/10/2026) – không tính vào kết quả
+
+Trước buổi thật, BA cho script đi đúng 6 bước trên bản build local (main @ 2f00163, Supabase local), chỉ bấm theo chữ hiện trên màn hình như người mới, ở 360 px và 1366 px. Mục đích: kiểm kịch bản và bắt lỗi chặn trước khi mời người thật. **Không** phải số đo người dùng, không đưa vào mục 5 hay slide.
+
+| Bước                 | 360 px         | 1366 px        | Ghi chú                                                                                                          |
+| -------------------- | -------------- | -------------- | ---------------------------------------------------------------------------------------------------------------- |
+| 1 Đăng ký            | Đạt, 4 lần bấm | Đạt, 3 lần bấm | Điện thoại: "Đăng nhập" nằm trong menu ☰, phải mở menu trước                                                    |
+| 2 Mở shop            | Đạt, 4 lần bấm | Đạt, 3 lần bấm | Header hiện **tên gọi** (vd "Một"), không có chữ "Tài khoản" → xem bạn thử có nhận ra đó là link tài khoản không |
+| 3 Admin duyệt        | Đạt            | Đạt            | Chuông người bán có số 1 "Shop đã được duyệt" (F12)                                                              |
+| 4 Vào Kênh người bán | Đạt, 3 lần bấm | Đạt, 2 lần bấm | Tải lại trang là có "Kênh người bán", không cần đăng nhập lại                                                    |
+| 5 Điền form          | Đạt            | Đạt            | Mọi nhãn trên thẻ đều có trên form; giá gõ "2.450.000" lưu đúng 2450000                                          |
+| 6 Gửi duyệt          | Đạt            | Đạt            | Sản phẩm hiện "Chờ duyệt"; DB đúng cả 4 thông số, 1 ảnh                                                          |
+
+Không tràn ngang ở 360 px, không lỗi console. Dữ liệu thử đã xóa.
+
+Điều rút ra cho buổi thật:
+
+- Nhập **16** vào "Tổng dung lượng kit" với 2 thanh, form **không** báo lỗi: đúng, vì kit 2 × 8 GB hợp lệ. Chỉ dòng gợi ý "kit 2 × 16 GB nhập 32" dưới ô giúp người thử nhập đúng → giữ bẫy trên thẻ, người quan sát để ý bạn thử có đọc gợi ý không.
+- Không tìm thấy lỗi chặn nào → có thể mời 5 bạn. Bản chạy thử là local; buổi thật vẫn chạy trên Vercel như mục 2.
 
 ## 4. Tiêu chí "tự làm xong"
 
