@@ -406,3 +406,29 @@ Trước khi chạy: `npx supabase migration list --linked` đủ 14 migration �
 - `test:e2e:g2t2:online` lần 1 lỗi G2-02 (không thấy "Đã gửi đăng ký shop", DB vẫn đúng `pending`) rồi dừng vì không kết nối được Supabase (`ConnectTimeoutError` 10 giây). Phần dọn dẹp vẫn chạy. Chạy lại ngay sau đó 13/13. Lỗi mạng của máy đo, không phải lỗi web.
 - Sau khi chạy: 1 shop (HcmusWare), 128 sản phẩm, tồn kho và giá cả 128 sản phẩm khớp bản backup, bucket ảnh trống, không còn tài khoản `g2t2-*`, `qa-*`, `rls-*`. Phần tăng thêm (3 đơn đã hủy, 1 khách `test1-khach-*`, 1 địa chỉ, 5 thông báo) là của `test:e2e` giai đoạn 1, cố ý giữ như ghi ở lần chạy 29/10.
 - Nếu Dev1 sửa #179 thì chạy lại `test:ui`, `test:regression:online` và `test:lighthouse` trên bản cuối.
+
+## Test case – Thông báo khi đổi trạng thái đơn, duyệt, đơn mới, câu hỏi (Giai đoạn 2, Tuần 5)
+
+Theo US-12.1–12.3, thẻ #113. Chạy bằng `npm run test:e2e:g2t5` / `test:e2e:g2t5:online` (`scripts/e2e-g2t5.js`). Mọi thao tác gọi REST/RPC bằng token của đúng người làm nên trigger trong DB chạy thật (không chèn thông báo tay); 2 ca cuối kiểm chuông trên giao diện. Email của tài khoản test tắt từ đầu (địa chỉ `@hcmusware.test` không có thật). Script tự tạo `g2t5-*@hcmusware.test`, shop và sản phẩm thử, cuối cùng xóa sạch. Giao diện chuông chi tiết (9+, 20 dòng, tương phản, Esc) đã kiểm ở QA G2T5 (`QA-bao-loi-G2T5.md`); phía DB ở `test:rls` T5-01…T5-11.
+
+| Mã    | Vai trò           | Bước                                            | Kết quả mong đợi                                                                               |
+| ----- | ----------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| G5-01 | Khách → admin     | Khách đăng ký shop; admin duyệt                 | Shop `pending` → người bán có "Shop đã được duyệt"                                             |
+| G5-02 | Người bán → admin | Đăng sản phẩm; admin duyệt                      | Sản phẩm `pending` → người bán có "Sản phẩm đã được duyệt", link tới sản phẩm                  |
+| G5-03 | Khách             | Đặt đơn sản phẩm của shop                       | Người bán có "Shop có đơn mới #<mã>" → `/kenh-nguoi-ban/don-hang`                              |
+| G5-04 | Khách             | Hỏi về sản phẩm                                 | Người bán có "Câu hỏi mới về sản phẩm" → `/kenh-nguoi-ban/cau-hoi`                             |
+| G5-05 | Người bán         | Chuyển đơn Đã xác nhận → Đang giao → Hoàn tất   | Khách có đủ 3 thông báo đúng thứ tự, link `/don-hang/<mã>`                                     |
+| G5-06 | Người bán         | Hủy đơn khác                                    | Khách có "Đơn hàng #<mã>: Đã hủy"                                                              |
+| G5-07 | Khách             | Gọi thẳng API đổi trạng thái đơn của mình       | DB vẫn `pending` (RLS chỉ cho admin, chủ shop), không có thông báo                             |
+| G5-08 | Khách             | Đã tắt "Trạng thái đơn hàng" trong `/tai-khoan` | Thông báo đơn không xếp hàng gửi email (`email_status` rỗng)                                   |
+| G5-09 | Khách, 360        | Mở chuông, bấm "Đơn hàng #<mã>: Hoàn tất"       | Số trên chuông = số chưa đọc trong DB; mở `/don-hang/<mã>`, DB đánh dấu đã đọc, danh sách đóng |
+| G5-10 | Người bán, 1280   | Mở chuông, bấm "Câu hỏi mới"                    | Số trên chuông đúng; mở `/kenh-nguoi-ban/cau-hoi`, thấy câu hỏi, DB đánh dấu đã đọc            |
+
+### Kết quả lần chạy 30/10/2026 – G2 Tuần 5 (main fe5cc1d)
+
+| Môi trường                     | Kết quả                                                                                               |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| Local (build + Supabase local) | 11/11 (G5-01…G5-10, Console)                                                                          |
+| Vercel + Supabase online       | 11/11; trước khi chạy `db:backup` (`…-20261030-1523.json`), sau khi chạy số dòng mọi bảng khớp backup |
+
+Ghi nhận: `test:e2e` (giai đoạn 1) để tài khoản test bật email nên mỗi lần chạy online gửi 3–4 email thật qua Brevo tới địa chỉ `@hcmusware.test` không có thật (`email_status = sent`, sẽ bị trả về). Không ảnh hưởng người dùng, nhưng nhiều email bị trả về có thể làm Brevo hạ uy tín người gửi. Nên tắt email cho tài khoản test trong script đó như `e2e-g2t5.js` (mức Thấp, KTS/Test2 sau buổi bảo vệ).
