@@ -23,6 +23,8 @@
     "test:rls:online": "node --env-file=.env.online.local scripts/rls-test.js",
     "test:roles": "node --env-file=.env.local scripts/role-test.js",
     "test:roles:online": "node --env-file=.env.online.local scripts/role-test.js https://hcmusware.vercel.app",
+    "test:regression:online": "node --env-file=.env.online.local scripts/regression-readonly.js https://hcmusware.vercel.app",
+    "test:lighthouse": "node scripts/lighthouse.js",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
