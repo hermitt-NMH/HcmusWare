@@ -340,3 +340,51 @@ Không phát hiện lỗi mới. Ghi nhận thêm:
 - Sau khi chạy, số dòng online của shop, sản phẩm, đánh giá, bình luận, thương hiệu và ảnh trong bucket khớp bản backup; đơn và địa chỉ chỉ tăng đúng phần của `test:e2e` nói trên.
 
 Chưa thử trên điện thoại thật; mọi lần chạy dùng Edge headless giả lập 360 px.
+
+## Test case – Hồi quy chỉ đọc trên Vercel và Lighthouse sáng/tối (Giai đoạn 2, Tuần 6)
+
+Theo #115, #116, #120. Hai bộ này **không ghi gì vào DB online** (không tạo tài khoản, không đặt đơn) nên chạy được cả sau code freeze, không cần `db:backup` trước.
+
+- `npm run test:regression:online` (`scripts/regression-readonly.js`, Edge headless, chỉ cần khóa anon trong `.env.online.local`).
+- `npm run test:lighthouse` (`scripts/lighthouse.js`, Lighthouse 12.8.2 mặc định Mobile). Chế độ tối bằng cờ `--force-dark-mode` của trình duyệt (prefers-color-scheme = dark, đã thử: `<html class="dark">`). Điểm Hiệu năng dưới 85 thì đo thêm 2 lần, lấy trung vị.
+
+| Mã       | Vai trò, cỡ màn hình                  | Bước                                                                                                                                                                                                                                                                                              | Kết quả mong đợi                                                                                                                    |
+| -------- | ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| HQ-TRANG | Chưa đăng nhập, 360 và 1280, sáng/tối | Mở 16 trang công khai: chủ, tất cả sản phẩm, tìm "ryzen", danh mục CPU, chi tiết sản phẩm, thương hiệu (danh sách và 1 hãng), shop, Build PC, gợi ý cấu hình, giỏ, đăng nhập, đăng ký, chính sách, `/tat-email`, 404                                                                              | Đúng chế độ máy đang để; có nội dung; không cuộn ngang; header không rộng hơn màn hình; Console không lỗi đỏ; chỉ trang lạ hiện 404 |
+| HQ-CHAN  | Chưa đăng nhập, 1280                  | Mở 12 trang cần đăng nhập/vai trò: `/admin`, `/admin/nguoi-dung`, `/admin/san-pham`, `/admin/duyet`, `/kenh-nguoi-ban`, `/kenh-nguoi-ban/san-pham/moi`, `/tai-khoan`, `/tai-khoan/dia-chi`, `/tai-khoan/mo-shop`, `/don-hang/1`, `/thanh-toan`, `/thanh-toan/mo-phong/1`                          | Chuyển sang `/dang-nhap?next=<đúng trang>`; trong lúc tải không chớp chữ của trang quản lý                                          |
+| HQ-EMAIL | Chưa đăng nhập                        | `/tat-email` thiếu token, token sai dạng, sai `loai`; token đúng dạng UUID nhưng không có thật (`gia`, `don`) rồi bấm "Tắt …"                                                                                                                                                                     | Đều báo "Link không hợp lệ", không có "Đã tắt" (RPC chỉ UPDATE theo token, không khớp dòng nào → không đổi dữ liệu)                 |
+| HQ-MUA   | Chưa đăng nhập, 360 và 1280           | Gõ "ryzen" vào ô tìm kiếm ở Header → mở sản phẩm còn hàng → Thêm vào giỏ → Giỏ hàng → Thanh toán                                                                                                                                                                                                  | Ra kết quả; giỏ có đúng sản phẩm; Thanh toán đưa sang `/dang-nhap?next=/thanh-toan` (dừng ở đây, không đặt đơn)                     |
+| HQ-API   | Khóa anon gọi thẳng REST/RPC          | Đọc `profiles`, `orders`, `order_items`, `addresses`, `notifications`, `price_alerts`, `saved_builds`; sản phẩm/shop khác `active`; đánh giá/hỏi đáp `hidden`; gọi `admin_list_users`, `admin_list_shops`, `seller_unanswered_questions`, `/auth/v1/admin/users`; giải mã mọi JWT trong bundle JS | 0 dòng hoặc bị từ chối (401/403); không hàm nào trả 404 (sai tên = ca test vô nghĩa); bundle chỉ có khóa `anon`                     |
+| LH       | Lighthouse Mobile, sáng và tối        | 10 trang: `/`, `/san-pham`, `/danh-muc/cpu`, `/san-pham/1`, `/thuong-hieu`, `/shop/hcmusware`, `/build-pc`, `/goi-y-cau-hinh`, `/gio-hang`, `/dang-nhap`                                                                                                                                          | Hiệu năng, Trợ năng, Best Practices, SEO đều ≥ 85 ở cả 2 chế độ                                                                     |
+
+Đăng nhập theo từng vai trò (khách, người bán, admin) vẫn do `test:roles:online` và `test:rls:online` kiểm; 2 bộ đó có tạo/xóa dữ liệu nên phải `db:backup` trước.
+
+### Kết quả lần chạy 30/10/2026 – hồi quy chỉ đọc và Lighthouse (main 4a671b0, Edge headless)
+
+| Bộ test                                       | Kết quả                                                                                                                             |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `npx vitest run`, `npx eslint` (2 script mới) | 288/288, lint sạch                                                                                                                  |
+| `test:regression:online`                      | 99/99 đạt: HQ-API 16/16, HQ-TRANG 64/64, HQ-CHAN 12/12, HQ-EMAIL 5/5, HQ-MUA 2/2                                                    |
+| `test:lighthouse` (Mobile)                    | **Chưa đạt #115**: điểm Hiệu năng dưới 85, chi tiết bên dưới. Trợ năng 98–100, Best Practices 100, SEO 100 ở mọi trang, cả 2 chế độ |
+
+Điểm Hiệu năng (trung vị 3 lần nếu lần đầu < 85). Lần 1 khoảng 12:50, chưa bật được chế độ tối (cờ trình duyệt bị shell tách, đã sửa script) nên chỉ có cột sáng. Lần 2 khoảng 20:00, chế độ tối đã kiểm bằng ảnh chụp khác bản sáng.
+
+| Trang             | Sáng lần 1 | Sáng lần 2 | Tối lần 2           |
+| ----------------- | ---------- | ---------- | ------------------- |
+| `/`               | 99         | 75         | 78                  |
+| `/san-pham`       | 79         | 70         | 69                  |
+| `/danh-muc/cpu`   | 82         | 71         | 73                  |
+| `/san-pham/1`     | 86         | 73         | 73                  |
+| `/thuong-hieu`    | 82         | 71         | 73                  |
+| `/shop/hcmusware` | 78         | 70         | 71                  |
+| `/build-pc`       | 95         | 77         | 79                  |
+| `/goi-y-cau-hinh` | 96         | 79         | 79                  |
+| `/gio-hang`       | 96         | 76         | không đo được (403) |
+| `/dang-nhap`      | 95         | 80         | chưa đo             |
+
+Nhận xét:
+
+- Sáng và tối chênh nhau trong khoảng dao động (≤ 3 điểm): chế độ tối không làm chậm trang.
+- Lần 2 mọi trang tụt khoảng 20 điểm, kể cả `/gio-hang`, trang không gọi dữ liệu, trong khi code không đổi. TBT chỉ 10–100 ms, bundle khoảng 170 KB nén; FCP tăng lên khoảng 4,2 giây, thời gian Vercel trả HTML dao động 60–640 ms. Nhiều khả năng do mạng máy đo buổi tối. Đo `vite preview` ngay trên máy cùng lúc: `/gio-hang` 86–87, `/dang-nhap` 87–89.
+- Cả 2 lần, các trang danh sách (`/san-pham`, `/danh-muc/cpu`, `/thuong-hieu`, `/shop/…`) đều dưới 85. LCP là ảnh sản phẩm đầu tiên, phần chờ trước khi tải ảnh (resource load delay) 1–4,4 giây: ảnh chỉ được biết sau khi JS chạy xong và Supabase trả danh sách. Ảnh đã có `fetchPriority="high"`, đã preconnect Supabase và font, nên phải đổi cách tải mới cải thiện được (vd. vẽ sẵn khung/ảnh hàng đầu, cache danh sách). Đã báo BUG-G2T6-01 (#179) cho Dev1.
+- Đo dồn dập khoảng 60 lượt thì Vercel chặn IP máy đo (403, `X-Vercel-Mitigated: challenge`) khoảng 20–30 phút, cả với người dùng thật cùng mạng. Không chạy `test:lighthouse` từ mạng chung của nhóm ngay trước giờ demo.
