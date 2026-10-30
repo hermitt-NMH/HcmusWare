@@ -1,7 +1,7 @@
 # User story – Giai đoạn 2 (F13–F18, F12, F11)
 
 Người phụ trách: BA · Dùng cho: Dev1/Dev2/Dev3/KTS (làm tính năng), Test1/Test2 (test case).
-Phiên bản 1.5 – Tuần 5 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3; 1.4: chốt C9–C11 cho F16; 1.5: thêm F11 thu cũ đổi mới). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
+Phiên bản 1.6 – Tuần 6 giai đoạn 2 (1.1: thêm F12 thông báo trong web và email thay Zalo OA; 1.2: chốt C1–C5; 1.3: chốt C6–C8 sau QA G2T3; 1.4: chốt C9–C11 cho F16; 1.5: thêm F11 thu cũ đổi mới; 1.6: chốt C12–C13 cho F12). Phạm vi theo tài liệu "Kế hoạch code giai đoạn 2" (27/10/2026).
 
 Liên quan:
 
@@ -14,7 +14,7 @@ Quy ước:
 - Mỗi tiêu chí viết dạng **Given / When / Then**. Test1 viết test case từ đúng các dòng này.
 - Tiêu chí có đánh dấu **[DB]** phải đúng cả khi gọi thẳng Supabase bằng anon key + token của vai trò đó (không qua giao diện). Test2 kiểm bằng `npm run test:rls`.
 - **Tuần** = tuần mà tính năng phải chạy được trên Vercel theo kế hoạch.
-- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C11 (BA đề xuất, KTS/PM chốt) và việc cần làm kèm theo.
+- Mục **Đã chốt** ở cuối file ghi các quyết định C1–C13 (BA đề xuất, KTS/PM chốt) và việc cần làm kèm theo.
 
 ## Vai trò
 
@@ -298,6 +298,7 @@ Thông báo được **tạo trong DB** (trigger khi đơn đổi trạng thái,
 - Tạo thông báo khi: shop được duyệt hoặc bị từ chối (kèm lý do); sản phẩm được duyệt hoặc bị trả lại (kèm lý do); shop có đơn mới; có câu hỏi mới trên sản phẩm của shop.
 - Bấm thông báo thì mở đúng trang trong `/kenh-nguoi-ban`.
 - Shop bị khóa: người bán nhận 1 thông báo "Shop đã bị khóa".
+- Áp dụng cho cả US-12.1 và US-12.2: không báo cho chính người vừa thao tác (C12); shop HcmusWare không tạo thông báo người bán (C13).
 
 ### US-12.3 (làm nếu kịp): Là khách hàng, tôi muốn nhận email cho những thông báo quan trọng để biết cả khi không mở web.
 
@@ -420,3 +421,12 @@ Ba quy tắc DEV đề xuất ở PR #153 (mục "Cần BA xác nhận"). BA đ�
 | C9  | Sản phẩm shop HcmusWare: ai trả lời với nhãn "Người bán"? | **Admin.** Shop HcmusWare có chủ là admin nhưng admin không vào kênh người bán (C5), nên admin gắn nhãn "Người bán" ngay trên trang sản phẩm.         | Không cần làm thêm: đã có ở PR #153 (`is_seller`). Mục "Câu hỏi chưa trả lời" vẫn chỉ ở kênh người bán.     |
 | C10 | Người viết có tự xóa đánh giá không?                      | **Không, chỉ sửa.** Xóa rồi viết lại sẽ lách được việc admin ẩn đánh giá. Đánh giá vi phạm do admin ẩn (US-16.4).                                     | Không cần làm thêm: DB không cấp quyền xóa cho người viết (PR #153). Giao diện không có nút "Xóa".          |
 | C11 | Ai trả lời được câu hỏi?                                  | **Mọi người đã đăng nhập**, kể cả khách đã mua, để chia sẻ kinh nghiệm. Chỉ trả lời của chủ shop (hoặc admin với shop HcmusWare) có nhãn "Người bán". | Không cần làm thêm: đã có ở PR #153, #155. Test1 thêm ca: khách thường trả lời được, trả lời không có nhãn. |
+
+## Đã chốt cho F12 (30/10/2026)
+
+Hai quy tắc DEV đề xuất ở PR #165 (mục "Cần BA xác nhận"), Issue #174. BA đã đối chiếu migration `20261221000000_g2_tuan5_thong_bao.sql` và `npm run test:rls`: **giữ đúng như code đã merge**, không cần migration mới trước code freeze.
+
+| Mã  | Câu hỏi                                          | Quyết định                                                                                                                                                                                                                                                                                                                                                                                                                                   | Việc cần làm                                                                                                                                                                                                                                                                         |
+| --- | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| C12 | Có báo cho chính người vừa thao tác không?       | **Không.** Thông báo dùng để báo việc người khác vừa làm; việc mình vừa làm thì đã thấy ngay trên màn hình. Ví dụ: khách tự thanh toán online → đơn Đã xác nhận, chủ shop tự hỏi trên sản phẩm của mình, admin tự duyệt/khóa (admin không nhận gì). Việc do hệ thống chạy (không có người đăng nhập) vẫn báo bình thường.                                                                                                                    | Không cần làm thêm: trigger so người nhận với `auth.uid()` (`orders_notify_status`, `seller_to_notify`, `comments_notify`). Đã có test T5-02 (người bán xác nhận → khách nhận 1, người bán nhận 0; khách tự thanh toán → nhận 0) và T5-06 (admin nhận 0).                            |
+| C13 | Shop HcmusWare có tạo thông báo người bán không? | **Không.** Shop HcmusWare có chủ là admin nhưng admin quản lý ở `/admin`, không vào kênh người bán (C5), nên thông báo dẫn tới `/kenh-nguoi-ban/...` sẽ mở ra trang "Không có quyền truy cập". Khách mua hàng HcmusWare **vẫn** nhận thông báo đơn, giá giảm, trả lời câu hỏi như shop khác. Hệ quả chấp nhận: admin không được báo câu hỏi mới trên sản phẩm HcmusWare, phải xem ở trang sản phẩm (như C9); ghi lại để xem ở giai đoạn sau. | Không cần sửa code: `seller_to_notify` bỏ qua shop `slug = 'hcmusware'`. Chưa có test riêng: Test2 thêm ca vào `test:rls` (đặt đơn và hỏi trên sản phẩm HcmusWare → admin nhận 0, khách vẫn nhận thông báo khi admin đổi trạng thái đơn) – chỉ sửa script test, không cần migration. |
