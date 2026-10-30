@@ -388,3 +388,21 @@ Nhận xét:
 - Lần 2 mọi trang tụt khoảng 20 điểm, kể cả `/gio-hang`, trang không gọi dữ liệu, trong khi code không đổi. TBT chỉ 10–100 ms, bundle khoảng 170 KB nén; FCP tăng lên khoảng 4,2 giây, thời gian Vercel trả HTML dao động 60–640 ms. Nhiều khả năng do mạng máy đo buổi tối. Đo `vite preview` ngay trên máy cùng lúc: `/gio-hang` 86–87, `/dang-nhap` 87–89.
 - Cả 2 lần, các trang danh sách (`/san-pham`, `/danh-muc/cpu`, `/thuong-hieu`, `/shop/…`) đều dưới 85. LCP là ảnh sản phẩm đầu tiên, phần chờ trước khi tải ảnh (resource load delay) 1–4,4 giây: ảnh chỉ được biết sau khi JS chạy xong và Supabase trả danh sách. Ảnh đã có `fetchPriority="high"`, đã preconnect Supabase và font, nên phải đổi cách tải mới cải thiện được (vd. vẽ sẵn khung/ảnh hàng đầu, cache danh sách). Đã báo BUG-G2T6-01 (#179) cho Dev1.
 - Đo dồn dập khoảng 60 lượt thì Vercel chặn IP máy đo (403, `X-Vercel-Mitigated: challenge`) khoảng 20–30 phút, cả với người dùng thật cùng mạng. Không chạy `test:lighthouse` từ mạng chung của nhóm ngay trước giờ demo.
+
+### Kết quả lần chạy 30/10/2026 tối – các bộ có ghi dữ liệu trên Vercel (main ed3ade7, #120, #173)
+
+Trước khi chạy: `npx supabase migration list --linked` đủ 14 migration ở cả Local lẫn Remote (gồm `20261221000000`–`20261223000000` của Tuần 5); Vercel đã deploy `ed3ade7`; `npm run db:backup` (bản `backups/lfifbzcehpemmhpqkffh-20261030-1420.json`). Các bộ chạy lần lượt, nghỉ 60 giây giữa 2 bộ để Vercel không chặn IP.
+
+| Bộ test                       | Vercel + Supabase online |
+| ----------------------------- | ------------------------ |
+| `test:rls:online`             | 67/67                    |
+| `test:e2e:g2t2:online`        | 13/13 (lần 2, xem dưới)  |
+| `test:e2e:g2t3:online`        | 10/10                    |
+| `test:e2e:g2t4:online`        | 9/9                      |
+| `test:e2e:online`             | 13/13                    |
+| `test:roles:online`           | 44/44                    |
+| `test:ui` (`BASE_URL` Vercel) | 35/35                    |
+
+- `test:e2e:g2t2:online` lần 1 lỗi G2-02 (không thấy "Đã gửi đăng ký shop", DB vẫn đúng `pending`) rồi dừng vì không kết nối được Supabase (`ConnectTimeoutError` 10 giây). Phần dọn dẹp vẫn chạy. Chạy lại ngay sau đó 13/13. Lỗi mạng của máy đo, không phải lỗi web.
+- Sau khi chạy: 1 shop (HcmusWare), 128 sản phẩm, tồn kho và giá cả 128 sản phẩm khớp bản backup, bucket ảnh trống, không còn tài khoản `g2t2-*`, `qa-*`, `rls-*`. Phần tăng thêm (3 đơn đã hủy, 1 khách `test1-khach-*`, 1 địa chỉ, 5 thông báo) là của `test:e2e` giai đoạn 1, cố ý giữ như ghi ở lần chạy 29/10.
+- Nếu Dev1 sửa #179 thì chạy lại `test:ui`, `test:regression:online` và `test:lighthouse` trên bản cuối.
