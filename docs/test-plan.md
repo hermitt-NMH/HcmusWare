@@ -432,3 +432,33 @@ Theo US-12.1–12.3, thẻ #113. Chạy bằng `npm run test:e2e:g2t5` / `test:e
 | Vercel + Supabase online       | 11/11; trước khi chạy `db:backup` (`…-20261030-1523.json`), sau khi chạy số dòng mọi bảng khớp backup |
 
 Ghi nhận: `test:e2e` (giai đoạn 1) để tài khoản test bật email nên mỗi lần chạy online gửi 3–4 email thật qua Brevo tới địa chỉ `@hcmusware.test` không có thật (`email_status = sent`, sẽ bị trả về). Không ảnh hưởng người dùng, nhưng nhiều email bị trả về có thể làm Brevo hạ uy tín người gửi. Nên tắt email cho tài khoản test trong script đó như `e2e-g2t5.js` (mức Thấp, KTS/Test2 sau buổi bảo vệ).
+
+### Kết quả lần chạy 31/10/2026 sáng – bản cuối sau PR #181 (main 6870610)
+
+| Bộ test                  | Vercel + Supabase online                                                         |
+| ------------------------ | -------------------------------------------------------------------------------- |
+| `test:regression:online` | 99/99                                                                            |
+| `test:ui`                | 35/35                                                                            |
+| `test:e2e:online`        | 13/13 (`db:backup` trước: `…-20261031-0033.json`)                                |
+| `test:e2e:g2t5:online`   | 11/11 (chạy 30/10 tối, trước khi merge #181)                                     |
+| `test:lighthouse`        | Trợ năng 98–100, Best Practices 100, SEO 100; **Hiệu năng 70–80, chưa đạt ≥ 85** |
+
+Lighthouse Mobile, Hiệu năng (trung vị 3 lần):
+
+| Trang             | Sáng | Tối | LCP sáng | Trước #181 (30/10 tối, sáng) |
+| ----------------- | ---- | --- | -------- | ---------------------------- |
+| `/`               | 78   | 80  | 4,1 s    | 75                           |
+| `/san-pham`       | 74   | –   | 4,1 s    | 70 (LCP 4,8 s)               |
+| `/danh-muc/cpu`   | 77   | 76  | 4,3 s    | 71 (LCP 5,5 s)               |
+| `/san-pham/1`     | 77   | 77  | 4,2 s    | 73 (LCP 4,9 s)               |
+| `/thuong-hieu`    | 75   | 77  | 4,6 s    | 71 (LCP 5,4 s)               |
+| `/shop/hcmusware` | 70   | 70  | 4,9 s    | 70 (LCP 5,3 s)               |
+| `/build-pc`       | 78   | 78  | 4,0 s    | 77                           |
+| `/goi-y-cau-hinh` | 80   | 80  | 3,9 s    | 79                           |
+| `/gio-hang`       | 79   | 79  | 3,9 s    | 76                           |
+| `/dang-nhap`      | 79   | 80  | 3,9 s    | 80                           |
+
+- `tối /san-pham` không đo được: Vercel chặn IP máy đo giữa chừng (403), như lần trước.
+- Sau #181, các trang danh sách tăng 4–6 điểm, LCP giảm 0,4–1,2 giây và đã sát mức trang không gọi dữ liệu (`/gio-hang`, `/dang-nhap` 79–80). Riêng `/shop` không đổi: phải có id shop mới tải được sản phẩm nên chỉ gọi sẵn được bước đầu.
+- Phần còn thiếu nằm ở mọi trang, không riêng trang danh sách: FCP mô phỏng khoảng 3,9 giây (đo thật 0,9–2,1 giây) vì web là SPA, phải tải ~180 KB JS nén rồi mới vẽ được dưới 4G chậm giả lập. Edge Vercel trả HTML từ cache (`X-Vercel-Cache: HIT`, TTFB ~0,2 giây), không phải do máy chủ. Muốn ≥ 85 phải vẽ sẵn HTML (prerender/SSR) hoặc tách nhỏ JS chạy lần đầu; không hợp lúc code freeze.
+- Lần đo 30/10 trưa (95–99 ở trang không gọi dữ liệu) không lặp lại được ở 3 lần đo sau (30/10 tối, 31/10 sáng, kể cả trước #181), coi là bất thường.
