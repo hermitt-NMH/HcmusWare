@@ -1,5 +1,6 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import { CartContext } from '../hooks/useCart'
+import { useStoredState } from '../hooks/useStoredState'
 import {
   STORAGE_KEY,
   addManyToCart,
@@ -24,15 +25,16 @@ function loadCart() {
 // Bọc toàn bộ app (trong main.jsx). Giỏ lưu trong localStorage nên chưa đăng nhập vẫn dùng được,
 // tải lại trang không mất. Mở 2 tab thì tab kia tự cập nhật theo (sự kiện "storage").
 export function CartProvider({ children }) {
-  const [items, setItems] = useState(loadCart)
+  const [items, setItems, loaded] = useStoredState(loadCart, [])
 
   useEffect(() => {
+    if (!loaded) return
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
     } catch {
       // Không lưu được thì giỏ vẫn chạy trong phiên hiện tại.
     }
-  }, [items])
+  }, [items, loaded])
 
   useEffect(() => {
     const onStorage = (e) => {
@@ -40,21 +42,24 @@ export function CartProvider({ children }) {
     }
     window.addEventListener('storage', onStorage)
     return () => window.removeEventListener('storage', onStorage)
-  }, [])
+  }, [setItems])
 
   const addItem = useCallback(
     (product, qty = 1) => setItems((cur) => addToCart(cur, product, qty)),
-    [],
+    [setItems],
   )
   // entries: [{ product, qty }] – dùng khi thêm cả cấu hình từ Build PC.
-  const addItems = useCallback((entries) => setItems((cur) => addManyToCart(cur, entries)), [])
-  const setQty = useCallback((id, qty) => setItems((cur) => setItemQty(cur, id, qty)), [])
-  const removeItem = useCallback((id) => setItems((cur) => removeFromCart(cur, id)), [])
-  const clear = useCallback(() => setItems([]), [])
+  const addItems = useCallback(
+    (entries) => setItems((cur) => addManyToCart(cur, entries)),
+    [setItems],
+  )
+  const setQty = useCallback((id, qty) => setItems((cur) => setItemQty(cur, id, qty)), [setItems])
+  const removeItem = useCallback((id) => setItems((cur) => removeFromCart(cur, id)), [setItems])
+  const clear = useCallback(() => setItems([]), [setItems])
   // Cập nhật giá/tồn kho theo dữ liệu mới từ DB (trang giỏ hàng gọi khi mở).
   const refresh = useCallback(
     (products) => setItems((cur) => mergeFreshProducts(cur, products)),
-    [],
+    [setItems],
   )
 
   const value = useMemo(

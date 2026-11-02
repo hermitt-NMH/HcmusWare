@@ -8,8 +8,9 @@ ChartJS.register(LineElement, PointElement, LinearScale, Tooltip, Filler)
 
 // Màu lấy từ biến CSS --chart-* trong index.css (mỗi chế độ sáng/tối một bộ màu).
 function chartColors() {
-  const css = getComputedStyle(document.documentElement)
-  const v = (name) => css.getPropertyValue(name).trim()
+  // Lúc vẽ sẵn HTML khi build (scripts/prerender.js) không có document; biểu đồ chỉ vẽ trong trình duyệt
+  const css = globalThis.document ? getComputedStyle(document.documentElement) : null
+  const v = (name) => css?.getPropertyValue(name).trim() ?? ''
   return {
     line: v('--chart-line'),
     fill: v('--chart-fill'),

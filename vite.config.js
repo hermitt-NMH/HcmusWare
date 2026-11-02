@@ -22,17 +22,20 @@ function inlinePrefetch(mode) {
   }
 }
 
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode, isSsrBuild }) => ({
   plugins: [react(), tailwindcss(), inlinePrefetch(mode)],
   build: {
     rollupOptions: {
       output: {
         // Tách thư viện ra file riêng: thư viện ít đổi nên trình duyệt giữ cache lâu,
         // mỗi lần deploy người dùng chỉ phải tải lại phần code của nhóm.
-        manualChunks: {
-          react: ['react', 'react-dom', 'react-dom/client', 'react-router', 'react-router-dom'],
-          supabase: ['@supabase/supabase-js'],
-        },
+        // Bản SSR (vẽ sẵn lúc build, scripts/prerender.js) lấy thư viện thẳng từ node_modules nên không tách.
+        manualChunks: isSsrBuild
+          ? undefined
+          : {
+              react: ['react', 'react-dom', 'react-dom/client', 'react-router', 'react-router-dom'],
+              supabase: ['@supabase/supabase-js'],
+            },
       },
     },
   },
