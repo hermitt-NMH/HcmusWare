@@ -462,3 +462,34 @@ Lighthouse Mobile, Hiệu năng (trung vị 3 lần):
 - Sau #181, các trang danh sách tăng 4–6 điểm, LCP giảm 0,4–1,2 giây và đã sát mức trang không gọi dữ liệu (`/gio-hang`, `/dang-nhap` 79–80). Riêng `/shop` không đổi: phải có id shop mới tải được sản phẩm nên chỉ gọi sẵn được bước đầu.
 - Phần còn thiếu nằm ở mọi trang, không riêng trang danh sách: FCP mô phỏng khoảng 3,9 giây (đo thật 0,9–2,1 giây) vì web là SPA, phải tải ~180 KB JS nén rồi mới vẽ được dưới 4G chậm giả lập. Edge Vercel trả HTML từ cache (`X-Vercel-Cache: HIT`, TTFB ~0,2 giây), không phải do máy chủ. Muốn ≥ 85 phải vẽ sẵn HTML (prerender/SSR) hoặc tách nhỏ JS chạy lần đầu; không hợp lúc code freeze.
 - Lần đo 30/10 trưa (95–99 ở trang không gọi dữ liệu) không lặp lại được ở 3 lần đo sau (30/10 tối, 31/10 sáng, kể cả trước #181), coi là bất thường.
+
+### Kết quả lần chạy 02/11/2026 – sau PR #187 vẽ sẵn HTML lúc build (main 3ff9036)
+
+PR #187 vẽ sẵn HTML 191 trang công khai lúc build (xem README, mục _Trang vẽ sẵn lúc build_). Trước PR: trang là `<div id="root">` rỗng, phải tải JS → chạy → gọi Supabase rồi mới vẽ, nên FCP mô phỏng ~3,7–4 giây. Đo cùng máy, cùng lúc 02/11 trước khi merge: Vercel 76 (`/gio-hang`, `/san-pham`), bản build trên máy 94–96 → chênh lệch là do chuỗi tải nhiều bước qua mạng, không phải do code chạy chậm.
+
+| Bộ test                       | Vercel + Supabase online                                                                                                   |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `test:lighthouse` (Mobile)    | **20/20 đạt ≥ 85 cả 4 mục**: Hiệu năng 95–100, Trợ năng 98–100, Best Practices 100, SEO 100                                |
+| `test:regression:online`      | 99/99                                                                                                                      |
+| `test:ui` (`BASE_URL` Vercel) | 36/36 (thêm UI07b)                                                                                                         |
+| Hydrate (script tạm, CDP)     | 11 trang × sáng/tối × (chưa có / đã có giỏ hàng + cấu hình Build PC) = 44/44: không lỗi Console, không trang nào bị vẽ lại |
+| `npx vitest run`, eslint      | 308/308, sạch                                                                                                              |
+
+Lighthouse Mobile, Hiệu năng (lần đo đầu đã ≥ 85 nên không đo lại):
+
+| Trang             | Sáng | Tối | LCP sáng | Trước #187 (31/10, sáng) |
+| ----------------- | ---- | --- | -------- | ------------------------ |
+| `/`               | 98   | 97  | 2,0 s    | 78                       |
+| `/san-pham`       | 97   | 98  | 2,1 s    | 74                       |
+| `/danh-muc/cpu`   | 98   | 98  | 1,9 s    | 77                       |
+| `/san-pham/1`     | 96   | 95  | 2,2 s    | 77                       |
+| `/thuong-hieu`    | 95   | 97  | 2,6 s    | 75                       |
+| `/shop/hcmusware` | 98   | 95  | 2,0 s    | 70                       |
+| `/build-pc`       | 96   | 96  | 2,4 s    | 78                       |
+| `/goi-y-cau-hinh` | 100  | 99  | 1,1 s    | 80                       |
+| `/gio-hang`       | 100  | 98  | 1,1 s    | 79                       |
+| `/dang-nhap`      | 98   | 96  | 1,8 s    | 79                       |
+
+- Đường dẫn không vẽ sẵn (`/admin`, `/tai-khoan`, `/san-pham/99999`) trả `app-shell.html` và chạy như SPA cũ, đã kiểm bằng curl trên Vercel.
+- Mất mạng tới Supabase: trang vẽ sẵn vẫn hiện dữ liệu lúc build (UI07b); có `?query` thì vẽ lại như SPA và báo lỗi như trước (UI07).
+- Giá, tồn kho trong HTML là lúc build; JS tải xong gọi DB lấy số mới (thường dưới 1–2 giây). Sản phẩm đăng sau lần build chỉ có trang vẽ sẵn từ lần deploy kế tiếp.
