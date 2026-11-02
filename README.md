@@ -24,7 +24,7 @@ npm run dev                    # mở http://localhost:5173
 | Lệnh                        | Tác dụng                                                                                                            |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | `npm run dev`               | Chạy web ở chế độ phát triển                                                                                        |
-| `npm run build`             | Build bản production vào `dist/`                                                                                    |
+| `npm run build`             | Build bản production vào `dist/`, kèm vẽ sẵn HTML các trang công khai (xem mục _Trang vẽ sẵn lúc build_)            |
 | `npm run preview`           | Chạy bản đã build ở http://localhost:4173 (các bộ test giao diện dùng cổng này)                                     |
 | `npm run lint`              | Kiểm tra lỗi ESLint                                                                                                 |
 | `npm test`                  | Chạy unit test (Vitest)                                                                                             |
@@ -173,6 +173,21 @@ Chưa đặt khóa (và luôn luôn ở local) thì web vẫn chạy bình thư�
   - Hỏng nhiều: trong SQL Editor xóa dữ liệu các bảng bị hỏng, chạy lại `backups/data.sql` bằng
     `psql "<connection string trong Supabase → Connect>" -f backups/data.sql`.
   - Sau khi chèn dòng có `id` sẵn, chỉnh lại bộ đếm, ví dụ `select setval(pg_get_serial_sequence('products','id'), (select max(id) from products));`.
+
+## Trang vẽ sẵn lúc build
+
+`npm run build` chạy 3 bước: `vite build` (ra `dist/`), `vite build --ssr src/entry-server.jsx` (ra `dist-ssr/`) và
+`scripts/prerender.js`. Bước cuối đọc Supabase bằng `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY`. Sau đó nó vẽ sẵn HTML kèm dữ liệu
+cho trang chủ, `/san-pham`, mọi danh mục, sản phẩm đang bán, shop, thương hiệu có sản phẩm và các trang tĩnh
+(`dist/<đường dẫn>/index.html`). Trình duyệt hiện được trang ngay khi HTML về, chưa cần chờ JS; JS tải xong thì hydrate
+và vẫn gọi DB lấy giá, tồn kho mới nhất (#115, Lighthouse Mobile).
+
+- Đường dẫn không vẽ sẵn (`/admin`, `/tai-khoan`, sản phẩm đăng sau lần build…) dùng `dist/app-shell.html` (`vercel.json`), chạy như SPA.
+- Sản phẩm, danh mục mới chỉ có trang vẽ sẵn sau lần deploy kế tiếp; trước đó vẫn mở được bình thường.
+- Không đọc được Supabase lúc build thì bỏ qua bước vẽ sẵn, web vẫn chạy như SPA.
+- Code chạy lúc render phải chạy được trong Node: không đọc `window`, `localStorage`, `document` khi render
+  (đọc trong effect, hoặc dùng `useStoredState` như giỏ hàng). Trang/khối tải sau dùng `lazyPage` thay `React.lazy`.
+- `npm run preview` không phục vụ `dist/<đường dẫn>/index.html` nên trang chỉ vẽ lại như SPA; muốn thử hydrate thì xem trên link preview của Vercel.
 
 ## Lỗi thường gặp
 

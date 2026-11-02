@@ -262,10 +262,24 @@ await open('/danh-muc/cpu', 1366)
   rec('UI09', /CPU/.test(h1 ?? '') && n === 16, `tiêu đề="${h1}", sản phẩm=${n}`)
 }
 
-// UI07 – chặn API Supabase (trang web vẫn tải được) rồi tải lại trang danh mục
+// UI07 – chặn API Supabase (trang web vẫn tải được) rồi mở trang danh mục.
+// Trang vẽ sẵn lúc build (#115) vẫn hiện dữ liệu đã chụp khi mất mạng (UI07b); thêm ?sort= để trang
+// vẽ lại từ đầu như SPA (main.jsx không hydrate khi có ?query) → phải hiện thông báo lỗi.
 await send('Network.setBlockedURLs', { urls: ['*/rest/v1/*'] })
 await send('Network.setCacheDisabled', { cacheDisabled: true })
 await send('Page.reload', { ignoreCache: true })
+{
+  let n = 0
+  for (let i = 0; i < 20 && !n; i++) {
+    await sleep(250)
+    n = await productLinks()
+  }
+  const pre = await evaluate(`document.getElementById('root').dataset.prerendered ?? ''`)
+  // Bản dev / preview không vẽ sẵn thì bỏ qua ca này
+  if (pre)
+    rec('UI07b', n === 16, `vẽ sẵn ${pre}, mất mạng vẫn hiện ${n}/16 sản phẩm từ dữ liệu lúc build`)
+}
+await send('Page.navigate', { url: `${BASE}/danh-muc/cpu?sort=price-asc` })
 let offlineText = ''
 for (let i = 0; i < 60; i++) {
   await sleep(250)

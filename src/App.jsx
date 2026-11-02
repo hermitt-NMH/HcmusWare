@@ -1,4 +1,4 @@
-import { Suspense, lazy } from 'react'
+import { Suspense } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import Header from './components/Header'
 import Footer from './components/Footer'
@@ -8,26 +8,28 @@ import ProductDetail from './pages/ProductDetail'
 import NotFound from './pages/NotFound'
 import RoleRoute from './components/RoleRoute'
 import { AREA_ROLES } from './lib/roles'
+import { lazyPage } from './lib/lazyPage'
 
 // Trang ít người mở ngay từ đầu thì tải sau (lazy): mở trang chủ không phải tải code của chúng.
-// Thêm trang mới (Builder, admin...) cũng nên khai báo kiểu này.
-const Login = lazy(() => import('./pages/Login'))
-const Account = lazy(() => import('./pages/Account'))
-const Privacy = lazy(() => import('./pages/Privacy'))
-const Builder = lazy(() => import('./pages/Builder'))
-const Cart = lazy(() => import('./pages/Cart'))
-const Checkout = lazy(() => import('./pages/Checkout'))
-const MockPayment = lazy(() => import('./pages/MockPayment'))
-const OrderDetail = lazy(() => import('./pages/OrderDetail'))
-const Admin = lazy(() => import('./pages/admin/Admin'))
-const SellerChannel = lazy(() => import('./pages/seller/SellerChannel'))
-const OpenShop = lazy(() => import('./pages/OpenShop'))
-const AddressBook = lazy(() => import('./pages/AddressBook'))
-const BrandList = lazy(() => import('./pages/BrandList'))
-const BrandPage = lazy(() => import('./pages/BrandPage'))
-const ShopPage = lazy(() => import('./pages/ShopPage'))
-const BudgetSuggest = lazy(() => import('./pages/BudgetSuggest'))
-const Unsubscribe = lazy(() => import('./pages/Unsubscribe'))
+// Thêm trang mới (Builder, admin...) cũng nên khai báo kiểu này. lazyPage thay React.lazy để trang
+// vẽ sẵn lúc build tải trước được code trước khi hydrate (lib/lazyPage.js).
+const Login = lazyPage('Login', () => import('./pages/Login'))
+const Account = lazyPage('Account', () => import('./pages/Account'))
+const Privacy = lazyPage('Privacy', () => import('./pages/Privacy'))
+const Builder = lazyPage('Builder', () => import('./pages/Builder'))
+const Cart = lazyPage('Cart', () => import('./pages/Cart'))
+const Checkout = lazyPage('Checkout', () => import('./pages/Checkout'))
+const MockPayment = lazyPage('MockPayment', () => import('./pages/MockPayment'))
+const OrderDetail = lazyPage('OrderDetail', () => import('./pages/OrderDetail'))
+const Admin = lazyPage('Admin', () => import('./pages/admin/Admin'))
+const SellerChannel = lazyPage('SellerChannel', () => import('./pages/seller/SellerChannel'))
+const OpenShop = lazyPage('OpenShop', () => import('./pages/OpenShop'))
+const AddressBook = lazyPage('AddressBook', () => import('./pages/AddressBook'))
+const BrandList = lazyPage('BrandList', () => import('./pages/BrandList'))
+const BrandPage = lazyPage('BrandPage', () => import('./pages/BrandPage'))
+const ShopPage = lazyPage('ShopPage', () => import('./pages/ShopPage'))
+const BudgetSuggest = lazyPage('BudgetSuggest', () => import('./pages/BudgetSuggest'))
+const Unsubscribe = lazyPage('Unsubscribe', () => import('./pages/Unsubscribe'))
 
 // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
 const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>

@@ -3,6 +3,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { getBuildByShareCode, getProducts } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { useCart } from '../hooks/useCart'
+import { useStoredState } from '../hooks/useStoredState'
 import { formatPrice } from '../lib/format'
 import { categoryImage, thumbUrl } from '../lib/images'
 import { specRows } from '../lib/specs'
@@ -29,6 +30,7 @@ import SaveBuild from '../features/builder/SaveBuild'
 import PerformancePanel from '../features/builder/PerformancePanel'
 
 // Cấu hình đang build lưu trong localStorage (chỉ id) để tải lại trang không mất.
+const EMPTY_BUILD = parseStoredBuild(null)
 function loadBuild() {
   try {
     return parseStoredBuild(localStorage.getItem(STORAGE_KEY))
@@ -41,19 +43,20 @@ function loadBuild() {
 // Mỗi lần chọn, compatibility.js chạy lại và báo lỗi/cảnh báo ngay.
 export default function Builder() {
   const products = useAsync(() => getProducts())
-  const [saved, setSaved] = useState(loadBuild)
+  const [saved, setSaved, loaded, restored] = useStoredState(loadBuild, EMPTY_BUILD)
   const { ids, ramQty } = saved
   const { addItems } = useCart()
   const navigate = useNavigate()
   const shared = useSharedBuild(saved, setSaved)
 
   useEffect(() => {
+    if (!loaded) return
     try {
       localStorage.setItem(STORAGE_KEY, serializeBuild(ids, ramQty))
     } catch {
       // Không lưu được (chế độ ẩn danh...) thì vẫn build bình thường trong phiên này.
     }
-  }, [ids, ramQty])
+  }, [ids, ramQty, loaded])
 
   const all = products.data
   const build = useMemo(() => resolveBuild(ids, all ?? []), [ids, all])
@@ -164,7 +167,8 @@ export default function Builder() {
       {/* Điện thoại: từng bước */}
       <div className="md:hidden">
         <MobileSteps
-          key={shared.loadCount}
+          // Mount lại khi nạp được cấu hình đã lưu để bước đầu tiên tính theo cấu hình đó
+          key={`${shared.loadCount}-${restored}`}
           {...common}
           totalPrice={totalPrice}
           summary={summary}

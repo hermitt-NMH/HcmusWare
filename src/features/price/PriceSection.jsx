@@ -1,9 +1,10 @@
-import { Suspense, lazy, useState } from 'react'
+import { Suspense, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useAuth } from '../../hooks/useAuth'
 import { useAsync } from '../../hooks/useAsync'
 import { deletePriceAlert, getMyPriceAlert, getPriceHistory, upsertPriceAlert } from '../../lib/api'
 import { formatDate, formatPrice } from '../../lib/format'
+import { lazyPage } from '../../lib/lazyPage'
 import {
   ALERTS_CHANGED,
   parsePriceInput,
@@ -13,7 +14,7 @@ import {
 } from './price'
 
 // Chart.js khá nặng (~60 KB) → chỉ tải khi mở trang sản phẩm, không làm chậm trang chủ.
-const PriceChart = lazy(() => import('./PriceChart'))
+const PriceChart = lazyPage('PriceChart', () => import('./PriceChart'))
 
 // Mục "Lịch sử giá" trên trang sản phẩm: biểu đồ 6 tháng, thấp/cao nhất, đặt giá mong muốn.
 export default function PriceSection({ productId, currentPrice }) {
