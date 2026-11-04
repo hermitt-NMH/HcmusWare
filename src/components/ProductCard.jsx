@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { formatPrice } from '../lib/format'
 import { categoryBg, categoryImage, productSrcSet } from '../lib/images'
 import { formatRating } from '../features/reviews/reviews'
+import { t } from '../lib/i18n'
 
 // eager: thẻ ở hàng đầu (thấy ngay khi mở trang) tải ảnh luôn, không lazy, để LCP nhanh hơn.
 export default function ProductCard({ product, eager = false }) {
@@ -65,7 +66,7 @@ export default function ProductCard({ product, eager = false }) {
         <p
           className={`text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700 dark:text-green-400'}`}
         >
-          {outOfStock ? 'Hết hàng' : `Còn ${stock} sản phẩm`}
+          {outOfStock ? t('Hết hàng') : t('Còn {n} sản phẩm', { n: stock })}
         </p>
       </div>
     </Link>

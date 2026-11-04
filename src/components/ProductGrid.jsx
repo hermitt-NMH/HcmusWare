@@ -1,4 +1,5 @@
 import ProductCard from './ProductCard'
+import { t } from '../lib/i18n'
 
 // Lưới sản phẩm dùng chung, xử lý luôn trạng thái đang tải / lỗi / rỗng.
 // skeletonCount: số ô xám khi đang tải (nên bằng số sản phẩm sẽ hiện để trang không bị giật).
@@ -15,12 +16,12 @@ export default function ProductGrid({ products, loading, error, skeletonCount = 
   if (error) {
     return (
       <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được sản phẩm: {error.message}
+        {t('Không tải được sản phẩm: {msg}', { msg: t(error.message) })}
       </p>
     )
   }
   if (!products?.length) {
-    return <p className="p-4 text-sm text-slate-500">Chưa có sản phẩm nào.</p>
+    return <p className="p-4 text-sm text-slate-500">{t('Chưa có sản phẩm nào.')}</p>
   }
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">

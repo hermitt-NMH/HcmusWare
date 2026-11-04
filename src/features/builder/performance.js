@@ -12,6 +12,7 @@
 //   FPS dự kiến = giới hạn nhỏ hơn; linh kiện cho giới hạn nhỏ hơn là linh kiện "giữ chân" khung hình.
 
 import { chipKey } from './budget'
+import { t } from '../../lib/i18n'
 
 export const RESOLUTIONS = ['1080p', '1440p', '4k']
 export const RESOLUTION_LABELS = { '1080p': '1080p', '1440p': '1440p', '4k': '4K' }
@@ -54,9 +55,9 @@ export function estimateGameFps(game, cpuScore, gpuScore, res) {
 
 // Mức trải nghiệm theo FPS để tô màu trên giao diện.
 export function fpsLevel(fps) {
-  if (fps >= 60) return { key: 'smooth', label: 'Mượt' }
-  if (fps >= 30) return { key: 'playable', label: 'Chơi được' }
-  return { key: 'low', label: 'Giật' }
+  if (fps >= 60) return { key: 'smooth', label: t('Mượt') }
+  if (fps >= 30) return { key: 'playable', label: t('Chơi được') }
+  return { key: 'low', label: t('Giật') }
 }
 
 // Nghẽn cổ chai từ kết quả 1080p của mọi game: trung bình tỉ lệ (giới hạn nhỏ / giới hạn lớn).
@@ -71,7 +72,10 @@ export function detectBottleneck(results1080) {
     return {
       part: 'cpu',
       percent: lost,
-      message: `CPU giữ chân VGA: ở 1080p VGA mất khoảng ${lost}% sức mạnh. Ở 1440p/4K ảnh hưởng ít hơn; muốn chơi 1080p nên chọn CPU mạnh hơn.`,
+      message: t(
+        'CPU giữ chân VGA: ở 1080p VGA mất khoảng {lost}% sức mạnh. Ở 1440p/4K ảnh hưởng ít hơn; muốn chơi 1080p nên chọn CPU mạnh hơn.',
+        { lost },
+      ),
     }
   }
   return null

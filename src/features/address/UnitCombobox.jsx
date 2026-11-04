@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { suggestUnits } from './address'
+import { t } from '../../lib/i18n'
 
 // Ô gõ có gợi ý cho Tỉnh/Thành hoặc Phường/Xã (US-17.2). Phải chọn từ gợi ý: gõ tên không có
 // trong danh sách thì value vẫn null và hiện notFoundMessage khi rời ô.
@@ -133,7 +134,7 @@ export default function UnitCombobox({
                 aria-disabled="true"
                 className="px-3 py-2 text-slate-500"
               >
-                Không có gợi ý phù hợp
+                {t('Không có gợi ý phù hợp')}
               </li>
             )}
           </ul>

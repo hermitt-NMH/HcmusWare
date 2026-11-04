@@ -4,6 +4,7 @@ import AdminOrders from './AdminOrders'
 import AdminUsers from './AdminUsers'
 import AdminReview from './AdminReview'
 import AdminBrands from './AdminBrands'
+import { t } from '../../lib/i18n'
 
 const tabClass = ({ isActive }) =>
   `inline-flex min-h-11 shrink-0 items-center rounded-lg px-4 text-sm font-medium ${
@@ -16,22 +17,22 @@ export default function Admin() {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h1 className="text-xl font-bold sm:text-2xl">Quản trị</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">{t('Quản trị')}</h1>
         <nav className="flex max-w-full gap-1 overflow-x-auto rounded-xl bg-surface p-1 ring-1 ring-slate-200">
           <NavLink to="/admin/san-pham" className={tabClass}>
-            Sản phẩm
+            {t('Sản phẩm')}
           </NavLink>
           <NavLink to="/admin/duyet" className={tabClass}>
-            Duyệt
+            {t('Duyệt')}
           </NavLink>
           <NavLink to="/admin/thuong-hieu" className={tabClass}>
-            Thương hiệu
+            {t('Thương hiệu')}
           </NavLink>
           <NavLink to="/admin/don-hang" className={tabClass}>
-            Đơn hàng
+            {t('Đơn hàng')}
           </NavLink>
           <NavLink to="/admin/nguoi-dung" className={tabClass}>
-            Người dùng
+            {t('Người dùng')}
           </NavLink>
         </nav>
       </div>

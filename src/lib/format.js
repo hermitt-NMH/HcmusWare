@@ -1,7 +1,10 @@
+import { dateLocale, t } from './i18n'
+
 // Định dạng giá kiểu Việt Nam: 12.990.000 ₫ (dấu cách thường, không dùng NBSP của Intl).
+// Giao diện tiếng Anh vẫn để giá kiểu này (tiền VND), chỉ ngày giờ theo ngôn ngữ (dateLocale).
 // Chưa có giá (null/undefined) thì hiện "Liên hệ" thay vì "0 ₫".
 export function formatPrice(value) {
-  return value == null ? 'Liên hệ' : Number(value).toLocaleString('vi-VN') + ' ₫'
+  return value == null ? t('Liên hệ') : Number(value).toLocaleString('vi-VN') + ' ₫'
 }
 
 // Đọc số nguyên người dùng gõ (giá, tồn kho): "1290000", "1.290.000", "1,290,000", "1 290 000".
@@ -16,7 +19,7 @@ export function parseWholeNumber(text) {
 
 // Ngày giờ kiểu Việt Nam: 09/11/2026 14:30.
 export function formatDateTime(iso) {
-  return new Date(iso).toLocaleString('vi-VN', {
+  return new Date(iso).toLocaleString(dateLocale(), {
     hour: '2-digit',
     minute: '2-digit',
     day: '2-digit',
@@ -27,7 +30,7 @@ export function formatDateTime(iso) {
 
 // Chỉ ngày: 09/11/2026.
 export function formatDate(iso) {
-  return new Date(iso).toLocaleDateString('vi-VN', {
+  return new Date(iso).toLocaleDateString(dateLocale(), {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

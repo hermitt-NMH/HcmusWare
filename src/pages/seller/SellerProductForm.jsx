@@ -18,6 +18,7 @@ import {
 } from '../../features/seller/specFields'
 import { productErrorMessage } from '../../features/admin/productForm'
 import NotFound from '../NotFound'
+import { t } from '../../lib/i18n'
 
 const inputClass =
   'w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -36,11 +37,11 @@ export default function SellerProductForm({ shop }) {
 
   const loading = categories.loading || brands.loading || product.loading
   const error = categories.error || brands.error || product.error
-  if (loading) return <p className="py-16 text-center text-slate-500">Đang tải…</p>
+  if (loading) return <p className="py-16 text-center text-slate-500">{t('Đang tải…')}</p>
   if (error)
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-        Không tải được dữ liệu: {error.message}
+        {t('Không tải được dữ liệu: {msg}', { msg: t(error.message) })}
       </p>
     )
   if (id && !product.data) return <NotFound />
@@ -105,14 +106,16 @@ function ProductForm({ shop, product, categories, brands }) {
       fields = changedFields(product, data, specsTouched)
       if (resubmit) fields.status = 'pending'
       if (!Object.keys(fields).length) {
-        setSaveError('Bạn chưa thay đổi gì.')
+        setSaveError(t('Bạn chưa thay đổi gì.'))
         return
       }
       if (
         product.status === 'active' &&
         needsReview(fields) &&
         !window.confirm(
-          'Bạn đã đổi tên, danh mục, thương hiệu hoặc thông số.\nSản phẩm sẽ tạm ẩn đến khi admin duyệt lại. Tiếp tục?',
+          t(
+            'Bạn đã đổi tên, danh mục, thương hiệu hoặc thông số.\nSản phẩm sẽ tạm ẩn đến khi admin duyệt lại. Tiếp tục?',
+          ),
         )
       )
         return
@@ -123,10 +126,10 @@ function ProductForm({ shop, product, categories, brands }) {
     try {
       const saved = await saveSellerProduct(shop.id, product?.id, fields)
       const notice = !product
-        ? `Đã đăng “${saved.name}”. Sản phẩm chờ admin duyệt trước khi hiện trên web.`
+        ? t('Đã đăng “{name}”. Sản phẩm chờ admin duyệt trước khi hiện trên web.', saved)
         : saved.status === 'pending' && product.status !== 'pending'
-          ? `Đã lưu “${saved.name}” và gửi admin duyệt lại.`
-          : `Đã lưu “${saved.name}”.`
+          ? t('Đã lưu “{name}” và gửi admin duyệt lại.', saved)
+          : t('Đã lưu “{name}”.', saved)
       navigate('/kenh-nguoi-ban', { state: { notice } })
     } catch (err) {
       setSaveError(productErrorMessage(err))
@@ -164,48 +167,51 @@ function ProductForm({ shop, product, categories, brands }) {
           to="/kenh-nguoi-ban"
           className="inline-flex min-h-11 items-center text-blue-700 hover:underline dark:text-blue-300"
         >
-          ← Kênh người bán
+          {t('← Kênh người bán')}
         </Link>
       </nav>
       <h1 className="text-xl font-bold sm:text-2xl">
-        {product ? `Sửa sản phẩm #${product.id}` : 'Đăng sản phẩm'}
+        {product ? t('Sửa sản phẩm #{id}', product) : t('Đăng sản phẩm')}
       </h1>
       {product?.review_note && (
         <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Admin trả lại: <span className="whitespace-pre-line">{product.review_note}</span>
+          {t('Admin trả lại:')} <span className="whitespace-pre-line">{product.review_note}</span>
         </p>
       )}
       {product?.status === 'active' && (
         <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          Đổi giá, tồn kho, ảnh, mô tả: áp dụng ngay. Đổi tên, danh mục, thương hiệu hoặc thông số:
-          sản phẩm tạm ẩn đến khi admin duyệt lại.
+          {t(
+            t(
+              'Đổi giá, tồn kho, ảnh, mô tả: áp dụng ngay. Đổi tên, danh mục, thương hiệu hoặc thông số: sản phẩm tạm ẩn đến khi admin duyệt lại.',
+            ),
+          )}
         </p>
       )}
 
       <form ref={formRef} onSubmit={submit} noValidate className="space-y-4">
         <section className="space-y-3 rounded-2xl border border-slate-200 bg-surface p-5">
-          <h2 className="font-semibold">Thông tin chung</h2>
+          <h2 className="font-semibold">{t('Thông tin chung')}</h2>
           {field(
             'category_id',
-            'Danh mục *',
+            t('Danh mục *'),
             <select
               {...attrs('category_id')}
               value={form.category_id}
               onChange={setCategory}
               className={`${inputClass} h-11 ${border('category_id')}`}
             >
-              <option value="">— Chọn danh mục —</option>
+              <option value="">{t('— Chọn danh mục —')}</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.name}
+                  {t(c.name)}
                 </option>
               ))}
             </select>,
-            'Chọn trước: ô thông số bên dưới đổi theo danh mục.',
+            t('Chọn trước: ô thông số bên dưới đổi theo danh mục.'),
           )}
           {field(
             'name',
-            'Tên sản phẩm *',
+            t('Tên sản phẩm *'),
             <input
               {...attrs('name')}
               value={form.name}
@@ -217,26 +223,26 @@ function ProductForm({ shop, product, categories, brands }) {
           <div className="grid gap-3 sm:grid-cols-2">
             {field(
               'brand_id',
-              'Thương hiệu *',
+              t('Thương hiệu *'),
               <select
                 {...attrs('brand_id')}
                 value={form.brand_id}
                 onChange={set('brand_id')}
                 className={`${inputClass} h-11 ${border('brand_id')}`}
               >
-                <option value="">— Chọn thương hiệu —</option>
+                <option value="">{t('— Chọn thương hiệu —')}</option>
                 {brands.map((b) => (
                   <option key={b.id} value={b.id}>
                     {b.name}
                   </option>
                 ))}
-                <option value={OTHER_BRAND}>Thương hiệu khác…</option>
+                <option value={OTHER_BRAND}>{t('Thương hiệu khác…')}</option>
               </select>,
             )}
             {form.brand_id === OTHER_BRAND &&
               field(
                 'other_brand',
-                'Tên thương hiệu *',
+                t('Tên thương hiệu *'),
                 <input
                   {...attrs('other_brand')}
                   value={form.other_brand}
@@ -244,13 +250,13 @@ function ProductForm({ shop, product, categories, brands }) {
                   maxLength={60}
                   className={`${inputClass} h-11 ${border('other_brand')}`}
                 />,
-                'Admin sẽ thêm thương hiệu này khi duyệt sản phẩm.',
+                t('Admin sẽ thêm thương hiệu này khi duyệt sản phẩm.'),
               )}
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {field(
               'price',
-              'Giá (VNĐ) *',
+              t('Giá (VNĐ) *'),
               <input
                 {...attrs('price')}
                 inputMode="numeric"
@@ -259,11 +265,11 @@ function ProductForm({ shop, product, categories, brands }) {
                 placeholder="1990000"
                 className={`${inputClass} h-11 ${border('price')}`}
               />,
-              product ? 'Đổi giá sẽ ghi vào lịch sử giá.' : '1.000 – 200.000.000 ₫',
+              product ? t('Đổi giá sẽ ghi vào lịch sử giá.') : '1.000 – 200.000.000 ₫',
             )}
             {field(
               'stock',
-              'Tồn kho *',
+              t('Tồn kho *'),
               <input
                 {...attrs('stock')}
                 type="number"
@@ -284,12 +290,12 @@ function ProductForm({ shop, product, categories, brands }) {
               setForm({ ...form, images })
               clear('images')
             }}
-            label="Ảnh sản phẩm * (ảnh đầu tiên là ảnh đại diện)"
+            label={t('Ảnh sản phẩm * (ảnh đầu tiên là ảnh đại diện)')}
             error={errors.images}
           />
           {field(
             'description',
-            'Mô tả',
+            t('Mô tả'),
             <textarea
               {...attrs('description')}
               rows={4}
@@ -298,7 +304,7 @@ function ProductForm({ shop, product, categories, brands }) {
               maxLength={5000}
               className={`${inputClass} py-2 ${border('description')}`}
             />,
-            'Hiển thị dạng chữ thường, không nhận HTML.',
+            t('Hiển thị dạng chữ thường, không nhận HTML.'),
           )}
           {field(
             'datasheet_url',
@@ -317,9 +323,9 @@ function ProductForm({ shop, product, categories, brands }) {
         {slug && (
           <section className="space-y-3 rounded-2xl border border-slate-200 bg-surface p-5">
             <div>
-              <h2 className="font-semibold">Thông số kỹ thuật</h2>
+              <h2 className="font-semibold">{t('Thông số kỹ thuật')}</h2>
               <p className="text-xs text-slate-500">
-                Build PC dùng các thông số này để kiểm tra tương thích. Ô có * là bắt buộc.
+                {t('Build PC dùng các thông số này để kiểm tra tương thích. Ô có * là bắt buộc.')}
               </p>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
@@ -348,7 +354,7 @@ function ProductForm({ shop, product, categories, brands }) {
             to="/kenh-nguoi-ban"
             className="inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-100"
           >
-            Hủy
+            {t('Hủy')}
           </Link>
           <button
             type="submit"
@@ -356,12 +362,12 @@ function ProductForm({ shop, product, categories, brands }) {
             className="h-11 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
           >
             {saving
-              ? 'Đang lưu…'
+              ? t('Đang lưu…')
               : !product
-                ? 'Đăng và gửi duyệt'
+                ? t('Đăng và gửi duyệt')
                 : resubmit
-                  ? 'Lưu và gửi duyệt lại'
-                  : 'Lưu thay đổi'}
+                  ? t('Lưu và gửi duyệt lại')
+                  : t('Lưu thay đổi')}
           </button>
         </div>
       </form>
@@ -371,8 +377,12 @@ function ProductForm({ shop, product, categories, brands }) {
 
 // Một ô thông số theo kiểu khai báo trong specFields.js.
 function SpecField({ field, value, onChange, error, attrs, border }) {
-  const label = `${field.label}${field.unit ? ` (${field.unit})` : ''}${field.required ? ' *' : ''}`
-  const hint = field.hint ?? (field.range ? `Từ ${field.range[0]} đến ${field.range[1]}` : null)
+  const label = `${t(field.label)}${field.unit ? ` (${field.unit})` : ''}${field.required ? ' *' : ''}`
+  const hint = field.hint
+    ? t(field.hint)
+    : field.range
+      ? t('Từ {min} đến {max}', { min: field.range[0], max: field.range[1] })
+      : null
   let input
   if (field.type === 'multi') {
     const selected = value ?? []
@@ -400,8 +410,8 @@ function SpecField({ field, value, onChange, error, attrs, border }) {
     const options =
       field.type === 'bool'
         ? [
-            { value: 'true', label: 'Có' },
-            { value: 'false', label: 'Không' },
+            { value: 'true', label: t('Có') },
+            { value: 'false', label: t('Không') },
           ]
         : field.options
     input = (
@@ -411,7 +421,7 @@ function SpecField({ field, value, onChange, error, attrs, border }) {
         onChange={(e) => onChange(e.target.value)}
         className={`${inputClass} h-11 ${border}`}
       >
-        <option value="">— Chọn —</option>
+        <option value="">{t('— Chọn —')}</option>
         {options.map((o) => (
           <option key={optionValue(o)} value={optionValue(o)}>
             {optionLabel(o)}

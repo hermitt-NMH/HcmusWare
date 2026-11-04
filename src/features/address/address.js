@@ -1,6 +1,7 @@
 // Sổ địa chỉ và gợi ý đơn vị hành chính (F17) dạng HÀM THUẦN để dễ viết unit test.
 // Dữ liệu: public/data/don-vi-hanh-chinh.json – mô hình 2 cấp sau 01/07/2025 (Tỉnh/Thành → Phường/Xã),
 // mỗi đơn vị là [mã, tên đầy đủ]. Không có cấp Quận/Huyện.
+import { t } from '../../lib/i18n'
 
 export const MAX_ADDRESSES = 10
 export const MAX_SUGGESTIONS = 8
@@ -97,16 +98,16 @@ export function validateAddress(form) {
     street: String(form.street ?? '').trim(),
   }
   const errors = {}
-  if (!data.recipient_name) errors.recipient_name = 'Vui lòng nhập họ tên người nhận.'
+  if (!data.recipient_name) errors.recipient_name = t('Vui lòng nhập họ tên người nhận.')
   else if (data.recipient_name.length < 2 || data.recipient_name.length > 60)
-    errors.recipient_name = 'Họ tên người nhận từ 2 đến 60 ký tự.'
-  if (!data.phone) errors.phone = 'Vui lòng nhập số điện thoại.'
+    errors.recipient_name = t('Họ tên người nhận từ 2 đến 60 ký tự.')
+  if (!data.phone) errors.phone = t('Vui lòng nhập số điện thoại.')
   else if (!/^0\d{9}$/.test(data.phone))
-    errors.phone = 'Số điện thoại không hợp lệ (vd 0901234567).'
-  if (!data.province_code) errors.province = 'Chọn Tỉnh/Thành trong danh sách gợi ý.'
-  if (!data.ward_code) errors.ward = 'Chọn Phường/Xã trong danh sách gợi ý.'
-  if (!data.street) errors.street = 'Vui lòng nhập số nhà và tên đường.'
-  else if (data.street.length > 200) errors.street = 'Số nhà và đường tối đa 200 ký tự.'
+    errors.phone = t('Số điện thoại không hợp lệ (vd 0901234567).')
+  if (!data.province_code) errors.province = t('Chọn Tỉnh/Thành trong danh sách gợi ý.')
+  if (!data.ward_code) errors.ward = t('Chọn Phường/Xã trong danh sách gợi ý.')
+  if (!data.street) errors.street = t('Vui lòng nhập số nhà và tên đường.')
+  else if (data.street.length > 200) errors.street = t('Số nhà và đường tối đa 200 ký tự.')
   return { data, errors }
 }
 

@@ -1,19 +1,20 @@
 // Logic đơn hàng dạng HÀM THUẦN (không đụng React hay mạng) để dễ viết unit test.
 // Trang Checkout, OrderDetail, Account, admin dùng chung các hàm/hằng số này.
 import { isUnavailable } from '../cart/cart'
+import { t, tKey } from '../../lib/i18n'
 
 // Trạng thái đơn (khớp check constraint trong bảng orders) + màu nhãn.
 export const ORDER_STATUS = {
-  pending: { label: 'Chờ xác nhận', className: 'bg-amber-100 text-amber-800' },
-  confirmed: { label: 'Đã xác nhận', className: 'bg-blue-100 text-blue-800' },
-  shipping: { label: 'Đang giao', className: 'bg-indigo-100 text-indigo-800' },
-  completed: { label: 'Hoàn tất', className: 'bg-green-100 text-green-800' },
-  cancelled: { label: 'Đã hủy', className: 'bg-slate-200 text-slate-700' },
+  pending: { label: tKey('Chờ xác nhận'), className: 'bg-amber-100 text-amber-800' },
+  confirmed: { label: tKey('Đã xác nhận'), className: 'bg-blue-100 text-blue-800' },
+  shipping: { label: tKey('Đang giao'), className: 'bg-indigo-100 text-indigo-800' },
+  completed: { label: tKey('Hoàn tất'), className: 'bg-green-100 text-green-800' },
+  cancelled: { label: tKey('Đã hủy'), className: 'bg-slate-200 text-slate-700' },
 }
 
 export const PAYMENT_METHODS = {
-  cod: { label: 'Thanh toán khi nhận hàng (COD)', short: 'COD' },
-  mock_online: { label: 'Thanh toán online (mô phỏng)', short: 'Online' },
+  cod: { label: tKey('Thanh toán khi nhận hàng (COD)'), short: 'COD' },
+  mock_online: { label: tKey('Thanh toán online (mô phỏng)'), short: 'Online' },
 }
 
 // Thứ tự xử lý đơn. Đơn hoàn tất / đã hủy thì không đổi được nữa (DB cũng chặn).
@@ -41,10 +42,10 @@ export function canPayOnline(order) {
 // Nhãn thanh toán hiện trong lịch sử đơn.
 export function paymentStatusLabel(order) {
   // Trả online rồi bị hủy: shop phải hoàn tiền (đồ án chưa có hoàn tiền tự động).
-  if (order.paid_at && order.status === 'cancelled') return 'Đã thanh toán – cần hoàn tiền'
-  if (order.paid_at) return 'Đã thanh toán'
-  if (order.status === 'cancelled') return 'Không thanh toán'
-  return order.payment_method === 'cod' ? 'Trả khi nhận hàng' : 'Chưa thanh toán'
+  if (order.paid_at && order.status === 'cancelled') return t('Đã thanh toán – cần hoàn tiền')
+  if (order.paid_at) return t('Đã thanh toán')
+  if (order.status === 'cancelled') return t('Không thanh toán')
+  return order.payment_method === 'cod' ? t('Trả khi nhận hàng') : t('Chưa thanh toán')
 }
 
 // Số điện thoại VN: 0xxxxxxxxx hoặc +84xxxxxxxxx (10 số).
@@ -61,15 +62,16 @@ export function validateCheckout(form) {
   }
   const errors = {}
   // Giới hạn độ dài khớp với hàm place_order trong DB (BUG06).
-  if (!data.name) errors.name = 'Vui lòng nhập họ tên người nhận.'
-  else if (data.name.length > 100) errors.name = 'Họ tên tối đa 100 ký tự.'
-  if (!data.phone) errors.phone = 'Vui lòng nhập số điện thoại.'
-  else if (!PHONE_RE.test(data.phone)) errors.phone = 'Số điện thoại không hợp lệ (vd 0901234567).'
+  if (!data.name) errors.name = t('Vui lòng nhập họ tên người nhận.')
+  else if (data.name.length > 100) errors.name = t('Họ tên tối đa 100 ký tự.')
+  if (!data.phone) errors.phone = t('Vui lòng nhập số điện thoại.')
+  else if (!PHONE_RE.test(data.phone))
+    errors.phone = t('Số điện thoại không hợp lệ (vd 0901234567).')
   if (data.address.length < 10)
-    errors.address = 'Vui lòng nhập địa chỉ đầy đủ (số nhà, đường, phường, quận, tỉnh).'
-  else if (data.address.length > 300) errors.address = 'Địa chỉ tối đa 300 ký tự.'
-  if (data.note.length > 500) errors.note = 'Ghi chú tối đa 500 ký tự.'
-  if (!PAYMENT_METHODS[data.payment]) errors.payment = 'Vui lòng chọn phương thức thanh toán.'
+    errors.address = t('Vui lòng nhập địa chỉ đầy đủ (số nhà, đường, phường, quận, tỉnh).')
+  else if (data.address.length > 300) errors.address = t('Địa chỉ tối đa 300 ký tự.')
+  if (data.note.length > 500) errors.note = t('Ghi chú tối đa 500 ký tự.')
+  if (!PAYMENT_METHODS[data.payment]) errors.payment = t('Vui lòng chọn phương thức thanh toán.')
   return { data, errors }
 }
 
@@ -107,6 +109,6 @@ export function amountToPay(orders) {
 // Lỗi mạng thì báo chung.
 export function orderErrorMessage(error) {
   if (!error) return ''
-  if (/fetch|network/i.test(error.message)) return 'Mất kết nối mạng, vui lòng thử lại.'
-  return error.message
+  if (/fetch|network/i.test(error.message)) return t('Mất kết nối mạng, vui lòng thử lại.')
+  return t(error.message)
 }

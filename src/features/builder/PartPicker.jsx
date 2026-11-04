@@ -4,11 +4,12 @@ import { formatPrice } from '../../lib/format'
 import { categoryImage, thumbUrl } from '../../lib/images'
 import { specRows } from '../../lib/specs'
 import { checkCompatibility } from './compatibility'
+import { t, tKey } from '../../lib/i18n'
 
 const SORTS = [
-  { value: 'price-asc', label: 'Giá thấp → cao' },
-  { value: 'price-desc', label: 'Giá cao → thấp' },
-  { value: 'name', label: 'Tên A → Z' },
+  { value: 'price-asc', label: tKey('Giá thấp → cao') },
+  { value: 'price-desc', label: tKey('Giá cao → thấp') },
+  { value: 'name', label: tKey('Tên A → Z') },
 ]
 
 // Danh sách linh kiện để chọn cho một dòng của Builder (dùng trong hộp thoại trên máy tính
@@ -45,7 +46,7 @@ export default function PartPicker({
     <div className="space-y-3">
       {filters.length > 0 && (
         <p className="rounded-md bg-blue-50 px-3 py-2 text-xs text-blue-800">
-          Chỉ hiện linh kiện tương thích: {filters.join(' · ')}
+          {t('Chỉ hiện linh kiện tương thích: {list}', { list: filters.join(' · ') })}
         </p>
       )}
       <div className="flex flex-col gap-2 sm:flex-row">
@@ -53,19 +54,19 @@ export default function PartPicker({
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Tìm theo tên, hãng..."
-          aria-label="Tìm linh kiện"
+          placeholder={t('Tìm theo tên, hãng...')}
+          aria-label={t('Tìm linh kiện')}
           className="h-11 w-full rounded-lg border border-slate-300 px-3 sm:flex-1 text-sm focus:border-blue-500 focus:outline-none"
         />
         <select
           value={sort}
           onChange={(e) => setSort(e.target.value)}
-          aria-label="Sắp xếp"
+          aria-label={t('Sắp xếp')}
           className="h-11 rounded-lg border border-slate-300 bg-surface px-3 text-sm"
         >
           {SORTS.map((s) => (
             <option key={s.value} value={s.value}>
-              {s.label}
+              {t(s.label)}
             </option>
           ))}
         </select>
@@ -73,7 +74,9 @@ export default function PartPicker({
 
       {list.length === 0 ? (
         <p className="py-6 text-center text-sm text-slate-500">
-          {candidates.length ? 'Không có linh kiện khớp từ khóa.' : 'Chưa có linh kiện phù hợp.'}
+          {candidates.length
+            ? t('Không có linh kiện khớp từ khóa.')
+            : t('Chưa có linh kiện phù hợp.')}
         </p>
       ) : (
         <ul className="space-y-2">
@@ -148,7 +151,7 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
           )}
           {slug === 'cpu' && specs?.igpu === false && (
             <span className="mt-0.5 block text-xs text-slate-500">
-              Không có iGPU – cần thêm VGA
+              {t('Không có iGPU – cần thêm VGA')}
             </span>
           )}
         </span>
@@ -159,7 +162,7 @@ function PartOption({ product, slug, selected, conflict, onSelect }) {
           <span
             className={`block text-xs ${outOfStock ? 'text-slate-500' : 'text-green-700 dark:text-green-400'}`}
           >
-            {outOfStock ? 'Hết hàng' : selected ? '✓ Đang chọn' : `Còn ${stock}`}
+            {outOfStock ? t('Hết hàng') : selected ? t('✓ Đang chọn') : t('Còn {n}', { n: stock })}
           </span>
         </span>
       </button>

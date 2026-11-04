@@ -1,14 +1,15 @@
 import { SPEC_FIELDS, formatSpecValue } from './specs'
+import { tKey } from './i18n'
 
 // Lọc, tìm kiếm, sắp xếp danh sách sản phẩm ngay trên trình duyệt.
 // Chỉ có ~120 sản phẩm nên tải hết một lần rồi lọc tại chỗ là đủ nhanh, lại không tốn thêm truy vấn.
 // Bộ lọc được lưu trên URL (?q=...&min=...&sort=...) để bấm Back hoặc gửi link vẫn giữ nguyên.
 
 export const SORT_OPTIONS = [
-  { value: 'newest', label: 'Mới nhất' },
-  { value: 'price-asc', label: 'Giá thấp → cao' },
-  { value: 'price-desc', label: 'Giá cao → thấp' },
-  { value: 'name', label: 'Tên A → Z' },
+  { value: 'newest', label: tKey('Mới nhất') },
+  { value: 'price-asc', label: tKey('Giá thấp → cao') },
+  { value: 'price-desc', label: tKey('Giá cao → thấp') },
+  { value: 'name', label: tKey('Tên A → Z') },
 ]
 
 // Bỏ dấu tiếng Việt và viết thường: "Bộ Nguồn" → "bo nguon", để gõ không dấu vẫn tìm được.

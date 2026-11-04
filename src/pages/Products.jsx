@@ -4,6 +4,7 @@ import ProductBrowser from '../components/ProductBrowser'
 import NotFound from './NotFound'
 import { getCategoryBySlug, getProducts } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
+import { t } from '../lib/i18n'
 
 // Danh sách sản phẩm (tất cả hoặc theo danh mục) có tìm kiếm, bộ lọc, sắp xếp (ProductBrowser).
 // Toàn bộ bộ lọc nằm trên URL, vd: /danh-muc/cpu?q=ryzen&s_socket=AM5&sort=price-asc
@@ -26,7 +27,7 @@ export default function Products() {
     if (category.error) {
       return (
         <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-          Không tải được danh mục: {category.error.message}
+          {t('Không tải được danh mục: {msg}', { msg: t(category.error.message) })}
         </p>
       )
     }
@@ -34,7 +35,7 @@ export default function Products() {
     if (!category.data) return <NotFound />
   }
 
-  const title = slug ? category.data.name : 'Tất cả sản phẩm'
+  const title = slug ? t(category.data.name) : t('Tất cả sản phẩm')
   return (
     <div>
       <h1 className="mb-4 text-xl font-bold">{title}</h1>

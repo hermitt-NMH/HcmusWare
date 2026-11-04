@@ -8,6 +8,7 @@ import SellerProducts from './SellerProducts'
 import SellerProductForm from './SellerProductForm'
 import SellerOrders from './SellerOrders'
 import SellerQuestions from './SellerQuestions'
+import { t } from '../../lib/i18n'
 
 // Kênh người bán /kenh-nguoi-ban. Chỉ vai trò seller vào được (RoleRoute trong App.jsx).
 // /kenh-nguoi-ban                 – thông tin shop + danh sách sản phẩm
@@ -19,24 +20,24 @@ export default function SellerChannel() {
   const { user } = useAuth()
   const shop = useAsync(() => getMyShop(user.id), [user.id])
 
-  if (shop.loading) return <p className="py-16 text-center text-slate-500">Đang tải shop…</p>
+  if (shop.loading) return <p className="py-16 text-center text-slate-500">{t('Đang tải shop…')}</p>
   if (shop.error)
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-        Không tải được shop: {shop.error.message}
+        {t('Không tải được shop: {msg}', { msg: t(shop.error.message) })}
       </p>
     )
   if (!shop.data)
     return (
       <div className="mx-auto max-w-3xl space-y-3">
-        <h1 className="text-xl font-bold sm:text-2xl">Kênh người bán</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">{t('Kênh người bán')}</h1>
         <p className="rounded-xl border border-slate-200 bg-surface p-5 text-sm text-slate-600">
-          Tài khoản của bạn chưa có shop.{' '}
+          {t('Tài khoản của bạn chưa có shop.')}{' '}
           <Link
             to="/tai-khoan/mo-shop"
             className="text-blue-700 underline hover:no-underline dark:text-blue-300"
           >
-            Đăng ký mở shop
+            {t('Đăng ký mở shop')}
           </Link>
         </p>
       </div>
@@ -98,19 +99,19 @@ function SellerPage({ children }) {
     }`
   return (
     <div className="mx-auto max-w-4xl space-y-4">
-      <h1 className="text-xl font-bold sm:text-2xl">Kênh người bán</h1>
+      <h1 className="text-xl font-bold sm:text-2xl">{t('Kênh người bán')}</h1>
       <nav
-        aria-label="Kênh người bán"
+        aria-label={t('Kênh người bán')}
         className="flex gap-1 overflow-x-auto border-b border-slate-200"
       >
         <NavLink to="/kenh-nguoi-ban" end className={tab}>
-          Shop và sản phẩm
+          {t('Shop và sản phẩm')}
         </NavLink>
         <NavLink to="/kenh-nguoi-ban/don-hang" className={tab}>
-          Đơn hàng
+          {t('Đơn hàng')}
         </NavLink>
         <NavLink to="/kenh-nguoi-ban/cau-hoi" className={tab}>
-          Câu hỏi
+          {t('Câu hỏi')}
         </NavLink>
       </nav>
       {children}
@@ -128,7 +129,7 @@ function SellerHome({ shop, canEdit }) {
           <div className="flex flex-wrap items-center gap-2">
             <h2 className="text-lg font-semibold">{shop.name}</h2>
             <span className={`rounded-full px-3 py-1 text-xs font-semibold ${status?.className}`}>
-              {status?.label ?? shop.status}
+              {t(status?.label ?? shop.status)}
             </span>
           </div>
           {shop.description && (
@@ -141,12 +142,12 @@ function SellerHome({ shop, canEdit }) {
               to={`/shop/${shop.slug}`}
               className="inline-flex min-h-11 items-center text-sm text-blue-700 underline hover:no-underline dark:text-blue-300"
             >
-              Xem trang shop
+              {t('Xem trang shop')}
             </Link>
           )}
           {shop.status === 'locked' && (
             <p className="text-sm text-red-700">
-              Shop đang bị khóa: sản phẩm không hiện trên web và bạn chưa sửa được sản phẩm.
+              {t('Shop đang bị khóa: sản phẩm không hiện trên web và bạn chưa sửa được sản phẩm.')}
             </p>
           )}
         </div>

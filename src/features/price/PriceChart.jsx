@@ -2,6 +2,7 @@ import { Chart as ChartJS, Filler, LineElement, LinearScale, PointElement, Toolt
 import { Line } from 'react-chartjs-2'
 import { formatDate, formatPrice } from '../../lib/format'
 import { useTheme } from '../../hooks/useTheme'
+import { dateLocale, t } from '../../lib/i18n'
 
 // Chỉ đăng ký phần Chart.js cần dùng để file nhẹ hơn.
 ChartJS.register(LineElement, PointElement, LinearScale, Tooltip, Filler)
@@ -24,7 +25,7 @@ function chartColors() {
 // "5,49 tr" cho trục Y gọn trên điện thoại.
 function shortPrice(v) {
   return v >= 1e6
-    ? `${(v / 1e6).toLocaleString('vi-VN', { maximumFractionDigits: 2 })} tr`
+    ? t('{v} tr', { v: (v / 1e6).toLocaleString('vi-VN', { maximumFractionDigits: 2 }) })
     : `${Math.round(v / 1000)}k`
 }
 
@@ -38,7 +39,7 @@ export default function PriceChart({ points, targetPrice }) {
   const data = points.map((p) => ({ x: Date.parse(p.recorded_at), y: p.price }))
   const datasets = [
     {
-      label: 'Giá',
+      label: t('Giá'),
       data,
       stepped: 'after',
       borderColor: c.line,
@@ -55,7 +56,7 @@ export default function PriceChart({ points, targetPrice }) {
   ]
   if (targetPrice && data.length) {
     datasets.push({
-      label: 'Giá mong muốn',
+      label: t('Giá mong muốn'),
       data: [
         { x: data[0].x, y: targetPrice },
         { x: data[data.length - 1].x, y: targetPrice },
@@ -88,7 +89,7 @@ export default function PriceChart({ points, targetPrice }) {
           maxTicksLimit: 6,
           maxRotation: 0,
           callback: (v) =>
-            new Date(v).toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' }),
+            new Date(v).toLocaleDateString(dateLocale(), { day: '2-digit', month: '2-digit' }),
         },
       },
       y: {
@@ -118,7 +119,7 @@ export default function PriceChart({ points, targetPrice }) {
         data={{ datasets }}
         options={options}
         role="img"
-        aria-label="Biểu đồ giá 6 tháng gần nhất"
+        aria-label={t('Biểu đồ giá 6 tháng gần nhất')}
       />
     </div>
   )

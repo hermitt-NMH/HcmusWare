@@ -18,11 +18,12 @@ import { SPEC_FIELDS, formatSpecValue } from '../../lib/specs'
 import { validateSpecs, visibleSpecFields } from '../../features/seller/specFields'
 import { SHOP_STATUS } from '../../features/seller/shopForm'
 import LogoBadge from '../../components/LogoBadge'
+import { t, tKey } from '../../lib/i18n'
 
 const TABS = [
-  { value: 'shop', label: 'Shop chờ duyệt' },
-  { value: 'san-pham', label: 'Sản phẩm chờ duyệt' },
-  { value: 'tat-ca-shop', label: 'Các shop' },
+  { value: 'shop', label: tKey('Shop chờ duyệt') },
+  { value: 'san-pham', label: tKey('Sản phẩm chờ duyệt') },
+  { value: 'tat-ca-shop', label: tKey('Các shop') },
 ]
 
 const btn = {
@@ -38,7 +39,7 @@ const btn = {
 // Mọi thao tác gọi hàm trong DB (approve_shop, reject_product...), hàm tự kiểm tra là admin.
 export default function AdminReview() {
   const [params, setParams] = useSearchParams()
-  const tab = TABS.some((t) => t.value === params.get('tab')) ? params.get('tab') : 'shop'
+  const tab = TABS.some((tb) => tb.value === params.get('tab')) ? params.get('tab') : 'shop'
   const [reload, setReload] = useState(0)
   const [message, setMessage] = useState(null)
   const shops = useAsync(() => getAdminShops('pending'), [reload])
@@ -64,26 +65,26 @@ export default function AdminReview() {
         role="tablist"
         className="flex gap-1 overflow-x-auto rounded-xl bg-surface p-1 ring-1 ring-slate-200"
       >
-        {TABS.map((t) => (
+        {TABS.map((tb) => (
           <button
-            key={t.value}
+            key={tb.value}
             type="button"
             role="tab"
-            aria-selected={tab === t.value}
+            aria-selected={tab === tb.value}
             onClick={() => {
-              setParams(t.value === 'shop' ? {} : { tab: t.value })
+              setParams(tb.value === 'shop' ? {} : { tab: tb.value })
               setMessage(null)
             }}
             className={`inline-flex min-h-11 shrink-0 items-center gap-2 rounded-lg px-3 text-sm font-medium ${
-              tab === t.value
+              tab === tb.value
                 ? 'bg-gray-900 text-white dark:bg-blue-600'
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            {t.label}
-            {count[t.value] > 0 && (
+            {t(tb.label)}
+            {count[tb.value] > 0 && (
               <span className="rounded-full bg-amber-500 px-2 text-xs font-bold text-gray-900">
-                {count[t.value]}
+                {count[tb.value]}
               </span>
             )}
           </button>
@@ -107,11 +108,11 @@ export default function AdminReview() {
 }
 
 function AsyncState({ state, empty, children }) {
-  if (state.loading) return <p className="py-8 text-center text-slate-500">Đang tải…</p>
+  if (state.loading) return <p className="py-8 text-center text-slate-500">{t('Đang tải…')}</p>
   if (state.error)
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-        Không tải được: {state.error.message}
+        {t('Không tải được: {msg}', { msg: t(state.error.message) })}
       </p>
     )
   if (!state.data.length)
@@ -130,7 +131,7 @@ function ReasonForm({ label, onSubmit, onCancel }) {
   const [busy, setBusy] = useState(false)
   const submit = async (e) => {
     e.preventDefault()
-    if (!note.trim()) return setError('Nhập lý do.')
+    if (!note.trim()) return setError(t('Nhập lý do.'))
     setBusy(true)
     const ok = await onSubmit(note.trim())
     if (!ok) setBusy(false)
@@ -155,10 +156,10 @@ function ReasonForm({ label, onSubmit, onCancel }) {
       </label>
       <div className="flex gap-2">
         <button type="submit" disabled={busy} className={btn.danger}>
-          Gửi
+          {t('Gửi')}
         </button>
         <button type="button" onClick={onCancel} className={btn.outline}>
-          Hủy
+          {t('Hủy')}
         </button>
       </div>
     </form>
@@ -168,7 +169,7 @@ function ReasonForm({ label, onSubmit, onCancel }) {
 function PendingShops({ shops, run }) {
   const [rejecting, setRejecting] = useState(null)
   return (
-    <AsyncState state={shops} empty="Không có shop nào chờ duyệt.">
+    <AsyncState state={shops} empty={t('Không có shop nào chờ duyệt.')}>
       <ul className="space-y-3">
         {shops.data?.map((s) => (
           <li key={s.id} className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4">
@@ -177,7 +178,8 @@ function PendingShops({ shops, run }) {
               <div className="min-w-0 flex-1">
                 <h3 className="font-semibold">{s.name}</h3>
                 <p className="break-all text-xs text-slate-500">
-                  {s.owner_email} · đăng ký {formatDateTime(s.created_at)} · /shop/{s.slug}
+                  {s.owner_email} · {t('đăng ký {time}', { time: formatDateTime(s.created_at) })} ·
+                  /shop/{s.slug}
                 </p>
                 {s.description && (
                   <p className="mt-1 whitespace-pre-line text-sm text-slate-600">{s.description}</p>
@@ -186,10 +188,10 @@ function PendingShops({ shops, run }) {
             </div>
             {rejecting === s.id ? (
               <ReasonForm
-                label={`Lý do từ chối shop “${s.name}”`}
+                label={t('Lý do từ chối shop “{name}”', s)}
                 onCancel={() => setRejecting(null)}
                 onSubmit={(note) =>
-                  run(() => rejectShop(s.id, note), `Đã từ chối shop “${s.name}”.`)
+                  run(() => rejectShop(s.id, note), t('Đã từ chối shop “{name}”.', s))
                 }
               />
             ) : (
@@ -200,14 +202,14 @@ function PendingShops({ shops, run }) {
                   onClick={() =>
                     run(
                       () => approveShop(s.id),
-                      `Đã duyệt shop “${s.name}”. Chủ shop đã có vai trò người bán.`,
+                      t('Đã duyệt shop “{name}”. Chủ shop đã có vai trò người bán.', s),
                     )
                   }
                 >
-                  Duyệt
+                  {t('Duyệt')}
                 </button>
                 <button type="button" className={btn.danger} onClick={() => setRejecting(s.id)}>
-                  Từ chối
+                  {t('Từ chối')}
                 </button>
               </div>
             )}
@@ -221,7 +223,7 @@ function PendingShops({ shops, run }) {
 function PendingProducts({ products, run }) {
   const brands = useAsync(getBrands, [products.data?.length])
   return (
-    <AsyncState state={products} empty="Không có sản phẩm nào chờ duyệt.">
+    <AsyncState state={products} empty={t('Không có sản phẩm nào chờ duyệt.')}>
       <ul className="space-y-3">
         {products.data?.map((p) => (
           <PendingProduct key={p.id} product={p} brands={brands.data ?? []} run={run} />
@@ -249,16 +251,16 @@ function PendingProduct({ product: p, brands, run }) {
         <div className="min-w-0">
           <h3 className="font-semibold">{p.name}</h3>
           <p className="text-xs text-slate-500">
-            #{p.id} · {p.categories?.name} · shop{' '}
-            <span className="font-medium text-slate-700">{p.shops?.name}</span> · gửi{' '}
-            {formatDate(p.created_at)}
+            #{p.id} · {t(p.categories?.name)} · shop{' '}
+            <span className="font-medium text-slate-700">{p.shops?.name}</span> ·{' '}
+            {t('gửi {date}', { date: formatDate(p.created_at) })}
           </p>
         </div>
         <p className="text-right">
           <span className="font-semibold text-red-600 dark:text-red-400">
             {formatPrice(p.price)}
           </span>
-          <span className="block text-xs text-slate-500">Kho: {p.stock}</span>
+          <span className="block text-xs text-slate-500">{t('Kho: {n}', { n: p.stock })}</span>
         </p>
       </div>
 
@@ -268,7 +270,7 @@ function PendingProduct({ product: p, brands, run }) {
             <a key={url} href={url} target="_blank" rel="noreferrer" className="shrink-0">
               <img
                 src={url}
-                alt={`Ảnh ${i + 1} của ${p.name}`}
+                alt={t('Ảnh {i} của {name}', { i: i + 1, name: p.name })}
                 loading="lazy"
                 className="h-24 w-24 rounded-lg border border-slate-200 bg-white object-contain"
               />
@@ -289,7 +291,7 @@ function PendingProduct({ product: p, brands, run }) {
                 title={err ?? warn}
               >
                 <th className="w-1/2 py-1.5 pl-2 text-left font-normal text-slate-500">
-                  {f.label}
+                  {t(f.label)}
                 </th>
                 <td className="py-1.5 pr-2">
                   {formatSpecValue(labels[f.key] ?? f, p.specs?.[f.key])}
@@ -327,11 +329,13 @@ function PendingProduct({ product: p, brands, run }) {
 
       {/* C1: "Thương hiệu khác" → admin chọn hoặc tạo thương hiệu rồi mới duyệt được */}
       <div className="text-sm">
-        Thương hiệu:{' '}
+        {t('Thương hiệu:')}{' '}
         {p.brand_id ? (
           <span className="font-medium">{p.brand}</span>
         ) : (
-          <span className="font-medium text-amber-800">“{p.brand}” (chưa có trong danh sách)</span>
+          <span className="font-medium text-amber-800">
+            {t('“{brand}” (chưa có trong danh sách)', p)}
+          </span>
         )}
       </div>
       {!p.brand_id && (
@@ -339,10 +343,10 @@ function PendingProduct({ product: p, brands, run }) {
           <select
             value={brandId || (sameName ? String(sameName.id) : '')}
             onChange={(e) => setBrandId(e.target.value)}
-            aria-label="Chọn thương hiệu có sẵn"
+            aria-label={t('Chọn thương hiệu có sẵn')}
             className="h-11 min-w-0 flex-1 rounded-lg border border-slate-300 bg-surface px-2 text-sm"
           >
-            <option value="">— Chọn thương hiệu có sẵn —</option>
+            <option value="">{t('— Chọn thương hiệu có sẵn —')}</option>
             {brands.map((b) => (
               <option key={b.id} value={b.id}>
                 {b.name}
@@ -356,24 +360,27 @@ function PendingProduct({ product: p, brands, run }) {
             onClick={() =>
               run(
                 () => setProductBrand(p.id, Number(brandId || sameName.id)),
-                `Đã gán thương hiệu cho “${p.name}”.`,
+                t('Đã gán thương hiệu cho “{name}”.', p),
               )
             }
           >
-            Gán
+            {t('Gán')}
           </button>
           {!sameName && p.brand?.trim() && (
             <button
               type="button"
               className={btn.outline}
               onClick={() =>
-                run(async () => {
-                  const brand = await createBrand(p.brand)
-                  await setProductBrand(p.id, brand.id)
-                }, `Đã tạo thương hiệu “${p.brand.trim()}” và gán cho sản phẩm.`)
+                run(
+                  async () => {
+                    const brand = await createBrand(p.brand)
+                    await setProductBrand(p.id, brand.id)
+                  },
+                  t('Đã tạo thương hiệu “{brand}” và gán cho sản phẩm.', { brand: p.brand.trim() }),
+                )
               }
             >
-              Tạo thương hiệu “{p.brand.trim()}”
+              {t('Tạo thương hiệu “{brand}”', { brand: p.brand.trim() })}
             </button>
           )}
         </div>
@@ -381,9 +388,9 @@ function PendingProduct({ product: p, brands, run }) {
 
       {rejecting ? (
         <ReasonForm
-          label={`Lý do trả lại “${p.name}”`}
+          label={t('Lý do trả lại “{name}”', p)}
           onCancel={() => setRejecting(false)}
-          onSubmit={(note) => run(() => rejectProduct(p.id, note), `Đã trả lại “${p.name}”.`)}
+          onSubmit={(note) => run(() => rejectProduct(p.id, note), t('Đã trả lại “{name}”.', p))}
         />
       ) : (
         <div className="flex flex-wrap gap-2">
@@ -391,15 +398,15 @@ function PendingProduct({ product: p, brands, run }) {
             type="button"
             className={btn.primary}
             disabled={!p.brand_id}
-            title={p.brand_id ? undefined : 'Chọn hoặc tạo thương hiệu trước'}
+            title={p.brand_id ? undefined : t('Chọn hoặc tạo thương hiệu trước')}
             onClick={() =>
-              run(() => approveProduct(p.id), `Đã duyệt “${p.name}”: sản phẩm đã hiện trên web.`)
+              run(() => approveProduct(p.id), t('Đã duyệt “{name}”: sản phẩm đã hiện trên web.', p))
             }
           >
-            Duyệt
+            {t('Duyệt')}
           </button>
           <button type="button" className={btn.danger} onClick={() => setRejecting(true)}>
-            Trả lại
+            {t('Trả lại')}
           </button>
         </div>
       )}
@@ -412,16 +419,16 @@ function AllShops({ reload, run }) {
   const toggleLock = (s) => {
     const lock = s.status === 'active'
     const question = lock
-      ? `Khóa shop “${s.name}”? Mọi sản phẩm của shop sẽ ẩn khỏi web ngay.`
-      : `Mở khóa shop “${s.name}”? Sản phẩm đã duyệt sẽ hiện lại.`
+      ? t('Khóa shop “{name}”? Mọi sản phẩm của shop sẽ ẩn khỏi web ngay.', s)
+      : t('Mở khóa shop “{name}”? Sản phẩm đã duyệt sẽ hiện lại.', s)
     if (!window.confirm(question)) return
     run(
       () => setShopLocked(s.id, lock),
-      lock ? `Đã khóa shop “${s.name}”.` : `Đã mở khóa shop “${s.name}”.`,
+      lock ? t('Đã khóa shop “{name}”.', s) : t('Đã mở khóa shop “{name}”.', s),
     )
   }
   return (
-    <AsyncState state={shops} empty="Chưa có shop nào.">
+    <AsyncState state={shops} empty={t('Chưa có shop nào.')}>
       <ul className="divide-y divide-slate-100 overflow-hidden rounded-xl border border-slate-200 bg-surface">
         {shops.data?.map((s) => {
           const status = SHOP_STATUS[s.status]
@@ -443,12 +450,12 @@ function AllShops({ reload, run }) {
                   <span
                     className={`rounded-full px-2 py-0.5 text-xs font-semibold ${status?.className}`}
                   >
-                    {status?.label}
+                    {t(status?.label)}
                   </span>
                 </p>
                 <p className="break-all text-xs text-slate-500">
-                  {s.owner_email ?? 'Chưa có chủ'} · {s.product_count} sản phẩm
-                  {s.pending_products > 0 && ` (${s.pending_products} chờ duyệt)`}
+                  {s.owner_email ?? t('Chưa có chủ')} · {t('{n} sản phẩm', { n: s.product_count })}
+                  {s.pending_products > 0 && ` (${t('{n} chờ duyệt', { n: s.pending_products })})`}
                 </p>
               </div>
               {s.slug !== 'hcmusware' && (s.status === 'active' || s.status === 'locked') && (
@@ -457,7 +464,7 @@ function AllShops({ reload, run }) {
                   onClick={() => toggleLock(s)}
                   className={s.status === 'active' ? btn.danger : btn.outline}
                 >
-                  {s.status === 'active' ? 'Khóa shop' : 'Mở khóa'}
+                  {s.status === 'active' ? t('Khóa shop') : t('Mở khóa')}
                 </button>
               )}
             </li>

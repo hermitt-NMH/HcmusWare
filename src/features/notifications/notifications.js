@@ -1,5 +1,6 @@
 // Chuông thông báo trên Header (F12 – US-12.1, US-12.2). Hàm thuần để viết unit test.
 // Thông báo do trigger trong DB tạo (migration 20261221000000), frontend chỉ đọc và đánh dấu đã đọc.
+import { dateLocale, t } from '../../lib/i18n'
 
 // Số trên chuông: 0 → không hiện, lớn hơn 9 → "9+".
 export function unreadBadge(count) {
@@ -15,11 +16,11 @@ const DAY = 24 * HOUR
 // "Vừa xong", "5 phút trước", "3 giờ trước", "2 ngày trước"; từ 7 ngày trở đi hiện ngày 09/11/2026.
 export function timeAgo(iso, now = new Date()) {
   const diff = new Date(now).getTime() - new Date(iso).getTime()
-  if (!(diff >= 0) || diff < MINUTE) return 'Vừa xong'
-  if (diff < HOUR) return `${Math.floor(diff / MINUTE)} phút trước`
-  if (diff < DAY) return `${Math.floor(diff / HOUR)} giờ trước`
-  if (diff < 7 * DAY) return `${Math.floor(diff / DAY)} ngày trước`
-  return new Date(iso).toLocaleDateString('vi-VN', {
+  if (!(diff >= 0) || diff < MINUTE) return t('Vừa xong')
+  if (diff < HOUR) return t('{n} phút trước', { n: Math.floor(diff / MINUTE) })
+  if (diff < DAY) return t('{n} giờ trước', { n: Math.floor(diff / HOUR) })
+  if (diff < 7 * DAY) return t('{n} ngày trước', { n: Math.floor(diff / DAY) })
+  return new Date(iso).toLocaleDateString(dateLocale(), {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',

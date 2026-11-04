@@ -1,5 +1,6 @@
 import { supabase } from './supabase'
 import { toSlug } from './slug'
+import { t } from './i18n'
 
 // Gom các truy vấn Supabase hay dùng vào một chỗ để các trang gọi lại.
 
@@ -351,7 +352,8 @@ export async function deleteProduct(id) {
     .select('id', { count: 'exact', head: true })
     .eq('product_id', id)
   if (countError) throw countError
-  if (count > 0) throw Object.assign(new Error('Sản phẩm đã có trong đơn hàng'), { code: '23503' })
+  if (count > 0)
+    throw Object.assign(new Error(t('Sản phẩm đã có trong đơn hàng')), { code: '23503' })
 
   const { error } = await supabase.from('products').delete().eq('id', id)
   if (error) throw error

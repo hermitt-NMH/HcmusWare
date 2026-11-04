@@ -6,6 +6,7 @@ import { canReview, getProductReviews, saveReview, setReviewHidden } from '../..
 import { formatDate } from '../../lib/format'
 import { MAX_TEXT, formatRating, textLength, ugcErrorMessage, validateReview } from './reviews'
 import { StarInput, Stars } from './Stars'
+import { t } from '../../lib/i18n'
 
 // Mục "Đánh giá" trên trang sản phẩm (F16 – US-16.1, US-16.4, US-16.5).
 // Form chỉ hiện cho người đã nhận hàng; DB cũng chặn (guard_review_write), nên ẩn form chỉ để tiện.
@@ -42,14 +43,14 @@ export default function ReviewSection({ productId, onSummary }) {
     <section aria-labelledby="reviews-title" className="space-y-3">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
         <h2 id="reviews-title" className="text-lg font-semibold">
-          Đánh giá sản phẩm
+          {t('Đánh giá sản phẩm')}
         </h2>
         {!reviews.loading && !reviews.error && (
           <p className="text-sm text-slate-600">
             {summary ? (
               <span className="font-semibold text-slate-800">{summary}</span>
             ) : (
-              'Chưa có đánh giá'
+              t('Chưa có đánh giá')
             )}
           </p>
         )}
@@ -75,7 +76,7 @@ export default function ReviewSection({ productId, onSummary }) {
       {reviews.loading && <div className="h-24 animate-pulse rounded-xl bg-slate-100" />}
       {reviews.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được đánh giá: {reviews.error.message}
+          {t('Không tải được đánh giá: {msg}', { msg: t(reviews.error.message) })}
         </p>
       )}
       {!reviews.loading && !reviews.error && list.length > 0 && (
@@ -103,12 +104,12 @@ function ReviewFormArea({ productId, user, eligible, mine, onSaved }) {
   if (!user)
     return (
       <p className="text-sm text-slate-600">
-        Chỉ người đã nhận hàng mới đánh giá được.{' '}
+        {t('Chỉ người đã nhận hàng mới đánh giá được.')}{' '}
         <Link
           to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`}
           className="text-blue-700 underline hover:no-underline dark:text-blue-300"
         >
-          Đăng nhập
+          {t('Đăng nhập')}
         </Link>
       </p>
     )
@@ -116,11 +117,13 @@ function ReviewFormArea({ productId, user, eligible, mine, onSaved }) {
   if (eligible.error)
     return (
       <p className="text-sm text-red-700">
-        Không kiểm tra được đơn hàng của bạn: {eligible.error.message}
+        {t('Không kiểm tra được đơn hàng của bạn: {msg}', { msg: t(eligible.error.message) })}
       </p>
     )
   if (!eligible.data)
-    return <p className="text-sm text-slate-600">Chỉ người đã nhận hàng mới đánh giá được.</p>
+    return (
+      <p className="text-sm text-slate-600">{t('Chỉ người đã nhận hàng mới đánh giá được.')}</p>
+    )
 
   if (!open)
     return (
@@ -129,7 +132,7 @@ function ReviewFormArea({ productId, user, eligible, mine, onSaved }) {
         onClick={() => setOpen(true)}
         className="inline-flex h-11 items-center rounded-lg border border-slate-300 px-4 text-sm font-medium hover:bg-slate-50"
       >
-        Sửa đánh giá của bạn
+        {t('Sửa đánh giá của bạn')}
       </button>
     )
 
@@ -172,12 +175,12 @@ function ReviewForm({ productId, mine, onCancel, onSaved }) {
   const length = textLength(comment)
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-3">
-      <h3 className="font-semibold">{mine ? 'Sửa đánh giá của bạn' : 'Viết đánh giá'}</h3>
+      <h3 className="font-semibold">{mine ? t('Sửa đánh giá của bạn') : t('Viết đánh giá')}</h3>
       <StarInput value={rating} onChange={setRating} />
       {errors.rating && <p className="text-sm text-red-700">{errors.rating}</p>}
       <div>
         <label htmlFor="review-comment" className="mb-1 block text-sm font-medium">
-          Nhận xét (không bắt buộc)
+          {t('Nhận xét (không bắt buộc)')}
         </label>
         <textarea
           id="review-comment"
@@ -206,7 +209,7 @@ function ReviewForm({ productId, mine, onCancel, onSaved }) {
           disabled={saving}
           className="h-11 rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
         >
-          {saving ? 'Đang gửi…' : mine ? 'Lưu đánh giá' : 'Gửi đánh giá'}
+          {saving ? t('Đang gửi…') : mine ? t('Lưu đánh giá') : t('Gửi đánh giá')}
         </button>
         {onCancel && (
           <button
@@ -214,7 +217,7 @@ function ReviewForm({ productId, mine, onCancel, onSaved }) {
             onClick={onCancel}
             className="h-11 rounded-lg border border-slate-300 px-4 text-sm font-medium hover:bg-slate-50"
           >
-            Hủy
+            {t('Hủy')}
           </button>
         )}
       </div>
@@ -243,16 +246,16 @@ function ReviewItem({ review, isMine, isAdmin, onChanged }) {
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
         <span className="font-semibold text-slate-800">{review.author_name}</span>
         <span className="rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-800">
-          Đã mua hàng
+          {t('Đã mua hàng')}
         </span>
-        {isMine && <span className="text-xs text-slate-500">(bạn)</span>}
+        {isMine && <span className="text-xs text-slate-500">{t('(bạn)')}</span>}
         {review.hidden && (
           <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-700">
-            Đã ẩn
+            {t('Đã ẩn')}
           </span>
         )}
         <span className="text-slate-500">· {formatDate(review.created_at)}</span>
-        {review.updated_at && <span className="text-xs text-slate-500">(đã sửa)</span>}
+        {review.updated_at && <span className="text-xs text-slate-500">{t('(đã sửa)')}</span>}
       </div>
       <Stars value={review.rating} />
       {/* Nội dung người dùng: chỉ hiện dạng chữ (React tự thoát HTML), giữ xuống dòng – US-16.5 */}
@@ -261,7 +264,7 @@ function ReviewItem({ review, isMine, isAdmin, onChanged }) {
       )}
       {isMine && review.hidden && !isAdmin && (
         <p className="text-xs text-slate-500">
-          Đánh giá này đã bị admin ẩn, người khác không thấy.
+          {t('Đánh giá này đã bị admin ẩn, người khác không thấy.')}
         </p>
       )}
       {isAdmin && (
@@ -271,7 +274,7 @@ function ReviewItem({ review, isMine, isAdmin, onChanged }) {
           disabled={busy}
           className="inline-flex h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-medium hover:bg-slate-50 disabled:opacity-50"
         >
-          {review.hidden ? 'Hiện lại' : 'Ẩn'}
+          {review.hidden ? t('Hiện lại') : t('Ẩn')}
         </button>
       )}
       {error && <p className="text-sm text-red-700">{error}</p>}

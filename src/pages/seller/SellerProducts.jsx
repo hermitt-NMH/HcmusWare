@@ -5,18 +5,23 @@ import { getSellerProducts, setSellerProductStatus } from '../../lib/api'
 import { formatPrice } from '../../lib/format'
 import { categoryImage, thumbUrl } from '../../lib/images'
 import { PRODUCT_STATUS, sellerActions } from '../../features/seller/sellerProduct'
+import { t, tKey } from '../../lib/i18n'
 
 const ACTIONS = {
-  hide: { label: 'Ẩn', status: 'hidden', done: 'Đã ẩn' },
-  show: { label: 'Hiện lại', status: 'active', done: 'Đã hiện lại' },
-  resubmit: { label: 'Gửi duyệt lại', status: 'pending', done: 'Đã gửi duyệt lại' },
+  hide: { label: tKey('Ẩn'), status: 'hidden', done: tKey('Đã ẩn “{name}”.') },
+  show: { label: tKey('Hiện lại'), status: 'active', done: tKey('Đã hiện lại “{name}”.') },
+  resubmit: {
+    label: tKey('Gửi duyệt lại'),
+    status: 'pending',
+    done: tKey('Đã gửi duyệt lại “{name}”.'),
+  },
 }
 
 const FILTERS = [
-  { value: '', label: 'Tất cả' },
-  { value: 'pending', label: 'Chờ duyệt' },
-  { value: 'active', label: 'Đang bán' },
-  { value: 'hidden', label: 'Đã ẩn' },
+  { value: '', label: tKey('Tất cả') },
+  { value: 'pending', label: tKey('Chờ duyệt') },
+  { value: 'active', label: tKey('Đang bán') },
+  { value: 'hidden', label: tKey('Đã ẩn') },
 ]
 
 // Danh sách sản phẩm của shop trong kênh người bán (US-14.4, US-14.6).
@@ -35,7 +40,7 @@ export default function SellerProducts({ shop, canEdit }) {
     setBusy(product.id)
     try {
       await setSellerProductStatus(product.id, ACTIONS[action].status)
-      setMessage({ type: 'success', text: `${ACTIONS[action].done} “${product.name}”.` })
+      setMessage({ type: 'success', text: t(ACTIONS[action].done, { name: product.name }) })
       setReload((n) => n + 1)
     } catch (err) {
       setMessage({ type: 'error', text: err.message })
@@ -51,20 +56,20 @@ export default function SellerProducts({ shop, canEdit }) {
   return (
     <section className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold">Sản phẩm của shop</h2>
+        <h2 className="text-lg font-semibold">{t('Sản phẩm của shop')}</h2>
         {canEdit && (
           <Link
             to="/kenh-nguoi-ban/san-pham/moi"
             className="inline-flex h-11 items-center rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700"
           >
-            + Đăng sản phẩm
+            {t('+ Đăng sản phẩm')}
           </Link>
         )}
       </div>
 
       <div
         role="tablist"
-        aria-label="Lọc theo trạng thái"
+        aria-label={t('Lọc theo trạng thái')}
         className="flex gap-1 overflow-x-auto rounded-xl bg-surface p-1 ring-1 ring-slate-200"
       >
         {FILTERS.map((f) => (
@@ -80,7 +85,7 @@ export default function SellerProducts({ shop, canEdit }) {
                 : 'text-slate-600 hover:bg-slate-100'
             }`}
           >
-            {f.label} ({count(f.value)})
+            {t(f.label)} ({count(f.value)})
           </button>
         ))}
       </div>
@@ -93,15 +98,17 @@ export default function SellerProducts({ shop, canEdit }) {
           {message.text}
         </p>
       )}
-      {products.loading && <p className="py-8 text-center text-slate-500">Đang tải sản phẩm…</p>}
+      {products.loading && (
+        <p className="py-8 text-center text-slate-500">{t('Đang tải sản phẩm…')}</p>
+      )}
       {products.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được sản phẩm: {products.error.message}
+          {t('Không tải được sản phẩm: {msg}', { msg: t(products.error.message) })}
         </p>
       )}
       {products.data && !list.length && (
         <p className="rounded-xl border border-dashed border-slate-300 p-6 text-center text-sm text-slate-500">
-          {all.length ? 'Không có sản phẩm ở trạng thái này.' : 'Shop chưa có sản phẩm nào.'}
+          {all.length ? t('Không có sản phẩm ở trạng thái này.') : t('Shop chưa có sản phẩm nào.')}
         </p>
       )}
 
@@ -121,27 +128,30 @@ export default function SellerProducts({ shop, canEdit }) {
                   <div className="min-w-0 flex-1">
                     <p className="line-clamp-2 text-sm font-medium">{p.name}</p>
                     <p className="text-xs text-slate-500">
-                      #{p.id} · {p.categories?.name} · {p.brand ?? '—'}
+                      #{p.id} · {t(p.categories?.name)} · {p.brand ?? '—'}
                     </p>
                     <p className="text-sm">
                       <span className="font-semibold text-red-600 dark:text-red-400">
                         {formatPrice(p.price)}
                       </span>
-                      <span className="ml-2 text-xs text-slate-500">Kho: {p.stock}</span>
+                      <span className="ml-2 text-xs text-slate-500">
+                        {t('Kho: {n}', { n: p.stock })}
+                      </span>
                       <span
                         className={`ml-2 rounded-full px-2 py-0.5 text-xs font-semibold ${status?.className}`}
                       >
-                        {status?.label}
+                        {t(status?.label)}
                       </span>
                     </p>
                     {p.review_note && (
                       <p className="mt-1 rounded-md bg-red-50 px-2 py-1 text-xs text-red-700">
-                        Admin trả lại: <span className="whitespace-pre-line">{p.review_note}</span>
+                        {t('Admin trả lại:')}{' '}
+                        <span className="whitespace-pre-line">{p.review_note}</span>
                       </p>
                     )}
                     {p.status === 'hidden' && !p.approved_at && !p.review_note && (
                       <p className="mt-1 text-xs text-slate-500">
-                        Admin đã gỡ sản phẩm; sửa rồi gửi duyệt lại để bán tiếp.
+                        {t('Admin đã gỡ sản phẩm; sửa rồi gửi duyệt lại để bán tiếp.')}
                       </p>
                     )}
                   </div>
@@ -152,7 +162,7 @@ export default function SellerProducts({ shop, canEdit }) {
                       to={`/kenh-nguoi-ban/san-pham/${p.id}`}
                       className="inline-flex h-10 flex-1 items-center justify-center rounded-lg border border-slate-300 px-3 text-sm font-medium hover:bg-slate-50"
                     >
-                      Sửa
+                      {t('Sửa')}
                     </Link>
                     {sellerActions(p).map((action) => (
                       <button
@@ -162,7 +172,7 @@ export default function SellerProducts({ shop, canEdit }) {
                         onClick={() => act(p, action)}
                         className="inline-flex h-10 flex-1 items-center justify-center whitespace-nowrap rounded-lg px-3 text-sm text-slate-600 hover:bg-slate-100 disabled:opacity-60"
                       >
-                        {ACTIONS[action].label}
+                        {t(ACTIONS[action].label)}
                       </button>
                     ))}
                   </div>

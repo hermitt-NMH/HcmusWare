@@ -1,11 +1,12 @@
 // Vai trò người dùng (cột profiles.role) và quyền vào từng khu vực – Giai đoạn 2, F13.
 // Ẩn menu / chặn trang chỉ để tiện cho người dùng; bảo vệ thật nằm ở RLS trong DB
 // (xem supabase/migrations/20261123000000_g2_tuan1_phan_quyen.sql, kiểm thử bằng npm run test:rls).
+import { t, tKey } from './i18n'
 
 export const ROLES = {
-  customer: { label: 'Khách hàng' },
-  seller: { label: 'Người bán' },
-  admin: { label: 'Quản trị viên' },
+  customer: { label: tKey('Khách hàng') },
+  seller: { label: tKey('Người bán') },
+  admin: { label: tKey('Quản trị viên') },
 }
 
 export const ROLE_VALUES = Object.keys(ROLES)
@@ -18,7 +19,7 @@ export const AREA_ROLES = {
 }
 
 export function roleLabel(role) {
-  return ROLES[role]?.label ?? 'Không rõ'
+  return t(ROLES[role]?.label ?? 'Không rõ')
 }
 
 // role null/undefined (chưa đăng nhập, hồ sơ chưa tải) → không có quyền gì.
@@ -28,7 +29,7 @@ export function canAccess(role, allowed) {
 
 // Lối tắt trên Header / trang Tài khoản tới khu vực riêng của vai trò (khách hàng không có).
 export function roleShortcut(role) {
-  if (role === 'admin') return { to: '/admin', label: 'Quản trị' }
-  if (role === 'seller') return { to: '/kenh-nguoi-ban', label: 'Kênh người bán' }
+  if (role === 'admin') return { to: '/admin', label: t('Quản trị') }
+  if (role === 'seller') return { to: '/kenh-nguoi-ban', label: t('Kênh người bán') }
   return null
 }

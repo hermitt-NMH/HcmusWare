@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { t } from '../../lib/i18n'
 
 // Nút sao chép link chia sẻ. Trình duyệt chặn clipboard (http, webview cũ...) thì hiện
 // hộp prompt có sẵn link để khách tự chép.
@@ -7,8 +8,8 @@ export default function CopyLinkButton({ url, className = '' }) {
 
   useEffect(() => {
     if (!copied) return
-    const t = setTimeout(() => setCopied(false), 2000)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setCopied(false), 2000)
+    return () => clearTimeout(timer)
   }, [copied])
 
   const copy = async () => {
@@ -16,7 +17,7 @@ export default function CopyLinkButton({ url, className = '' }) {
       await navigator.clipboard.writeText(url)
       setCopied(true)
     } catch {
-      window.prompt('Sao chép link chia sẻ:', url)
+      window.prompt(t('Sao chép link chia sẻ:'), url)
     }
   }
 
@@ -26,7 +27,7 @@ export default function CopyLinkButton({ url, className = '' }) {
       onClick={copy}
       className={`inline-flex h-10 items-center rounded-lg border border-slate-300 px-3 text-sm font-medium text-slate-700 hover:bg-slate-50 ${className}`}
     >
-      {copied ? '✓ Đã sao chép' : 'Sao chép link'}
+      {copied ? t('✓ Đã sao chép') : t('Sao chép link')}
     </button>
   )
 }

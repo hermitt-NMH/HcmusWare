@@ -2,6 +2,7 @@
 // Trường chung theo docs/thong-so-bat-buoc.md; thông số theo danh mục ở specFields.js.
 import { specsToForm, validateSpecs } from './specFields'
 import { parseWholeNumber } from '../../lib/format'
+import { t, tKey } from '../../lib/i18n'
 
 export const MAX_IMAGES = 5
 export const MAX_IMAGE_BYTES = 2 * 1024 * 1024
@@ -11,8 +12,9 @@ export const OTHER_BRAND = 'other'
 
 // Kiểm tra một file ảnh trước khi tải lên. Hợp lệ → null, sai → câu báo lỗi.
 export function checkImageFile(file) {
-  if (!IMAGE_TYPES.includes(file.type)) return `Ảnh "${file.name}" phải là JPG, PNG hoặc WebP.`
-  if (file.size > MAX_IMAGE_BYTES) return `Ảnh "${file.name}" lớn hơn 2 MB.`
+  if (!IMAGE_TYPES.includes(file.type))
+    return t('Ảnh "{name}" phải là JPG, PNG hoặc WebP.', { name: file.name })
+  if (file.size > MAX_IMAGE_BYTES) return t('Ảnh "{name}" lớn hơn 2 MB.', { name: file.name })
   return null
 }
 
@@ -49,25 +51,26 @@ export function validateSellerProduct(form, categorySlug) {
   const description = form.description.trim()
   const datasheet = form.datasheet_url.trim()
 
-  if (!form.category_id) errors.category_id = 'Chọn danh mục.'
-  if (name.length < 5 || name.length > 200) errors.name = 'Tên sản phẩm từ 5 đến 200 ký tự.'
-  if (!form.brand_id) errors.brand_id = 'Chọn thương hiệu.'
+  if (!form.category_id) errors.category_id = t('Chọn danh mục.')
+  if (name.length < 5 || name.length > 200) errors.name = t('Tên sản phẩm từ 5 đến 200 ký tự.')
+  if (!form.brand_id) errors.brand_id = t('Chọn thương hiệu.')
   else if (form.brand_id === OTHER_BRAND && (otherBrand.length < 1 || otherBrand.length > 60))
-    errors.other_brand = 'Nhập tên thương hiệu (tối đa 60 ký tự).'
+    errors.other_brand = t('Nhập tên thương hiệu (tối đa 60 ký tự).')
   if (
     String(form.price).trim() === '' ||
     !Number.isInteger(price) ||
     price < 1000 ||
     price > 200_000_000
   )
-    errors.price = 'Giá là số nguyên từ 1.000 đến 200.000.000 ₫.'
+    errors.price = t('Giá là số nguyên từ 1.000 đến 200.000.000 ₫.')
   if (String(form.stock).trim() === '' || !Number.isInteger(stock) || stock < 0 || stock > 9999)
-    errors.stock = 'Tồn kho là số nguyên từ 0 đến 9.999.'
-  if (!form.images.length) errors.images = 'Cần ít nhất 1 ảnh.'
-  else if (form.images.length > MAX_IMAGES) errors.images = `Tối đa ${MAX_IMAGES} ảnh.`
-  if (description.length > 5000) errors.description = 'Mô tả tối đa 5.000 ký tự.'
+    errors.stock = t('Tồn kho là số nguyên từ 0 đến 9.999.')
+  if (!form.images.length) errors.images = t('Cần ít nhất 1 ảnh.')
+  else if (form.images.length > MAX_IMAGES)
+    errors.images = t('Tối đa {max} ảnh.', { max: MAX_IMAGES })
+  if (description.length > 5000) errors.description = t('Mô tả tối đa 5.000 ký tự.')
   if (datasheet && !/^https:\/\/\S+$/i.test(datasheet))
-    errors.datasheet_url = 'Link datasheet phải bắt đầu bằng https://'
+    errors.datasheet_url = t('Link datasheet phải bắt đầu bằng https://')
 
   const spec = validateSpecs(categorySlug, form.specs)
   for (const [key, message] of Object.entries(spec.errors)) errors[`specs.${key}`] = message
@@ -119,9 +122,9 @@ export function needsReview(changes) {
 
 // Trạng thái sản phẩm → nhãn cho người bán / admin.
 export const PRODUCT_STATUS = {
-  pending: { label: 'Chờ duyệt', className: 'bg-amber-50 text-amber-800' },
-  active: { label: 'Đang bán', className: 'bg-green-50 text-green-800' },
-  hidden: { label: 'Đã ẩn', className: 'bg-slate-100 text-slate-600' },
+  pending: { label: tKey('Chờ duyệt'), className: 'bg-amber-50 text-amber-800' },
+  active: { label: tKey('Đang bán'), className: 'bg-green-50 text-green-800' },
+  hidden: { label: tKey('Đã ẩn'), className: 'bg-slate-100 text-slate-600' },
 }
 
 // Người bán bấm được nút nào với sản phẩm (UI chỉ để tiện; trigger trong DB mới là chốt chặn).

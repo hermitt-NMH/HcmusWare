@@ -12,6 +12,7 @@ import {
   validateTargetPrice,
   withCurrentPrice,
 } from './price'
+import { t } from '../../lib/i18n'
 
 // Chart.js khá nặng (~60 KB) → chỉ tải khi mở trang sản phẩm, không làm chậm trang chủ.
 const PriceChart = lazyPage('PriceChart', () => import('./PriceChart'))
@@ -34,7 +35,7 @@ export default function PriceSection({ productId, currentPrice }) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold">Lịch sử giá 6 tháng</h2>
+      <h2 className="text-lg font-semibold">{t('Lịch sử giá 6 tháng')}</h2>
       <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
         <div className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4">
           {history.loading && (
@@ -42,16 +43,16 @@ export default function PriceSection({ productId, currentPrice }) {
           )}
           {history.error && (
             <p className="text-sm text-red-600 dark:text-red-400">
-              Không tải được lịch sử giá: {history.error.message}
+              {t('Không tải được lịch sử giá: {msg}', { msg: t(history.error.message) })}
             </p>
           )}
           {!history.loading && !history.error && stats && (
             <>
               <dl className="grid grid-cols-3 gap-2 text-center text-sm">
-                <Stat label="Thấp nhất" value={formatPrice(stats.min)} />
-                <Stat label="Cao nhất" value={formatPrice(stats.max)} />
+                <Stat label={t('Thấp nhất')} value={formatPrice(stats.min)} />
+                <Stat label={t('Cao nhất')} value={formatPrice(stats.max)} />
                 <Stat
-                  label="So với 6 tháng trước"
+                  label={t('So với 6 tháng trước')}
                   value={`${stats.changePct > 0 ? '+' : ''}${stats.changePct.toLocaleString('vi-VN')}%`}
                   className={
                     stats.changePct < 0
@@ -68,13 +69,13 @@ export default function PriceSection({ productId, currentPrice }) {
                 </Suspense>
               ) : (
                 <p className="py-6 text-center text-sm text-slate-500">
-                  Giá chưa thay đổi trong 6 tháng qua.
+                  {t('Giá chưa thay đổi trong 6 tháng qua.')}
                 </p>
               )}
               {myAlert && (
                 <p className="flex items-center gap-2 text-xs text-slate-500">
                   <span className="inline-block w-5 border-t-2 border-dashed border-green-600" />
-                  Giá mong muốn của bạn
+                  {t('Giá mong muốn của bạn')}
                 </p>
               )}
               {/* Bảng cho người không xem được biểu đồ (trình đọc màn hình) */}
@@ -84,14 +85,14 @@ export default function PriceSection({ productId, currentPrice }) {
                 aria-expanded={showTable}
                 className="min-h-11 text-sm text-blue-700 dark:text-blue-300 hover:underline"
               >
-                {showTable ? 'Ẩn bảng giá' : 'Xem dạng bảng'}
+                {showTable ? t('Ẩn bảng giá') : t('Xem dạng bảng')}
               </button>
               {showTable && (
                 <table className="w-full text-sm">
                   <thead className="text-left text-xs text-slate-500">
                     <tr>
-                      <th className="py-1 font-medium">Từ ngày</th>
-                      <th className="py-1 text-right font-medium">Giá</th>
+                      <th className="py-1 font-medium">{t('Từ ngày')}</th>
+                      <th className="py-1 text-right font-medium">{t('Giá')}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -142,20 +143,20 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
   const [busy, setBusy] = useState(false)
 
   const box = 'space-y-3 rounded-xl border border-slate-200 bg-surface p-4 text-sm'
-  const title = <h3 className="font-semibold">🔔 Báo tôi khi giá giảm</h3>
+  const title = <h3 className="font-semibold">{t('🔔 Báo tôi khi giá giảm')}</h3>
 
   if (!user) {
     return (
       <div className={box}>
         {title}
         <p className="text-slate-600">
-          Đặt giá mong muốn, web sẽ báo khi giá xuống bằng hoặc thấp hơn mức đó.
+          {t('Đặt giá mong muốn, web sẽ báo khi giá xuống bằng hoặc thấp hơn mức đó.')}
         </p>
         <Link
           to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`}
           className="inline-flex h-11 w-full items-center justify-center rounded-lg border border-blue-600 font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50"
         >
-          Đăng nhập để đặt cảnh báo
+          {t('Đăng nhập để đặt cảnh báo')}
         </Link>
       </div>
     )
@@ -176,7 +177,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
       setEditing(false)
       notify()
     } catch (err) {
-      setError(`Không lưu được: ${err.message}`)
+      setError(t('Không lưu được: {msg}', { msg: t(err.message) }))
     } finally {
       setBusy(false)
     }
@@ -190,7 +191,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
       onChange(null)
       notify()
     } catch (err) {
-      setError(`Không xóa được: ${err.message}`)
+      setError(t('Không xóa được: {msg}', { msg: t(err.message) }))
     } finally {
       setBusy(false)
     }
@@ -202,7 +203,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
       <div className={box}>
         {title}
         <p>
-          Giá mong muốn:{' '}
+          {t('Giá mong muốn:')}{' '}
           <strong className="text-green-700 dark:text-green-400">
             {formatPrice(alert.target_price)}
           </strong>
@@ -211,8 +212,10 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
           className={reached ? 'font-medium text-green-700 dark:text-green-400' : 'text-slate-500'}
         >
           {reached
-            ? '✓ Giá hiện tại đã đạt mức bạn mong muốn!'
-            : `Còn cách ${formatPrice(currentPrice - alert.target_price)}. Web sẽ báo khi bạn mở trang lúc giá giảm.`}
+            ? t('✓ Giá hiện tại đã đạt mức bạn mong muốn!')
+            : t('Còn cách {price}. Web sẽ báo khi bạn mở trang lúc giá giảm.', {
+                price: formatPrice(currentPrice - alert.target_price),
+              })}
         </p>
         {error && <p className="text-red-600 dark:text-red-400">{error}</p>}
         <div className="flex gap-2">
@@ -224,7 +227,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
             }}
             className="h-11 flex-1 rounded-lg border border-slate-300 font-medium hover:bg-slate-50"
           >
-            Đổi giá
+            {t('Đổi giá')}
           </button>
           <button
             type="button"
@@ -232,7 +235,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
             disabled={busy}
             className="h-11 rounded-lg px-3 text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400 disabled:opacity-60"
           >
-            Hủy cảnh báo
+            {t('Hủy cảnh báo')}
           </button>
         </div>
       </div>
@@ -243,10 +246,12 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
     <form onSubmit={save} className={box} noValidate>
       {title}
       <p className="text-slate-600">
-        Giá hiện tại {formatPrice(currentPrice)}. Nhập mức giá bạn muốn mua:
+        {t('Giá hiện tại {price}. Nhập mức giá bạn muốn mua:', {
+          price: formatPrice(currentPrice),
+        })}
       </p>
       <label className="block">
-        <span className="sr-only">Giá mong muốn</span>
+        <span className="sr-only">{t('Giá mong muốn')}</span>
         <div className="relative">
           <input
             inputMode="numeric"
@@ -277,7 +282,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
           disabled={busy}
           className="h-11 flex-1 rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
         >
-          {busy ? 'Đang lưu…' : 'Đặt cảnh báo'}
+          {busy ? t('Đang lưu…') : t('Đặt cảnh báo')}
         </button>
         {editing && (
           <button
@@ -285,7 +290,7 @@ function PriceAlertBox({ productId, currentPrice, loading, alert, onChange }) {
             onClick={() => setEditing(false)}
             className="h-11 rounded-lg px-3 text-slate-500 hover:bg-slate-100"
           >
-            Hủy
+            {t('Hủy')}
           </button>
         )}
       </div>

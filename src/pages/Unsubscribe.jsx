@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { unsubscribeEmail } from '../lib/api'
+import { t, tKey } from '../lib/i18n'
 
-const KINDS = { gia: 'email cảnh báo giá', don: 'email trạng thái đơn hàng' }
+const KINDS = { gia: tKey('email cảnh báo giá'), don: tKey('email trạng thái đơn hàng') }
 
 // /tat-email?t=<email_token>&loai=gia|don – link cuối mỗi email (F12 – US-12.3), không cần đăng nhập.
 // Phải bấm nút mới tắt: trình quét link của hộp thư tự mở link sẽ không tắt nhầm.
@@ -24,22 +25,28 @@ export default function Unsubscribe() {
 
   return (
     <div className="mx-auto max-w-md space-y-4 rounded-2xl border border-slate-200 bg-surface p-6 text-center">
-      <h1 className="text-xl font-bold">Tắt email thông báo</h1>
+      <h1 className="text-xl font-bold">{t('Tắt email thông báo')}</h1>
       {!valid || state === 'invalid' ? (
         <p className="text-sm text-slate-600">
-          Link không hợp lệ hoặc đã cũ. Bạn có thể bật/tắt email trong trang tài khoản.
+          {t('Link không hợp lệ hoặc đã cũ. Bạn có thể bật/tắt email trong trang tài khoản.')}
         </p>
       ) : state === 'done' ? (
         <p role="status" className="rounded-lg bg-green-50 p-3 text-sm text-green-800">
-          Đã tắt {KINDS[kind]}. Thông báo trên chuông trong web vẫn hiện như cũ.
+          {t('Đã tắt {kind}. Thông báo trên chuông trong web vẫn hiện như cũ.', {
+            kind: t(KINDS[kind]),
+          })}
         </p>
       ) : (
         <>
           <p className="text-sm text-slate-600">
-            Bạn sẽ không nhận {KINDS[kind]} từ HcmusWare nữa. Có thể bật lại trong trang tài khoản.
+            {t('Bạn sẽ không nhận {kind} từ HcmusWare nữa. Có thể bật lại trong trang tài khoản.', {
+              kind: t(KINDS[kind]),
+            })}
           </p>
           {state === 'error' && (
-            <p className="text-sm text-red-600 dark:text-red-400">Không tắt được, thử lại sau.</p>
+            <p className="text-sm text-red-600 dark:text-red-400">
+              {t('Không tắt được, thử lại sau.')}
+            </p>
           )}
           <button
             type="button"
@@ -47,7 +54,7 @@ export default function Unsubscribe() {
             disabled={state === 'saving'}
             className="inline-flex h-11 items-center rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
           >
-            {state === 'saving' ? 'Đang tắt…' : `Tắt ${KINDS[kind]}`}
+            {state === 'saving' ? t('Đang tắt…') : t('Tắt {kind}', { kind: t(KINDS[kind]) })}
           </button>
         </>
       )}
@@ -55,7 +62,7 @@ export default function Unsubscribe() {
         to="/tai-khoan#email"
         className="block text-sm text-blue-700 hover:underline dark:text-blue-300"
       >
-        Cài đặt email trong tài khoản
+        {t('Cài đặt email trong tài khoản')}
       </Link>
     </div>
   )

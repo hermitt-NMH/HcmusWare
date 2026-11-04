@@ -1,4 +1,5 @@
 import { ORDER_STATUS } from '../features/orders/orders'
+import { t } from '../lib/i18n'
 
 // Nhãn màu cho trạng thái đơn hàng (Chờ xác nhận, Đang giao...).
 export default function OrderStatusBadge({ status }) {
@@ -7,7 +8,7 @@ export default function OrderStatusBadge({ status }) {
     <span
       className={`inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${s.className}`}
     >
-      {s.label}
+      {t(s.label)}
     </span>
   )
 }

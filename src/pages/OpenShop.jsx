@@ -10,6 +10,7 @@ import {
   shopToForm,
   validateShopForm,
 } from '../features/seller/shopForm'
+import { t } from '../lib/i18n'
 
 const inputClass =
   'w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -20,11 +21,11 @@ export default function OpenShop() {
   const { user } = useAuth()
   const shop = useAsync(() => getMyShop(user.id), [user.id])
 
-  if (shop.loading) return <p className="py-16 text-center text-slate-500">Đang tải…</p>
+  if (shop.loading) return <p className="py-16 text-center text-slate-500">{t('Đang tải…')}</p>
   if (shop.error)
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được shop: {shop.error.message}
+        {t('Không tải được shop: {msg}', { msg: t(shop.error.message) })}
       </p>
     )
 
@@ -32,13 +33,15 @@ export default function OpenShop() {
   if (status === 'active' || status === 'locked') {
     return (
       <div className="mx-auto max-w-xl space-y-3 py-8 text-center">
-        <h1 className="text-xl font-bold">Bạn đã có shop “{shop.data.name}”</h1>
-        <p className="text-slate-600">Quản lý shop ở Kênh người bán.</p>
+        <h1 className="text-xl font-bold">
+          {t('Bạn đã có shop “{name}”', { name: shop.data.name })}
+        </h1>
+        <p className="text-slate-600">{t('Quản lý shop ở Kênh người bán.')}</p>
         <Link
           to="/kenh-nguoi-ban"
           className="inline-flex h-11 items-center rounded-lg bg-blue-600 px-4 font-semibold text-white hover:bg-blue-700"
         >
-          Vào kênh người bán
+          {t('Vào kênh người bán')}
         </Link>
       </div>
     )
@@ -112,8 +115,8 @@ function ShopForm({ shop }) {
       }
       const notice =
         shop && !rejected
-          ? `Đã lưu thông tin shop “${saved.name}”.`
-          : `Đã gửi đăng ký shop “${saved.name}”. Admin sẽ duyệt sớm.`
+          ? t('Đã lưu thông tin shop “{name}”.', saved)
+          : t('Đã gửi đăng ký shop “{name}”. Admin sẽ duyệt sớm.', saved)
       navigate('/tai-khoan', { state: { notice } })
     } catch (err) {
       setSaveError(shopErrorMessage(err))
@@ -133,27 +136,28 @@ function ShopForm({ shop }) {
     <div className="mx-auto max-w-xl space-y-4">
       <div>
         <h1 className="text-xl font-bold sm:text-2xl">
-          {shop ? 'Sửa thông tin shop' : 'Mở shop trên HcmusWare'}
+          {shop ? t('Sửa thông tin shop') : t('Mở shop trên HcmusWare')}
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          Admin duyệt shop trước khi bạn đăng được sản phẩm. Sau khi duyệt, tài khoản của bạn có
-          thêm Kênh người bán.
+          {t(
+            'Admin duyệt shop trước khi bạn đăng được sản phẩm. Sau khi duyệt, tài khoản của bạn có thêm Kênh người bán.',
+          )}
         </p>
       </div>
 
       {shop && (
         <div className="space-y-1 rounded-lg border border-slate-200 bg-surface p-3 text-sm">
           <p>
-            Trạng thái:{' '}
+            {t('Trạng thái:')}{' '}
             <span
               className={`rounded-full px-2 py-0.5 text-xs font-semibold ${SHOP_STATUS[shop.status]?.className}`}
             >
-              {SHOP_STATUS[shop.status]?.label}
+              {t(SHOP_STATUS[shop.status]?.label)}
             </span>
           </p>
           {rejected && shop.review_note && (
             <p className="text-red-700">
-              Lý do từ chối: <span className="whitespace-pre-line">{shop.review_note}</span>
+              {t('Lý do từ chối:')} <span className="whitespace-pre-line">{shop.review_note}</span>
             </p>
           )}
         </div>
@@ -165,7 +169,7 @@ function ShopForm({ shop }) {
         className="space-y-4 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
       >
         <label className="block text-sm">
-          <span className="mb-1 block font-medium text-slate-700">Tên shop *</span>
+          <span className="mb-1 block font-medium text-slate-700">{t('Tên shop *')}</span>
           <input
             id="shop-name"
             value={form.name}
@@ -179,14 +183,14 @@ function ShopForm({ shop }) {
         </label>
 
         <label className="block text-sm">
-          <span className="mb-1 block font-medium text-slate-700">Mô tả</span>
+          <span className="mb-1 block font-medium text-slate-700">{t('Mô tả')}</span>
           <textarea
             id="shop-description"
             rows={4}
             value={form.description}
             onChange={set('description')}
             maxLength={2000}
-            placeholder="Shop bán gì, cam kết bảo hành, giờ làm việc…"
+            placeholder={t('Shop bán gì, cam kết bảo hành, giờ làm việc…')}
             className={`${inputClass} py-2 ${border('description')}`}
           />
           <span className="mt-1 block text-right text-xs text-slate-500">
@@ -215,7 +219,7 @@ function ShopForm({ shop }) {
                 onClick={() => fileRef.current.click()}
                 className="h-11 rounded-lg border border-slate-300 px-3 font-medium hover:bg-slate-50"
               >
-                {preview ? 'Đổi logo' : 'Chọn logo'}
+                {preview ? t('Đổi logo') : t('Chọn logo')}
               </button>
               {preview && (
                 <button
@@ -223,7 +227,7 @@ function ShopForm({ shop }) {
                   onClick={removeLogo}
                   className="h-11 rounded-lg px-3 text-slate-600 hover:bg-slate-100"
                 >
-                  Bỏ logo
+                  {t('Bỏ logo')}
                 </button>
               )}
             </div>
@@ -236,20 +240,22 @@ function ShopForm({ shop }) {
             />
           </div>
           <span className="mt-1 block text-xs text-slate-500">
-            Không bắt buộc. JPG, PNG hoặc WebP, tối đa 2 MB.
+            {t('Không bắt buộc. JPG, PNG hoặc WebP, tối đa 2 MB.')}
           </span>
           {fieldError('logo')}
         </div>
 
         <details className="rounded-lg bg-slate-50 p-3 text-sm text-slate-600">
           <summary className="cursor-pointer font-medium text-slate-700">
-            Quy định người bán
+            {t('Quy định người bán')}
           </summary>
           <ul className="mt-2 list-disc space-y-1 pl-5">
-            <li>Chỉ bán linh kiện máy tính chính hãng, đúng mô tả và thông số.</li>
-            <li>Sản phẩm mới và sản phẩm đổi thông số phải chờ admin duyệt mới hiện trên web.</li>
-            <li>Giữ tồn kho đúng thực tế, xác nhận đơn trong 24 giờ.</li>
-            <li>Admin có thể ẩn sản phẩm hoặc khóa shop vi phạm.</li>
+            <li>{t('Chỉ bán linh kiện máy tính chính hãng, đúng mô tả và thông số.')}</li>
+            <li>
+              {t('Sản phẩm mới và sản phẩm đổi thông số phải chờ admin duyệt mới hiện trên web.')}
+            </li>
+            <li>{t('Giữ tồn kho đúng thực tế, xác nhận đơn trong 24 giờ.')}</li>
+            <li>{t('Admin có thể ẩn sản phẩm hoặc khóa shop vi phạm.')}</li>
           </ul>
         </details>
         <label className="flex min-h-11 items-start gap-2 text-sm">
@@ -261,7 +267,7 @@ function ShopForm({ shop }) {
             className="mt-0.5 h-5 w-5 shrink-0 accent-blue-600"
           />
           <span>
-            Tôi đã đọc và đồng ý Quy định người bán.
+            {t('Tôi đã đọc và đồng ý Quy định người bán.')}
             {fieldError('agree')}
           </span>
         </label>
@@ -277,7 +283,7 @@ function ShopForm({ shop }) {
             to="/tai-khoan"
             className="inline-flex h-11 items-center justify-center rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-100"
           >
-            Hủy
+            {t('Hủy')}
           </Link>
           <button
             type="submit"
@@ -285,12 +291,12 @@ function ShopForm({ shop }) {
             className="h-11 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
           >
             {saving
-              ? 'Đang gửi…'
+              ? t('Đang gửi…')
               : rejected
-                ? 'Gửi lại để duyệt'
+                ? t('Gửi lại để duyệt')
                 : shop
-                  ? 'Lưu thay đổi'
-                  : 'Gửi đăng ký'}
+                  ? t('Lưu thay đổi')
+                  : t('Gửi đăng ký')}
           </button>
         </div>
       </form>

@@ -1,17 +1,18 @@
 import { useState } from 'react'
 import { useAsync } from '../../hooks/useAsync'
 import { getEmailPrefs, setEmailPref } from '../../lib/api'
+import { t, tKey } from '../../lib/i18n'
 
 const OPTIONS = [
   {
     field: 'email_price_alerts',
-    label: 'Cảnh báo giá',
-    hint: 'Khi giá sản phẩm xuống tới giá mong muốn bạn đã đặt.',
+    label: tKey('Cảnh báo giá'),
+    hint: tKey('Khi giá sản phẩm xuống tới giá mong muốn bạn đã đặt.'),
   },
   {
     field: 'email_order_status',
-    label: 'Trạng thái đơn hàng',
-    hint: 'Khi đơn chuyển sang Đang giao, Hoàn tất hoặc Đã hủy.',
+    label: tKey('Trạng thái đơn hàng'),
+    hint: tKey('Khi đơn chuyển sang Đang giao, Hoàn tất hoặc Đã hủy.'),
   },
 ]
 
@@ -34,7 +35,7 @@ export default function EmailPrefs({ userId, email }) {
       await setEmailPref(userId, field, next)
     } catch (err) {
       setChanged((c) => ({ ...c, [field]: !next }))
-      setError(`Không lưu được: ${err.message}`)
+      setError(t('Không lưu được: {msg}', { msg: t(err.message) }))
     } finally {
       setSaving('')
     }
@@ -46,14 +47,14 @@ export default function EmailPrefs({ userId, email }) {
       className="scroll-mt-36 space-y-3 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
       <div>
-        <h2 className="text-lg font-semibold">Email thông báo</h2>
+        <h2 className="text-lg font-semibold">{t('Email thông báo')}</h2>
         <p className="text-sm break-words text-slate-500">
-          Gửi tới {email}. Thông báo trên chuông vẫn hiện dù bạn tắt email.
+          {t('Gửi tới {email}. Thông báo trên chuông vẫn hiện dù bạn tắt email.', { email })}
         </p>
       </div>
       {prefs.error && (
         <p className="text-sm text-red-600 dark:text-red-400">
-          Không tải được: {prefs.error.message}
+          {t('Không tải được: {msg}', { msg: t(prefs.error.message) })}
         </p>
       )}
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
@@ -62,8 +63,8 @@ export default function EmailPrefs({ userId, email }) {
           <li key={o.field}>
             <label className="flex min-h-14 cursor-pointer items-center gap-3 py-2">
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-medium">{o.label}</span>
-                <span className="block text-xs text-slate-500">{o.hint}</span>
+                <span className="block text-sm font-medium">{t(o.label)}</span>
+                <span className="block text-xs text-slate-500">{t(o.hint)}</span>
               </span>
               <input
                 type="checkbox"

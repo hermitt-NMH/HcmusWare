@@ -189,6 +189,19 @@ và vẫn gọi DB lấy giá, tồn kho mới nhất (#115, Lighthouse Mobile).
   (đọc trong effect, hoặc dùng `useStoredState` như giỏ hàng). Trang/khối tải sau dùng `lazyPage` thay `React.lazy`.
 - `npm run preview` không phục vụ `dist/<đường dẫn>/index.html` nên trang chỉ vẽ lại như SPA; muốn thử hydrate thì xem trên link preview của Vercel.
 
+## Giao diện tiếng Việt / tiếng Anh
+
+Nút **VI | EN** trên Header (menu xổ xuống ở điện thoại) đổi ngôn ngữ ngay, không tải lại trang, nhớ lựa chọn trong
+`localStorage` (`hcmusware.lang`). Làm thêm theo phản hồi khách hàng, xem `src/lib/i18n.js`.
+
+- Câu hiện trên giao diện viết bằng `t('Câu tiếng Việt')`; chèn giá trị `t('Còn {n} sản phẩm', { n })`. Bản tiếng Anh nằm
+  trong `src/i18n/en.js` (khóa là chính câu tiếng Việt). Câu có chữ đậm / link ở giữa dùng `tJsx`.
+- Nhãn đặt trong hằng số (trạng thái đơn, nhãn thông số…) bọc `tKey('…')`, rồi `t(nhãn)` ở chỗ hiện ra.
+- Thêm câu mới thì thêm bản dịch: `npm test` báo câu nào chưa có trong `en.js` (`src/lib/i18n.test.js`).
+- Dữ liệu trong DB (tên, mô tả sản phẩm, đánh giá) không dịch; tên 8 danh mục và các lỗi DB trả về có trong từ điển.
+- Trang vẽ sẵn lúc build là tiếng Việt; người đã chọn tiếng Anh được vẽ lại từ đầu thay vì hydrate. Từ điển tiếng Anh
+  tải riêng (~20 KB gzip) nên bản tiếng Việt không nặng thêm.
+
 ## Lỗi thường gặp
 
 - `npm.ps1 cannot be loaded because running scripts is disabled`: chạy một lần

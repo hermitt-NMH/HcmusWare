@@ -5,6 +5,7 @@ import ProductBrowser from '../components/ProductBrowser'
 import ProductGrid from '../components/ProductGrid'
 import LogoBadge from '../components/LogoBadge'
 import NotFound from './NotFound'
+import { t } from '../lib/i18n'
 
 // /thuong-hieu/:slug (US-15.2): sản phẩm đang bán của một thương hiệu (mọi shop),
 // lọc theo danh mục, giá, shop giống trang danh mục. Slug không tồn tại → 404.
@@ -27,19 +28,19 @@ export default function BrandPage() {
   if (brand.error)
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được thương hiệu: {brand.error.message}
+        {t('Không tải được thương hiệu: {msg}', { msg: t(brand.error.message) })}
       </p>
     )
   if (!brand.data) return <NotFound />
 
   return (
     <div className="space-y-4">
-      <nav aria-label="Đường dẫn" className="text-sm text-slate-500">
+      <nav aria-label={t('Đường dẫn')} className="text-sm text-slate-500">
         <Link
           to="/thuong-hieu"
           className="inline-flex min-h-11 items-center hover:text-blue-700 hover:underline dark:hover:text-blue-300"
         >
-          ← Tất cả thương hiệu
+          {t('← Tất cả thương hiệu')}
         </Link>
       </nav>
       <div className="flex items-center gap-4">
@@ -52,7 +53,9 @@ export default function BrandPage() {
         <div>
           <h1 className="text-xl font-bold sm:text-2xl">{brand.data.name}</h1>
           {products.data && (
-            <p className="text-sm text-slate-500">{products.data.length} sản phẩm đang bán</p>
+            <p className="text-sm text-slate-500">
+              {t('{n} sản phẩm đang bán', { n: products.data.length })}
+            </p>
           )}
         </div>
       </div>

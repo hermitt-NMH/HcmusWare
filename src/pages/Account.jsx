@@ -8,6 +8,7 @@ import EmailPrefs from '../features/notifications/EmailPrefs'
 import MyShopCard from '../features/seller/MyShopCard'
 import { PHONE_RE } from '../features/orders/orders'
 import { roleLabel, roleShortcut } from '../lib/roles'
+import { t } from '../lib/i18n'
 
 const inputClass =
   'h-11 w-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -25,7 +26,8 @@ export default function Account() {
     document.getElementById(location.hash.slice(1))?.scrollIntoView({ block: 'start' })
   }, [user, location.hash])
 
-  if (loading) return <p className="py-16 text-center text-slate-500">Đang kiểm tra đăng nhập…</p>
+  if (loading)
+    return <p className="py-16 text-center text-slate-500">{t('Đang kiểm tra đăng nhập…')}</p>
   // Chưa đăng nhập → sang trang đăng nhập, xong quay lại đây.
   if (!user)
     return <Navigate to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`} replace />
@@ -40,7 +42,7 @@ export default function Account() {
     <div className="mx-auto max-w-2xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold">Tài khoản của tôi</h1>
+          <h1 className="text-2xl font-bold">{t('Tài khoản của tôi')}</h1>
           <p className="truncate text-sm text-slate-500">{user.email}</p>
         </div>
         <button
@@ -48,18 +50,20 @@ export default function Account() {
           onClick={handleSignOut}
           className="h-11 rounded-lg border border-slate-300 bg-surface px-4 text-sm font-medium hover:bg-slate-50"
         >
-          Đăng xuất
+          {t('Đăng xuất')}
         </button>
       </div>
 
       {shortcut && (
         <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          <span>Bạn đang dùng tài khoản {roleLabel(role).toLowerCase()}.</span>
+          <span>
+            {t('Bạn đang dùng tài khoản {role}.', { role: roleLabel(role).toLowerCase() })}
+          </span>
           <Link
             to={shortcut.to}
             className="inline-flex h-10 items-center rounded-lg bg-amber-700 px-4 font-semibold text-white hover:bg-orange-800"
           >
-            Vào {shortcut.label.toLowerCase()}
+            {t('Vào {area}', { area: shortcut.label.toLowerCase() })}
           </Link>
         </div>
       )}
@@ -82,9 +86,9 @@ export default function Account() {
         className="flex min-h-14 items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-surface p-5 hover:bg-slate-50 sm:p-6"
       >
         <span>
-          <span className="block text-lg font-semibold">Sổ địa chỉ</span>
+          <span className="block text-lg font-semibold">{t('Sổ địa chỉ')}</span>
           <span className="block text-sm text-slate-500">
-            Lưu tối đa 10 địa chỉ nhận hàng, địa chỉ mặc định được điền sẵn khi thanh toán.
+            {t('Lưu tối đa 10 địa chỉ nhận hàng, địa chỉ mặc định được điền sẵn khi thanh toán.')}
           </span>
         </span>
         <span aria-hidden="true" className="text-xl text-slate-500">
@@ -123,9 +127,9 @@ function ProfileForm() {
       full_name: form.full_name.trim(),
       phone: form.phone.replace(/[\s.-]/g, ''), // cho phép gõ "090 123 4567"
     }
-    if (!data.full_name) return setStatus({ type: 'error', message: 'Vui lòng nhập họ tên.' })
+    if (!data.full_name) return setStatus({ type: 'error', message: t('Vui lòng nhập họ tên.') })
     if (data.phone && !PHONE_RE.test(data.phone)) {
-      return setStatus({ type: 'error', message: 'Số điện thoại không hợp lệ (vd 0901234567).' })
+      return setStatus({ type: 'error', message: t('Số điện thoại không hợp lệ (vd 0901234567).') })
     }
 
     setSaving(true)
@@ -133,8 +137,8 @@ function ProfileForm() {
     setSaving(false)
     setStatus(
       error
-        ? { type: 'error', message: `Không lưu được: ${error.message}` }
-        : { type: 'success', message: 'Đã lưu thông tin.' },
+        ? { type: 'error', message: t('Không lưu được: {msg}', { msg: t(error.message) }) }
+        : { type: 'success', message: t('Đã lưu thông tin.') },
     )
   }
 
@@ -144,14 +148,14 @@ function ProfileForm() {
       className="space-y-4 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
       <div>
-        <h2 className="text-lg font-semibold">Thông tin cá nhân</h2>
+        <h2 className="text-lg font-semibold">{t('Thông tin cá nhân')}</h2>
         <p className="text-sm text-slate-500">
-          Điền sẵn tên và số điện thoại khi bạn thêm địa chỉ nhận hàng mới.
+          {t('Điền sẵn tên và số điện thoại khi bạn thêm địa chỉ nhận hàng mới.')}
         </p>
       </div>
 
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-slate-700">Họ và tên</span>
+        <span className="mb-1 block font-medium text-slate-700">{t('Họ và tên')}</span>
         <input
           className={inputClass}
           autoComplete="name"
@@ -160,7 +164,7 @@ function ProfileForm() {
         />
       </label>
       <label className="block text-sm">
-        <span className="mb-1 block font-medium text-slate-700">Số điện thoại</span>
+        <span className="mb-1 block font-medium text-slate-700">{t('Số điện thoại')}</span>
         <input
           className={inputClass}
           type="tel"
@@ -186,7 +190,7 @@ function ProfileForm() {
         disabled={saving}
         className="h-11 w-full rounded-lg bg-blue-600 px-6 font-semibold text-white hover:bg-blue-700 disabled:opacity-60 sm:w-auto"
       >
-        {saving ? 'Đang lưu…' : 'Lưu thay đổi'}
+        {saving ? t('Đang lưu…') : t('Lưu thay đổi')}
       </button>
     </form>
   )

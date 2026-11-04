@@ -4,6 +4,7 @@ import { getMyOrders } from '../../lib/api'
 import { formatDateTime, formatPrice } from '../../lib/format'
 import OrderStatusBadge from '../../components/OrderStatusBadge'
 import { canPayOnline, groupOrdersByPayment, paymentStatusLabel } from './orders'
+import { t } from '../../lib/i18n'
 
 // Lịch sử đơn hàng trong trang tài khoản, mới nhất trước. Bấm vào đơn để xem chi tiết.
 // Một lần đặt có hàng của nhiều shop → nhiều đơn cùng mã thanh toán, hiện chung một khung.
@@ -13,18 +14,18 @@ export default function OrderHistory({ userId }) {
 
   return (
     <section className="space-y-3 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6">
-      <h2 className="text-lg font-semibold">Đơn hàng của tôi</h2>
-      {orders.loading && <p className="text-sm text-slate-500">Đang tải…</p>}
+      <h2 className="text-lg font-semibold">{t('Đơn hàng của tôi')}</h2>
+      {orders.loading && <p className="text-sm text-slate-500">{t('Đang tải…')}</p>}
       {orders.error && (
         <p className="text-sm text-red-600 dark:text-red-400">
-          Không tải được đơn hàng: {orders.error.message}
+          {t('Không tải được đơn hàng: {msg}', { msg: t(orders.error.message) })}
         </p>
       )}
       {orders.data && !orders.data.length && (
         <p className="text-sm text-slate-500">
-          Bạn chưa có đơn hàng nào.{' '}
+          {t('Bạn chưa có đơn hàng nào.')}{' '}
           <Link to="/san-pham" className="text-blue-700 dark:text-blue-300 hover:underline">
-            Mua sắm ngay
+            {t('Mua sắm ngay')}
           </Link>
         </p>
       )}
@@ -39,8 +40,11 @@ export default function OrderHistory({ userId }) {
               <div className="rounded-xl border border-slate-200">
                 <p className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1 border-b border-slate-100 px-3 py-2 text-xs text-slate-500">
                   <span>
-                    {formatDateTime(g.created_at)} · Mã thanh toán {g.code} · {g.orders.length} đơn
-                    từ {g.orders.length} shop
+                    {formatDateTime(g.created_at)} ·{' '}
+                    {t('Mã thanh toán {code} · {n} đơn từ {n} shop', {
+                      code: g.code,
+                      n: g.orders.length,
+                    })}
                   </span>
                   <span className="text-sm font-semibold text-slate-900">
                     {formatPrice(g.total)}
@@ -78,7 +82,7 @@ function OrderRow({ order: o, showDate = false }) {
         </p>
         <p className="text-xs text-slate-500">
           {showDate && `${formatDateTime(o.created_at)} · `}
-          {count} sản phẩm ·{' '}
+          {t('{n} sản phẩm', { n: count })} ·{' '}
           <span className={canPayOnline(o) ? 'font-medium text-amber-700 dark:text-amber-300' : ''}>
             {paymentStatusLabel(o)}
           </span>

@@ -5,6 +5,7 @@ import { getProductsByIds } from '../lib/api'
 import { formatPrice } from '../lib/format'
 import { categoryImage, thumbUrl } from '../lib/images'
 import { isUnavailable, maxQty } from '../features/cart/cart'
+import { t } from '../lib/i18n'
 
 // Trang giỏ hàng: đổi số lượng, xóa, tạm tính, sang trang thanh toán.
 export default function Cart() {
@@ -32,8 +33,8 @@ export default function Cart() {
   if (!items.length) {
     return (
       <div className="py-16 text-center">
-        <h1 className="text-xl font-bold">Giỏ hàng trống</h1>
-        <p className="mt-2 text-slate-500">Chọn linh kiện lẻ hoặc tự build cả bộ máy.</p>
+        <h1 className="text-xl font-bold">{t('Giỏ hàng trống')}</h1>
+        <p className="mt-2 text-slate-500">{t('Chọn linh kiện lẻ hoặc tự build cả bộ máy.')}</p>
         <div className="mt-5 flex flex-col justify-center gap-2 sm:flex-row">
           <Link
             to="/build-pc"
@@ -45,7 +46,7 @@ export default function Cart() {
             to="/san-pham"
             className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-surface px-5 font-medium text-slate-700 hover:bg-slate-50"
           >
-            Xem sản phẩm
+            {t('Xem sản phẩm')}
           </Link>
         </div>
       </div>
@@ -57,20 +58,21 @@ export default function Cart() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-bold">Giỏ hàng ({count})</h1>
+        <h1 className="text-xl font-bold">{t('Giỏ hàng ({n})', { n: count })}</h1>
         <button
           type="button"
-          onClick={() => window.confirm('Xóa toàn bộ giỏ hàng?') && clear()}
+          onClick={() => window.confirm(t('Xóa toàn bộ giỏ hàng?')) && clear()}
           className="inline-flex min-h-11 items-center px-2 text-sm text-slate-500 hover:text-red-600 dark:hover:text-red-400"
         >
-          Xóa tất cả
+          {t('Xóa tất cả')}
         </button>
       </div>
 
       {syncError && (
         <p className="rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
-          Chưa cập nhật được giá mới nhất ({syncError.message}). Giá hiển thị là giá lúc thêm vào
-          giỏ.
+          {t('Chưa cập nhật được giá mới nhất ({msg}). Giá hiển thị là giá lúc thêm vào giỏ.', {
+            msg: t(syncError.message),
+          })}
         </p>
       )}
 
@@ -83,15 +85,15 @@ export default function Cart() {
 
         <aside className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4 lg:sticky lg:top-36">
           <div className="flex items-center justify-between">
-            <span className="text-slate-600">Tạm tính</span>
+            <span className="text-slate-600">{t('Tạm tính')}</span>
             <span className="text-xl font-bold text-red-600 dark:text-red-400">
               {formatPrice(subtotal)}
             </span>
           </div>
-          <p className="text-xs text-slate-500">Miễn phí giao hàng toàn quốc.</p>
+          <p className="text-xs text-slate-500">{t('Miễn phí giao hàng toàn quốc.')}</p>
           {hasUnavailable && (
             <p className="rounded-md bg-amber-50 p-2 text-xs text-amber-800">
-              Có sản phẩm hết hàng hoặc ngừng bán, không tính vào tạm tính. Hãy xóa khỏi giỏ.
+              {t('Có sản phẩm hết hàng hoặc ngừng bán, không tính vào tạm tính. Hãy xóa khỏi giỏ.')}
             </p>
           )}
           {/* Chưa đăng nhập thì trang thanh toán tự chuyển sang đăng nhập rồi quay lại */}
@@ -100,7 +102,7 @@ export default function Cart() {
               to="/thanh-toan"
               className="flex h-12 w-full items-center justify-center rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-700"
             >
-              Thanh toán
+              {t('Thanh toán')}
             </Link>
           ) : (
             <button
@@ -108,14 +110,14 @@ export default function Cart() {
               disabled
               className="h-12 w-full rounded-lg bg-blue-600 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Thanh toán
+              {t('Thanh toán')}
             </button>
           )}
           <Link
             to="/san-pham"
             className="flex min-h-11 items-center justify-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
-            Tiếp tục mua sắm
+            {t('Tiếp tục mua sắm')}
           </Link>
         </aside>
       </div>
@@ -152,13 +154,15 @@ function CartLine({ item, onQty, onRemove }) {
           </Link>
           {missing ? (
             <p className="text-xs font-medium text-red-600 dark:text-red-400">
-              Sản phẩm đã ngừng bán
+              {t('Sản phẩm đã ngừng bán')}
             </p>
           ) : stock <= 0 ? (
-            <p className="text-xs font-medium text-red-600 dark:text-red-400">Hết hàng</p>
+            <p className="text-xs font-medium text-red-600 dark:text-red-400">{t('Hết hàng')}</p>
           ) : (
             stock < qty + 3 && (
-              <p className="text-xs text-amber-700 dark:text-amber-300">Chỉ còn {stock} sản phẩm</p>
+              <p className="text-xs text-amber-700 dark:text-amber-300">
+                {t('Chỉ còn {n} sản phẩm', { n: stock })}
+              </p>
             )
           )}
         </div>
@@ -171,14 +175,14 @@ function CartLine({ item, onQty, onRemove }) {
             onChange={(v) => onQty(id, v)}
           />
           <p className="font-semibold text-red-600 dark:text-red-400">
-            {price == null ? 'Liên hệ' : formatPrice(price * qty)}
+            {price == null ? t('Liên hệ') : formatPrice(price * qty)}
           </p>
         </div>
       </div>
       <button
         type="button"
         onClick={() => onRemove(id)}
-        aria-label={`Xóa ${name} khỏi giỏ`}
+        aria-label={t('Xóa {name} khỏi giỏ', { name })}
         className="-mr-1 -mt-1 inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
       >
         <svg
@@ -207,7 +211,7 @@ function QtyStepper({ value, max, disabled, label, onChange }) {
         className={btn}
         disabled={disabled}
         onClick={() => onChange(value - 1)}
-        aria-label={`Giảm số lượng ${label}`}
+        aria-label={t('Giảm số lượng {name}', { name: label })}
       >
         −
       </button>
@@ -219,7 +223,7 @@ function QtyStepper({ value, max, disabled, label, onChange }) {
         className={btn}
         disabled={disabled || value >= max}
         onClick={() => onChange(value + 1)}
-        aria-label={`Tăng số lượng ${label}`}
+        aria-label={t('Tăng số lượng {name}', { name: label })}
       >
         +
       </button>
