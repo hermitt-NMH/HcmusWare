@@ -13,6 +13,7 @@ import {
   orderErrorMessage,
   paymentStatusLabel,
 } from './orders'
+import { t } from '../../lib/i18n'
 
 // Quản lý đơn hàng (trang admin và kênh người bán): lọc theo trạng thái, xem sản phẩm, đổi trạng thái.
 // Hủy đơn → trigger trong DB trả hàng về kho. Đơn hoàn tất / đã hủy thì khóa; trạng thái chỉ đi tới.
@@ -49,8 +50,8 @@ export default function OrderManager({ load, loadKey = '', showShop = false, rea
   return (
     <div className="space-y-3">
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-        {chip('', 'Tất cả', all.length)}
-        {Object.entries(ORDER_STATUS).map(([value, s]) => chip(value, s.label, counts[value]))}
+        {chip('', t('Tất cả'), all.length)}
+        {Object.entries(ORDER_STATUS).map(([value, s]) => chip(value, t(s.label), counts[value]))}
         <button
           type="button"
           onClick={() => {
@@ -59,18 +60,20 @@ export default function OrderManager({ load, loadKey = '', showShop = false, rea
           }}
           className="ml-auto inline-flex h-10 shrink-0 items-center rounded-lg px-3 text-sm text-blue-700 dark:text-blue-300 hover:bg-blue-50"
         >
-          Tải lại
+          {t('Tải lại')}
         </button>
       </div>
 
-      {orders.loading && <p className="py-8 text-center text-slate-500">Đang tải đơn hàng…</p>}
+      {orders.loading && (
+        <p className="py-8 text-center text-slate-500">{t('Đang tải đơn hàng…')}</p>
+      )}
       {orders.error && (
         <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được: {orders.error.message}
+          {t('Không tải được: {msg}', { msg: t(orders.error.message) })}
         </p>
       )}
       {orders.data && !list.length && (
-        <p className="py-8 text-center text-sm text-slate-500">Không có đơn nào.</p>
+        <p className="py-8 text-center text-sm text-slate-500">{t('Không có đơn nào.')}</p>
       )}
 
       <ul className="space-y-3">
@@ -98,10 +101,16 @@ function OrderCard({ order: o, showShop, readOnly, onUpdated }) {
     if (status === o.status) return
     if (
       status === 'cancelled' &&
-      !window.confirm(`Hủy đơn #${o.id}? Hàng sẽ được trả về kho và không đổi lại được.`)
+      !window.confirm(
+        t('Hủy đơn #{id}? Hàng sẽ được trả về kho và không đổi lại được.', { id: o.id }),
+      )
     )
       return
-    if (status === 'completed' && !window.confirm(`Đánh dấu đơn #${o.id} đã hoàn tất?`)) return
+    if (
+      status === 'completed' &&
+      !window.confirm(t('Đánh dấu đơn #{id} đã hoàn tất?', { id: o.id }))
+    )
+      return
     setSaving(true)
     setError('')
     try {
@@ -123,7 +132,7 @@ function OrderCard({ order: o, showShop, readOnly, onUpdated }) {
           </p>
           <p className="text-xs text-slate-500">
             {formatDateTime(o.created_at)}
-            {o.payment_code && ` · Mã thanh toán ${o.payment_code}`}
+            {o.payment_code && ` · ${t('Mã thanh toán {code}', { code: o.payment_code })}`}
           </p>
           {showShop && o.shops && (
             <p className="text-xs text-slate-600">
@@ -144,7 +153,9 @@ function OrderCard({ order: o, showShop, readOnly, onUpdated }) {
         <p>
           <span className="font-medium">{o.shipping_name}</span> · {o.shipping_phone}
           <span className="block text-slate-600">{o.shipping_address}</span>
-          {o.note && <span className="block text-slate-500">Ghi chú: {o.note}</span>}
+          {o.note && (
+            <span className="block text-slate-500">{t('Ghi chú: {note}', { note: o.note })}</span>
+          )}
         </p>
         <p className="text-slate-600 sm:text-right">
           {PAYMENT_METHODS[o.payment_method]?.short} ·{' '}
@@ -161,10 +172,10 @@ function OrderCard({ order: o, showShop, readOnly, onUpdated }) {
           aria-expanded={open}
           className="inline-flex h-10 items-center rounded-lg px-2 text-blue-700 dark:text-blue-300 hover:bg-blue-50"
         >
-          {open ? 'Ẩn' : 'Xem'} {count} sản phẩm
+          {open ? t('Ẩn {n} sản phẩm', { n: count }) : t('Xem {n} sản phẩm', { n: count })}
         </button>
         <label className="ml-auto inline-flex items-center gap-2">
-          <span className="text-slate-500">Trạng thái</span>
+          <span className="text-slate-500">{t('Trạng thái')}</span>
           <select
             value={o.status}
             disabled={saving || readOnly || isFinalStatus(o.status)}
@@ -173,7 +184,7 @@ function OrderCard({ order: o, showShop, readOnly, onUpdated }) {
           >
             {nextStatuses(o.status, canPayOnline(o)).map((s) => (
               <option key={s} value={s}>
-                {ORDER_STATUS[s].label}
+                {t(ORDER_STATUS[s].label)}
               </option>
             ))}
           </select>
@@ -186,7 +197,7 @@ function OrderCard({ order: o, showShop, readOnly, onUpdated }) {
           {o.order_items.map((it) => (
             <li key={it.id} className="flex justify-between gap-2 py-2">
               <span className="min-w-0">
-                {it.products?.name ?? 'Sản phẩm đã xóa'} × {it.quantity}
+                {it.products?.name ?? t('Sản phẩm đã xóa')} × {it.quantity}
               </span>
               <span className="shrink-0">{formatPrice(it.unit_price * it.quantity)}</span>
             </li>

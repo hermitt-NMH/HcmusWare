@@ -1,6 +1,7 @@
 // Logic lịch sử giá và cảnh báo giá dạng HÀM THUẦN để dễ viết unit test.
 // Dùng ở trang sản phẩm (biểu đồ, đặt giá mong muốn), thông báo giảm giá, và
 // scripts/gen-price-history.js (sinh giá giả lập 6 tháng).
+import { t } from '../../lib/i18n'
 
 const DAY_MS = 24 * 60 * 60 * 1000
 
@@ -98,9 +99,9 @@ export function parsePriceInput(text) {
 
 // Kiểm tra giá mong muốn. Trả chuỗi lỗi, hợp lệ thì ''.
 export function validateTargetPrice(target, currentPrice) {
-  if (target == null) return 'Vui lòng nhập giá mong muốn.'
-  if (target < 10000) return 'Giá mong muốn tối thiểu 10.000 ₫.'
+  if (target == null) return t('Vui lòng nhập giá mong muốn.')
+  if (target < 10000) return t('Giá mong muốn tối thiểu 10.000 ₫.')
   if (currentPrice != null && target >= currentPrice)
-    return 'Giá mong muốn phải thấp hơn giá hiện tại.'
+    return t('Giá mong muốn phải thấp hơn giá hiện tại.')
   return ''
 }

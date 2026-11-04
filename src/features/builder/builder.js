@@ -1,5 +1,6 @@
 // Logic của trang Build PC (ngoài bộ quy tắc trong compatibility.js), dạng HÀM THUẦN để test.
 // Xem mục "Lọc linh kiện trong Builder" trong docs/quy-tac-tuong-thich.md.
+import { t, tKey } from '../../lib/i18n'
 
 // 8 dòng của Builder theo đúng thứ tự lắp. VGA không bắt buộc khi CPU có iGPU (R9).
 export const BUILDER_SLOTS = [
@@ -8,9 +9,9 @@ export const BUILDER_SLOTS = [
   { slug: 'ram', label: 'RAM' },
   { slug: 'vga', label: 'VGA', optional: true },
   { slug: 'ssd', label: 'SSD' },
-  { slug: 'psu', label: 'Nguồn (PSU)' },
-  { slug: 'case', label: 'Vỏ máy (Case)' },
-  { slug: 'cooler', label: 'Tản nhiệt' },
+  { slug: 'psu', label: tKey('Nguồn (PSU)') },
+  { slug: 'case', label: tKey('Vỏ máy (Case)') },
+  { slug: 'cooler', label: tKey('Tản nhiệt') },
 ]
 
 export const SLOT_SLUGS = BUILDER_SLOTS.map((s) => s.slug)
@@ -38,7 +39,7 @@ export function filterCandidates(slug, products, build = {}) {
   }
   if (slug === 'cooler' && cpuS.socket) {
     checks.push({
-      label: `Hỗ trợ socket ${cpuS.socket} (theo CPU)`,
+      label: t('Hỗ trợ socket {socket} (theo CPU)', { socket: cpuS.socket }),
       ok: (s) => !Array.isArray(s.sockets) || s.sockets.includes(cpuS.socket),
     })
   }
@@ -50,7 +51,7 @@ export function filterCandidates(slug, products, build = {}) {
   }
   if (slug === 'case' && mbS.form_factor) {
     checks.push({
-      label: `Vừa mainboard ${mbS.form_factor}`,
+      label: t('Vừa mainboard {ff}', { ff: mbS.form_factor }),
       ok: (s) => !Array.isArray(s.form_factors) || s.form_factors.includes(mbS.form_factor),
     })
   }
@@ -163,6 +164,6 @@ export function sameBuild(a, b) {
 export function suggestBuildName(build) {
   const cpu = build.cpu?.name
   const gpu = build.vga?.specs?.chipset?.replace(/^(GeForce|Radeon)\s+/, '')
-  if (!cpu) return 'Cấu hình của tôi'
-  return `Cấu hình ${cpu}${gpu ? ` + ${gpu}` : ''}`.slice(0, 80)
+  if (!cpu) return t('Cấu hình của tôi')
+  return t('Cấu hình {parts}', { parts: `${cpu}${gpu ? ` + ${gpu}` : ''}` }).slice(0, 80)
 }

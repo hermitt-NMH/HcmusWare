@@ -16,6 +16,7 @@ import {
   validateBrandName,
 } from '../../features/admin/brandForm'
 import LogoBadge from '../../components/LogoBadge'
+import { t } from '../../lib/i18n'
 
 const inputClass =
   'h-11 w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -52,11 +53,14 @@ export default function AdminBrands() {
   const remove = async (b) => {
     const blocked = deleteBlockedMessage(b.product_count)
     if (blocked)
-      return setMessage({ type: 'error', text: `Không xóa được “${b.name}”. ${blocked}` })
-    if (!window.confirm(`Xóa thương hiệu “${b.name}”?`)) return
+      return setMessage({
+        type: 'error',
+        text: t('Không xóa được “{name}”. {reason}', { name: b.name, reason: blocked }),
+      })
+    if (!window.confirm(t('Xóa thương hiệu “{name}”?', b))) return
     try {
       await deleteBrand(b.id)
-      done(`Đã xóa thương hiệu “${b.name}”.`)
+      done(t('Đã xóa thương hiệu “{name}”.', b))
     } catch (err) {
       setMessage({ type: 'error', text: brandErrorMessage(err) })
     }
@@ -67,10 +71,10 @@ export default function AdminBrands() {
       <BrandForm
         key={`moi-${reload}`}
         brands={brands.data ?? []}
-        submitLabel="Thêm thương hiệu"
+        submitLabel={t('Thêm thương hiệu')}
         onSave={async ({ name, logo_url }) => {
           await createBrand(name, logo_url)
-          done(`Đã thêm thương hiệu “${name}”.`)
+          done(t('Đã thêm thương hiệu “{name}”.', { name }))
         }}
       />
 
@@ -87,25 +91,27 @@ export default function AdminBrands() {
         type="search"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        placeholder="Tìm thương hiệu…"
-        aria-label="Tìm thương hiệu"
+        placeholder={t('Tìm thương hiệu…')}
+        aria-label={t('Tìm thương hiệu')}
         className={`${inputClass} border-slate-300`}
       />
 
-      {brands.loading && <p className="py-8 text-center text-slate-500">Đang tải thương hiệu…</p>}
+      {brands.loading && (
+        <p className="py-8 text-center text-slate-500">{t('Đang tải thương hiệu…')}</p>
+      )}
       {brands.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được: {brands.error.message}
+          {t('Không tải được: {msg}', { msg: t(brands.error.message) })}
         </p>
       )}
       {brands.data && !list.length && (
         <p className="py-8 text-center text-sm text-slate-500">
-          {brands.data.length ? 'Không có thương hiệu nào khớp.' : 'Chưa có thương hiệu nào.'}
+          {brands.data.length ? t('Không có thương hiệu nào khớp.') : t('Chưa có thương hiệu nào.')}
         </p>
       )}
       {brands.data && list.length > 0 && (
         <p className="text-xs text-slate-500">
-          {list.length} / {brands.data.length} thương hiệu
+          {t('{shown} / {n} thương hiệu', { shown: list.length, n: brands.data.length })}
         </p>
       )}
 
@@ -117,11 +123,11 @@ export default function AdminBrands() {
                 <BrandForm
                   brand={b}
                   brands={brands.data}
-                  submitLabel="Lưu"
+                  submitLabel={t('Lưu')}
                   onCancel={() => setEditing(null)}
                   onSave={async (fields) => {
                     const saved = await updateBrand(b.id, fields)
-                    done(`Đã lưu thương hiệu “${saved.name}”.`)
+                    done(t('Đã lưu thương hiệu “{name}”.', saved))
                   }}
                 />
               </li>
@@ -136,7 +142,7 @@ export default function AdminBrands() {
                     {b.name}
                   </Link>
                   <p className="text-xs text-slate-500">
-                    /thuong-hieu/{b.slug} · {b.product_count} sản phẩm
+                    /thuong-hieu/{b.slug} · {t('{n} sản phẩm', { n: b.product_count })}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -148,10 +154,10 @@ export default function AdminBrands() {
                       setMessage(null)
                     }}
                   >
-                    Sửa
+                    {t('Sửa')}
                   </button>
                   <button type="button" className={btn.danger} onClick={() => remove(b)}>
-                    Xóa
+                    {t('Xóa')}
                   </button>
                 </div>
               </li>
@@ -214,11 +220,11 @@ function BrandForm({ brand, brands, submitLabel, onSave, onCancel }) {
       noValidate
       className={`space-y-2 ${brand ? '' : 'rounded-xl border border-slate-200 bg-surface p-4'}`}
     >
-      {!brand && <h2 className="font-semibold">Thêm thương hiệu</h2>}
+      {!brand && <h2 className="font-semibold">{t('Thêm thương hiệu')}</h2>}
       <div className="flex flex-wrap items-center gap-2">
         <LogoBadge name={name} url={preview} size="h-11 w-11" text="text-lg" />
         <label htmlFor={`${idPrefix}-name`} className="sr-only">
-          Tên thương hiệu
+          {t('Tên thương hiệu')}
         </label>
         <input
           id={`${idPrefix}-name`}
@@ -228,13 +234,13 @@ function BrandForm({ brand, brands, submitLabel, onSave, onCancel }) {
             setError('')
           }}
           maxLength={60}
-          placeholder="Tên thương hiệu, vd Cooler Master"
+          placeholder={t('Tên thương hiệu, vd Cooler Master')}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${idPrefix}-error` : undefined}
           className={`${inputClass} min-w-0 flex-1 basis-48 ${error ? 'border-red-400' : 'border-slate-300'}`}
         />
         <button type="button" className={btn.outline} onClick={() => fileRef.current.click()}>
-          {preview ? 'Đổi logo' : 'Chọn logo'}
+          {preview ? t('Đổi logo') : t('Chọn logo')}
         </button>
         {preview && (
           <button
@@ -245,7 +251,7 @@ function BrandForm({ brand, brands, submitLabel, onSave, onCancel }) {
               setPreview('')
             }}
           >
-            Bỏ logo
+            {t('Bỏ logo')}
           </button>
         )}
         <input
@@ -256,16 +262,16 @@ function BrandForm({ brand, brands, submitLabel, onSave, onCancel }) {
           className="hidden"
         />
         <button type="submit" disabled={saving} className={btn.primary}>
-          {saving ? 'Đang lưu…' : submitLabel}
+          {saving ? t('Đang lưu…') : submitLabel}
         </button>
         {onCancel && (
           <button type="button" className={btn.outline} onClick={onCancel}>
-            Hủy
+            {t('Hủy')}
           </button>
         )}
       </div>
       <p className="text-xs text-slate-500">
-        Logo không bắt buộc: JPG, PNG hoặc WebP, tối đa 2 MB.
+        {t('Logo không bắt buộc: JPG, PNG hoặc WebP, tối đa 2 MB.')}
       </p>
       {error && (
         <p id={`${idPrefix}-error`} role="alert" className="text-sm text-red-600 dark:text-red-400">

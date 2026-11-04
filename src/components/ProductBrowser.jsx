@@ -9,6 +9,7 @@ import {
   countActiveFilters,
   readFilters,
 } from '../lib/productFilters'
+import { t } from '../lib/i18n'
 
 // Danh sách sản phẩm có tìm kiếm, bộ lọc, sắp xếp – dùng chung cho trang danh mục,
 // trang thương hiệu và trang shop. Toàn bộ bộ lọc nằm trên URL, vd ?q=ryzen&s_socket=AM5&sort=price-asc
@@ -70,7 +71,11 @@ export default function ProductBrowser({ products, categorySlug, searchLabel }) 
         <SearchInput
           value={filters.q}
           onChange={onSearch}
-          placeholder={searchLabel ? `Tìm trong ${searchLabel}...` : 'Tìm sản phẩm theo tên...'}
+          placeholder={
+            searchLabel
+              ? t('Tìm trong {name}...', { name: t(searchLabel) })
+              : t('Tìm sản phẩm theo tên...')
+          }
         />
         <button
           type="button"
@@ -78,17 +83,18 @@ export default function ProductBrowser({ products, categorySlug, searchLabel }) 
           aria-expanded={showFilters}
           className="h-11 flex-1 rounded-lg border border-slate-300 bg-surface px-3 text-sm font-medium sm:flex-none lg:hidden"
         >
-          Bộ lọc{activeCount > 0 && ` (${activeCount})`}
+          {t('Bộ lọc')}
+          {activeCount > 0 && ` (${activeCount})`}
         </button>
         <select
           value={filters.sort}
           onChange={(e) => onSort(e.target.value)}
-          aria-label="Sắp xếp"
+          aria-label={t('Sắp xếp')}
           className="h-11 flex-1 rounded-lg border border-slate-300 bg-surface px-2 text-sm sm:flex-none"
         >
           {SORT_OPTIONS.map((o) => (
             <option key={o.value} value={o.value}>
-              {o.label}
+              {t(o.label)}
             </option>
           ))}
         </select>
@@ -105,7 +111,7 @@ export default function ProductBrowser({ products, categorySlug, searchLabel }) 
             onClick={() => setShowFilters(false)}
             className="mt-2 h-11 w-full rounded-lg bg-blue-600 text-sm font-semibold text-white lg:hidden"
           >
-            Xem {visible.length} sản phẩm
+            {t('Xem {n} sản phẩm', { n: visible.length })}
           </button>
         </aside>
 
@@ -116,21 +122,24 @@ export default function ProductBrowser({ products, categorySlug, searchLabel }) 
             <ProductGrid products={[]} />
           ) : !visible.length ? (
             <div className="rounded-xl border border-dashed border-slate-300 bg-surface p-8 text-center">
-              <p className="text-slate-600">Không có sản phẩm phù hợp với bộ lọc.</p>
+              <p className="text-slate-600">{t('Không có sản phẩm phù hợp với bộ lọc.')}</p>
               <button
                 type="button"
                 onClick={() => setSearchParams({})}
                 className="mt-3 min-h-11 rounded-lg px-4 text-sm font-medium text-blue-700 dark:text-blue-300 hover:bg-blue-50"
               >
-                Xóa tìm kiếm và bộ lọc
+                {t('Xóa tìm kiếm và bộ lọc')}
               </button>
             </div>
           ) : (
             <>
               <p className="mb-3 text-sm text-slate-500">
                 {visible.length === products.data.length
-                  ? `${visible.length} sản phẩm`
-                  : `Tìm thấy ${visible.length} / ${products.data.length} sản phẩm`}
+                  ? t('{n} sản phẩm', { n: visible.length })
+                  : t('Tìm thấy {found} / {n} sản phẩm', {
+                      found: visible.length,
+                      n: products.data.length,
+                    })}
               </p>
               <ProductGrid products={visible} />
             </>
@@ -167,7 +176,7 @@ function SearchInput({ value, onChange, placeholder }) {
         onChange(e.target.value)
       }}
       placeholder={placeholder}
-      aria-label="Tìm sản phẩm theo tên"
+      aria-label={t('Tìm sản phẩm theo tên')}
       className="h-11 min-w-0 flex-1 basis-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none sm:basis-auto"
     />
   )

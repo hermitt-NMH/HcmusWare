@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { PERF_DATA } from './perfData'
 import { RESOLUTIONS, RESOLUTION_LABELS, estimatePerformance, fpsLevel } from './performance'
+import { t } from '../../lib/i18n'
 
 // F09 – Ước tính FPS trong Builder (Giai đoạn 2 – Tuần 4). Chỉ gọi estimatePerformance và hiển thị,
 // không tính lại trong component. Theo C8 (docs/g2-ba-tuan3-hieu-nang.md mục 6):
@@ -23,26 +24,26 @@ export default function PerformancePanel({ build }) {
     >
       <div className="flex flex-wrap items-center gap-2">
         <h2 id="perf-title" className="text-base font-semibold">
-          FPS khi chơi game
+          {t('FPS khi chơi game')}
         </h2>
         <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-800">
-          Ước tính
+          {t('Ước tính')}
         </span>
       </div>
 
       {perf.status === 'no-data' && (
-        <p className="text-sm text-slate-500">Chưa có số liệu ước tính.</p>
+        <p className="text-sm text-slate-500">{t('Chưa có số liệu ước tính.')}</p>
       )}
       {perf.status === 'need-parts' && (
         <p className="text-sm text-slate-500">
           {perf.missing.includes('vga') && build.cpu
-            ? 'Chọn VGA rời để xem FPS dự kiến (chưa ước tính cho đồ họa tích hợp).'
-            : 'Chọn CPU và VGA để xem FPS dự kiến của 10 game phổ biến.'}
+            ? t('Chọn VGA rời để xem FPS dự kiến (chưa ước tính cho đồ họa tích hợp).')
+            : t('Chọn CPU và VGA để xem FPS dự kiến của 10 game phổ biến.')}
         </p>
       )}
       {perf.status === 'unknown-part' && (
         <p className="text-sm text-slate-500">
-          Chưa có số liệu ước tính cho {perf.unknown.join(' và ')}.
+          {t('Chưa có số liệu ước tính cho {list}.', { list: perf.unknown.join(t(' và ')) })}
         </p>
       )}
 
@@ -57,7 +58,7 @@ export default function PerformancePanel({ build }) {
             </p>
           )}
 
-          <div role="group" aria-label="Độ phân giải" className="flex gap-1">
+          <div role="group" aria-label={t('Độ phân giải')} className="flex gap-1">
             {RESOLUTIONS.map((r) => (
               <button
                 key={r}
@@ -77,7 +78,7 @@ export default function PerformancePanel({ build }) {
 
           <table className="w-full text-sm">
             <caption className="sr-only">
-              FPS dự kiến ở {RESOLUTION_LABELS[res]}, mức đồ họa cao nhất
+              {t('FPS dự kiến ở {res}, mức đồ họa cao nhất', { res: RESOLUTION_LABELS[res] })}
             </caption>
             <thead>
               <tr className="border-b border-slate-200 text-left text-xs text-slate-500">
@@ -88,7 +89,7 @@ export default function PerformancePanel({ build }) {
                   FPS
                 </th>
                 <th scope="col" className="py-2 pl-2 text-right font-medium">
-                  Mức
+                  {t('Mức')}
                 </th>
               </tr>
             </thead>
@@ -101,7 +102,7 @@ export default function PerformancePanel({ build }) {
                     <th scope="row" className="py-2 pr-2 text-left font-normal text-slate-800">
                       {g.name}
                       {r?.limitedBy === 'cpu' && (
-                        <span className="block text-xs text-slate-500">CPU giới hạn</span>
+                        <span className="block text-xs text-slate-500">{t('CPU giới hạn')}</span>
                       )}
                     </th>
                     <td className="py-2 text-right font-semibold tabular-nums">
@@ -115,7 +116,7 @@ export default function PerformancePanel({ build }) {
                           {level.label}
                         </span>
                       ) : (
-                        <span className="text-xs text-slate-500">Chưa có số liệu</span>
+                        <span className="text-xs text-slate-500">{t('Chưa có số liệu')}</span>
                       )}
                     </td>
                   </tr>
@@ -125,12 +126,13 @@ export default function PerformancePanel({ build }) {
           </table>
 
           <p className="text-xs text-slate-500">
-            Ước tính ở mức đồ họa cao nhất, không DLSS/FSR, quy đổi từ benchmark công khai theo điểm
-            CPU và VGA. FPS thực tế còn phụ thuộc RAM, driver, nhiệt độ và thiết lập game.
+            {t(
+              'Ước tính ở mức đồ họa cao nhất, không DLSS/FSR, quy đổi từ benchmark công khai theo điểm CPU và VGA. FPS thực tế còn phụ thuộc RAM, driver, nhiệt độ và thiết lập game.',
+            )}
           </p>
           <details className="text-xs text-slate-500">
             <summary className="inline-flex min-h-11 cursor-pointer items-center font-medium text-slate-600">
-              Nguồn tham khảo ({perf.sources.length})
+              {t('Nguồn tham khảo ({n})', { n: perf.sources.length })}
             </summary>
             <ul className="list-disc space-y-1 pl-5">
               {perf.sources.map((s) => (

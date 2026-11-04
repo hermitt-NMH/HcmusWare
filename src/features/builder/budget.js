@@ -10,10 +10,11 @@
 
 import { checkCompatibility, calcRecommendedPsuW, calcTotalPowerW } from './compatibility'
 import { buildTotalPrice, groupBySlug, SLOT_SLUGS } from './builder'
+import { tKey } from '../../lib/i18n'
 
 export const PURPOSES = {
   gaming: {
-    label: 'Chơi game',
+    label: tKey('Chơi game'),
     needVga: true,
     cpuWeight: 0.35,
     gpuWeight: 0.65,
@@ -22,7 +23,7 @@ export const PURPOSES = {
     minSsdGb: 500,
   },
   design: {
-    label: 'Đồ họa',
+    label: tKey('Đồ họa'),
     needVga: true,
     cpuWeight: 0.5,
     gpuWeight: 0.5,
@@ -31,7 +32,7 @@ export const PURPOSES = {
     minSsdGb: 1000,
   },
   office: {
-    label: 'Văn phòng',
+    label: tKey('Văn phòng'),
     needVga: false,
     cpuWeight: 1,
     gpuWeight: 0,
@@ -47,9 +48,9 @@ export const MAX_BUDGET = 500_000_000
 
 // 3 mức giá so với ngân sách, theo thứ tự hiển thị.
 export const TIERS = [
-  { key: 'best', label: 'Mạnh nhất trong ngân sách', ratio: 1 },
-  { key: 'balanced', label: 'Cân bằng', ratio: 0.85 },
-  { key: 'saving', label: 'Tiết kiệm', ratio: 0.7 },
+  { key: 'best', label: tKey('Mạnh nhất trong ngân sách'), ratio: 1 },
+  { key: 'balanced', label: tKey('Cân bằng'), ratio: 0.85 },
+  { key: 'saving', label: tKey('Tiết kiệm'), ratio: 0.7 },
 ]
 
 // Hiệu năng game TƯƠNG ĐỐI của chip VGA (RTX 4060 = 100), ước lượng từ các bài so sánh công khai

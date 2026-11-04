@@ -2,11 +2,15 @@
 // Sao là hình (không có số đi kèm) nên cần tương phản ≥ 3:1 với nền ở cả 2 chế độ (WCAG 1.4.11):
 // sao đầy amber-600 (3,2:1 trên nền trắng, 5,4:1 trên nền tối; không đổi theo chế độ tối),
 // sao rỗng slate-500 (4,8:1 / 6,9:1). amber-500 và slate-300 trước đây chỉ đạt 2,1:1 và 1,5:1.
+import { t } from '../../lib/i18n'
 
 export function Stars({ value, className = 'text-base' }) {
   const full = Math.round(Number(value) || 0)
   return (
-    <span className={`whitespace-nowrap ${className}`} aria-label={`${value} trên 5 sao`}>
+    <span
+      className={`whitespace-nowrap ${className}`}
+      aria-label={t('{value} trên 5 sao', { value })}
+    >
       <span aria-hidden="true" className="text-amber-600">
         {'★'.repeat(full)}
       </span>
@@ -22,7 +26,7 @@ export function StarInput({ value, onChange, name = 'rating' }) {
   return (
     <fieldset>
       <legend className="mb-1 text-sm font-medium">
-        Số sao <span className="text-red-600 dark:text-red-400">*</span>
+        {t('Số sao')} <span className="text-red-600 dark:text-red-400">*</span>
       </legend>
       <div className="flex">
         {[1, 2, 3, 4, 5].map((n) => (
@@ -41,7 +45,7 @@ export function StarInput({ value, onChange, name = 'rating' }) {
               className="sr-only"
             />
             <span aria-hidden="true">★</span>
-            <span className="sr-only">{n} sao</span>
+            <span className="sr-only">{t('{n} sao', { n })}</span>
           </label>
         ))}
       </div>

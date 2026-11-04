@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from 'react-router-dom'
 import { useAuth } from '../hooks/useAuth'
 import { authErrorMessage } from '../lib/authErrors'
 import { safeNext } from '../lib/safeNext'
+import { t } from '../lib/i18n'
 
 const inputClass =
   'h-11 w-full rounded-lg border border-slate-300 bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -40,9 +41,9 @@ export default function Login({ mode = 'login' }) {
     setInfo('')
 
     if (isRegister) {
-      if (form.fullName.trim().length < 2) return setError('Vui lòng nhập họ tên.')
-      if (form.password.length < 6) return setError('Mật khẩu cần ít nhất 6 ký tự.')
-      if (form.password !== form.confirm) return setError('Mật khẩu nhập lại không khớp.')
+      if (form.fullName.trim().length < 2) return setError(t('Vui lòng nhập họ tên.'))
+      if (form.password.length < 6) return setError(t('Mật khẩu cần ít nhất 6 ký tự.'))
+      if (form.password !== form.confirm) return setError(t('Mật khẩu nhập lại không khớp.'))
     }
 
     setSubmitting(true)
@@ -55,9 +56,12 @@ export default function Login({ mode = 'login' }) {
         // identities rỗng nghĩa là email đã có người đăng ký (Supabase không báo lỗi để tránh dò email).
         if (!data.session) {
           if (data.user?.identities?.length === 0)
-            return setError('Email này đã được đăng ký. Hãy đăng nhập.')
+            return setError(t('Email này đã được đăng ký. Hãy đăng nhập.'))
           return setInfo(
-            `Đã gửi email xác nhận tới ${email}. Hãy mở hộp thư và bấm link để hoàn tất đăng ký.`,
+            t(
+              'Đã gửi email xác nhận tới {email}. Hãy mở hộp thư và bấm link để hoàn tất đăng ký.',
+              { email },
+            ),
           )
         }
       } else {
@@ -83,11 +87,11 @@ export default function Login({ mode = 'login' }) {
   return (
     <div className="mx-auto max-w-md">
       <div className="rounded-2xl border border-slate-200 bg-surface p-5 shadow-sm sm:p-8">
-        <h1 className="text-2xl font-bold">{isRegister ? 'Tạo tài khoản' : 'Đăng nhập'}</h1>
+        <h1 className="text-2xl font-bold">{isRegister ? t('Tạo tài khoản') : t('Đăng nhập')}</h1>
         <p className="mt-1 text-sm text-slate-500">
           {isRegister
-            ? 'Lưu cấu hình, theo dõi giá và đặt hàng nhanh hơn.'
-            : 'Chào mừng bạn quay lại HcmusWare.'}
+            ? t('Lưu cấu hình, theo dõi giá và đặt hàng nhanh hơn.')
+            : t('Chào mừng bạn quay lại HcmusWare.')}
         </p>
 
         <button
@@ -113,19 +117,19 @@ export default function Login({ mode = 'login' }) {
               d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"
             />
           </svg>
-          Tiếp tục với Google
+          {t('Tiếp tục với Google')}
         </button>
 
         <div className="my-5 flex items-center gap-3 text-xs text-slate-500">
           <span className="h-px flex-1 bg-slate-200" />
-          hoặc dùng email
+          {t('hoặc dùng email')}
           <span className="h-px flex-1 bg-slate-200" />
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {isRegister && (
             <Field
-              label="Họ và tên"
+              label={t('Họ và tên')}
               autoComplete="name"
               required
               value={form.fullName}
@@ -141,7 +145,7 @@ export default function Login({ mode = 'login' }) {
             onChange={set('email')}
           />
           <Field
-            label="Mật khẩu"
+            label={t('Mật khẩu')}
             type="password"
             autoComplete={isRegister ? 'new-password' : 'current-password'}
             required
@@ -151,7 +155,7 @@ export default function Login({ mode = 'login' }) {
           />
           {isRegister && (
             <Field
-              label="Nhập lại mật khẩu"
+              label={t('Nhập lại mật khẩu')}
               type="password"
               autoComplete="new-password"
               required
@@ -173,17 +177,17 @@ export default function Login({ mode = 'login' }) {
             disabled={submitting}
             className="h-11 w-full rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
           >
-            {submitting ? 'Đang xử lý…' : isRegister ? 'Đăng ký' : 'Đăng nhập'}
+            {submitting ? t('Đang xử lý…') : isRegister ? t('Đăng ký') : t('Đăng nhập')}
           </button>
         </form>
 
         <p className="mt-5 text-center text-sm text-slate-600">
-          {isRegister ? 'Đã có tài khoản?' : 'Chưa có tài khoản?'}{' '}
+          {isRegister ? t('Đã có tài khoản?') : t('Chưa có tài khoản?')}{' '}
           <Link
             to={switchTo}
             className="inline-flex min-h-11 items-center font-medium text-blue-700 dark:text-blue-300 hover:underline"
           >
-            {isRegister ? 'Đăng nhập' : 'Đăng ký ngay'}
+            {isRegister ? t('Đăng nhập') : t('Đăng ký ngay')}
           </Link>
         </p>
       </div>

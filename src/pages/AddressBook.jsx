@@ -9,6 +9,7 @@ import {
   formatAddress,
   validateAddress,
 } from '../features/address/address'
+import { t } from '../lib/i18n'
 
 // Sổ địa chỉ /tai-khoan/dia-chi (US-17.1): thêm, sửa, xóa, đặt mặc định; tối đa 10 địa chỉ.
 // Đăng nhập do RoleRoute trong App.jsx kiểm tra. Quy tắc mặc định / giới hạn nằm ở trigger trong DB.
@@ -45,17 +46,19 @@ export default function AddressBook() {
     <div className="mx-auto max-w-2xl space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl font-bold sm:text-2xl">Sổ địa chỉ</h1>
+          <h1 className="text-xl font-bold sm:text-2xl">{t('Sổ địa chỉ')}</h1>
           <p className="text-sm text-slate-500">
-            {addresses.length}/{MAX_ADDRESSES} địa chỉ · địa chỉ mặc định được điền sẵn khi thanh
-            toán
+            {t('{n}/{max} địa chỉ · địa chỉ mặc định được điền sẵn khi thanh toán', {
+              n: addresses.length,
+              max: MAX_ADDRESSES,
+            })}
           </p>
         </div>
         <Link
           to="/tai-khoan"
           className="inline-flex min-h-11 items-center text-sm text-blue-700 hover:underline dark:text-blue-300"
         >
-          ← Tài khoản
+          {t('← Tài khoản')}
         </Link>
       </div>
 
@@ -69,19 +72,21 @@ export default function AddressBook() {
           {error}
         </p>
       )}
-      {list.loading && <p className="py-8 text-center text-slate-500">Đang tải sổ địa chỉ…</p>}
+      {list.loading && (
+        <p className="py-8 text-center text-slate-500">{t('Đang tải sổ địa chỉ…')}</p>
+      )}
       {list.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được sổ địa chỉ: {list.error.message}
+          {t('Không tải được sổ địa chỉ: {msg}', { msg: t(list.error.message) })}
         </p>
       )}
 
       {editing === 'new' ? (
         <AddressEditor
-          title="Thêm địa chỉ"
+          title={t('Thêm địa chỉ')}
           canChooseDefault={addresses.length > 0}
           onCancel={() => setEditing(null)}
-          onSaved={() => refresh('Đã thêm địa chỉ.')}
+          onSaved={() => refresh(t('Đã thêm địa chỉ.'))}
         />
       ) : (
         list.data && (
@@ -94,14 +99,16 @@ export default function AddressBook() {
             disabled={full || editing !== null}
             className="h-11 w-full rounded-lg border border-dashed border-slate-300 bg-surface text-sm font-medium text-blue-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-blue-300"
           >
-            {full ? `Đã đủ ${MAX_ADDRESSES} địa chỉ, xóa bớt để thêm mới` : '+ Thêm địa chỉ'}
+            {full
+              ? t('Đã đủ {max} địa chỉ, xóa bớt để thêm mới', { max: MAX_ADDRESSES })
+              : t('+ Thêm địa chỉ')}
           </button>
         )
       )}
 
       {list.data && !addresses.length && editing !== 'new' && (
         <p className="rounded-xl border border-slate-200 bg-surface p-5 text-center text-sm text-slate-500">
-          Sổ địa chỉ đang trống. Địa chỉ đầu tiên bạn thêm sẽ là địa chỉ mặc định.
+          {t('Sổ địa chỉ đang trống. Địa chỉ đầu tiên bạn thêm sẽ là địa chỉ mặc định.')}
         </p>
       )}
 
@@ -110,10 +117,10 @@ export default function AddressBook() {
           editing === a.id ? (
             <li key={a.id}>
               <AddressEditor
-                title="Sửa địa chỉ"
+                title={t('Sửa địa chỉ')}
                 address={a}
                 onCancel={() => setEditing(null)}
-                onSaved={() => refresh('Đã lưu địa chỉ.')}
+                onSaved={() => refresh(t('Đã lưu địa chỉ.'))}
               />
             </li>
           ) : (
@@ -126,7 +133,7 @@ export default function AddressBook() {
                 <span className="text-slate-500">{a.phone}</span>
                 {a.is_default && (
                   <span className="rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-800">
-                    Mặc định
+                    {t('Mặc định')}
                   </span>
                 )}
               </p>
@@ -139,30 +146,33 @@ export default function AddressBook() {
                     setNotice('')
                   }}
                 >
-                  Sửa
+                  {t('Sửa')}
                 </ActionButton>
                 {!a.is_default && (
                   <ActionButton
                     disabled={busy || editing !== null}
-                    onClick={() => run(() => setDefaultAddress(a.id), 'Đã đổi địa chỉ mặc định.')}
+                    onClick={() =>
+                      run(() => setDefaultAddress(a.id), t('Đã đổi địa chỉ mặc định.'))
+                    }
                   >
-                    Đặt làm mặc định
+                    {t('Đặt làm mặc định')}
                   </ActionButton>
                 )}
                 <ActionButton
                   danger
                   disabled={busy || editing !== null}
                   onClick={() => {
-                    if (!window.confirm(`Xóa địa chỉ "${formatAddress(a)}"?`)) return
+                    if (!window.confirm(t('Xóa địa chỉ "{addr}"?', { addr: formatAddress(a) })))
+                      return
                     run(
                       () => deleteAddress(a.id),
                       a.is_default && addresses.length > 1
-                        ? 'Đã xóa. Địa chỉ thêm gần nhất được đặt làm mặc định.'
-                        : 'Đã xóa địa chỉ.',
+                        ? t('Đã xóa. Địa chỉ thêm gần nhất được đặt làm mặc định.')
+                        : t('Đã xóa địa chỉ.'),
                     )
                   }}
                 >
-                  Xóa
+                  {t('Xóa')}
                 </ActionButton>
               </div>
             </li>
@@ -240,7 +250,7 @@ function AddressEditor({ title, address, canChooseDefault = false, onCancel, onS
             onChange={(e) => setMakeDefault(e.target.checked)}
             className="h-5 w-5 accent-blue-600"
           />
-          Đặt làm địa chỉ mặc định
+          {t('Đặt làm địa chỉ mặc định')}
         </label>
       )}
       {submitError && (
@@ -254,14 +264,14 @@ function AddressEditor({ title, address, canChooseDefault = false, onCancel, onS
           onClick={onCancel}
           className="h-11 rounded-lg border border-slate-300 bg-surface px-5 text-sm font-medium hover:bg-slate-50"
         >
-          Hủy
+          {t('Hủy')}
         </button>
         <button
           type="submit"
           disabled={saving}
           className="h-11 rounded-lg bg-blue-600 px-6 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
         >
-          {saving ? 'Đang lưu…' : 'Lưu địa chỉ'}
+          {saving ? t('Đang lưu…') : t('Lưu địa chỉ')}
         </button>
       </div>
     </form>

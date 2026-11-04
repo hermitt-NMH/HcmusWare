@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { useAsync } from '../hooks/useAsync'
 import { getBrandList } from '../lib/api'
 import LogoBadge from '../components/LogoBadge'
+import { t } from '../lib/i18n'
 
 // /thuong-hieu (US-15.1): lưới thương hiệu A–Z, kèm số sản phẩm đang bán.
 // Thương hiệu chưa có sản phẩm đang bán vẫn hiện nhưng mờ, đứng cuối.
@@ -16,7 +17,7 @@ export default function BrandList() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold sm:text-2xl">Thương hiệu</h1>
+      <h1 className="text-xl font-bold sm:text-2xl">{t('Thương hiệu')}</h1>
       {brands.loading && (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
           {Array.from({ length: 12 }, (_, i) => (
@@ -26,11 +27,11 @@ export default function BrandList() {
       )}
       {brands.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-          Không tải được thương hiệu: {brands.error.message}
+          {t('Không tải được thương hiệu: {msg}', { msg: t(brands.error.message) })}
         </p>
       )}
       {brands.data && !list.length && (
-        <p className="p-4 text-sm text-slate-500">Chưa có thương hiệu nào.</p>
+        <p className="p-4 text-sm text-slate-500">{t('Chưa có thương hiệu nào.')}</p>
       )}
       {list.length > 0 && (
         <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
@@ -51,7 +52,7 @@ export default function BrandList() {
                   />
                   <span className="line-clamp-2 text-sm font-semibold">{b.name}</span>
                   <span className="text-xs text-slate-500">
-                    {count ? `${count} sản phẩm` : 'Chưa có sản phẩm'}
+                    {count ? t('{n} sản phẩm', { n: count }) : t('Chưa có sản phẩm')}
                   </span>
                 </Link>
               </li>

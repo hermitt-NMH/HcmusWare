@@ -12,6 +12,7 @@ import {
   paymentStatusLabel,
 } from '../features/orders/orders'
 import NotFound from './NotFound'
+import { t, tJsx } from '../lib/i18n'
 
 const STEPS = ['pending', 'confirmed', 'shipping', 'completed']
 
@@ -21,7 +22,8 @@ const STEPS = ['pending', 'confirmed', 'shipping', 'completed']
 export default function OrderDetail() {
   const { user, loading } = useAuth()
   const location = useLocation()
-  if (loading) return <p className="py-16 text-center text-slate-500">Đang kiểm tra đăng nhập…</p>
+  if (loading)
+    return <p className="py-16 text-center text-slate-500">{t('Đang kiểm tra đăng nhập…')}</p>
   if (!user)
     return <Navigate to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`} replace />
   return <OrderView />
@@ -40,11 +42,12 @@ function OrderView() {
     return { ...o, group: group.length ? group : [o] }
   }, [id, user.id])
 
-  if (order.loading) return <p className="py-16 text-center text-slate-500">Đang tải đơn hàng…</p>
+  if (order.loading)
+    return <p className="py-16 text-center text-slate-500">{t('Đang tải đơn hàng…')}</p>
   if (order.error)
     return (
       <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được đơn hàng: {order.error.message}
+        {t('Không tải được đơn hàng: {msg}', { msg: t(order.error.message) })}
       </p>
     )
   // Không tồn tại hoặc không phải đơn của mình (RLS) → 404.
@@ -59,17 +62,20 @@ function OrderView() {
     <div className="mx-auto max-w-3xl space-y-4">
       {isNew && (
         <div className="rounded-xl border border-green-200 bg-green-50 p-4 text-green-900">
-          <p className="text-lg font-semibold">✓ Đặt hàng thành công!</p>
+          <p className="text-lg font-semibold">{t('✓ Đặt hàng thành công!')}</p>
           {others.length ? (
             <p className="text-sm">
-              Cảm ơn bạn. Giỏ hàng có sản phẩm của {o.group.length} shop nên được tách thành{' '}
-              {o.group.length} đơn (mã thanh toán <strong>{o.payment_code}</strong>), mỗi shop gọi
-              xác nhận đơn của mình trong giờ hành chính.
+              {tJsx(
+                'Cảm ơn bạn. Giỏ hàng có sản phẩm của {n} shop nên được tách thành {n} đơn (mã thanh toán {code}), mỗi shop gọi xác nhận đơn của mình trong giờ hành chính.',
+                { n: o.group.length, code: <strong>{o.payment_code}</strong> },
+              )}
             </p>
           ) : (
             <p className="text-sm">
-              Cảm ơn bạn. Mã đơn của bạn là <strong>#{o.id}</strong>. Shop sẽ gọi xác nhận trong giờ
-              hành chính.
+              {tJsx(
+                'Cảm ơn bạn. Mã đơn của bạn là {id}. Shop sẽ gọi xác nhận trong giờ hành chính.',
+                { id: <strong>#{o.id}</strong> },
+              )}
             </p>
           )}
         </div>
@@ -77,11 +83,13 @@ function OrderView() {
 
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h1 className="text-xl font-bold sm:text-2xl">Đơn hàng #{o.id}</h1>
-          <p className="text-sm text-slate-500">Đặt lúc {formatDateTime(o.created_at)}</p>
+          <h1 className="text-xl font-bold sm:text-2xl">{t('Đơn hàng #{id}', o)}</h1>
+          <p className="text-sm text-slate-500">
+            {t('Đặt lúc {time}', { time: formatDateTime(o.created_at) })}
+          </p>
           {o.shops && (
             <p className="text-sm text-slate-600">
-              Bán bởi{' '}
+              {t('Bán bởi')}{' '}
               <Link
                 to={`/shop/${o.shops.slug}`}
                 className="font-medium text-blue-700 hover:underline dark:text-blue-300"
@@ -103,7 +111,7 @@ function OrderView() {
                 className={`h-1.5 rounded-full ${i <= stepIndex ? 'bg-blue-600' : 'bg-slate-200'}`}
               />
               <span className={i <= stepIndex ? 'font-medium text-slate-900' : 'text-slate-500'}>
-                {ORDER_STATUS[s].label}
+                {t(ORDER_STATUS[s].label)}
               </span>
             </li>
           ))}
@@ -112,19 +120,21 @@ function OrderView() {
 
       {canPayOnline(o) && (
         <div className="flex flex-col gap-2 rounded-xl border border-amber-200 bg-amber-50 p-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-amber-900">Đơn hàng đang chờ bạn thanh toán online.</p>
+          <p className="text-sm text-amber-900">{t('Đơn hàng đang chờ bạn thanh toán online.')}</p>
           <Link
             to={`/thanh-toan/mo-phong/${o.id}`}
             className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700"
           >
-            Thanh toán ngay
+            {t('Thanh toán ngay')}
           </Link>
         </div>
       )}
 
       {others.length > 0 && (
         <section className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
-          <h2 className="font-semibold">Cùng lần đặt hàng (mã thanh toán {o.payment_code})</h2>
+          <h2 className="font-semibold">
+            {t('Cùng lần đặt hàng (mã thanh toán {code})', { code: o.payment_code })}
+          </h2>
           <ul className="mt-1 divide-y divide-slate-100">
             {others.map((x) => (
               <li key={x.id}>
@@ -145,22 +155,24 @@ function OrderView() {
 
       <div className="grid gap-4 sm:grid-cols-2">
         <section className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
-          <h2 className="mb-2 font-semibold">Giao đến</h2>
+          <h2 className="mb-2 font-semibold">{t('Giao đến')}</h2>
           <p className="font-medium">{o.shipping_name}</p>
           <p>{o.shipping_phone}</p>
           <p className="whitespace-pre-line text-slate-600">{o.shipping_address}</p>
-          {o.note && <p className="mt-2 text-slate-500">Ghi chú: {o.note}</p>}
+          {o.note && (
+            <p className="mt-2 text-slate-500">{t('Ghi chú: {note}', { note: o.note })}</p>
+          )}
         </section>
         <section className="rounded-xl border border-slate-200 bg-surface p-4 text-sm">
-          <h2 className="mb-2 font-semibold">Thanh toán</h2>
-          <p>{PAYMENT_METHODS[o.payment_method]?.label ?? o.payment_method}</p>
+          <h2 className="mb-2 font-semibold">{t('Thanh toán')}</h2>
+          <p>{t(PAYMENT_METHODS[o.payment_method]?.label ?? o.payment_method)}</p>
           <p
             className={
               o.paid_at ? 'font-medium text-green-700 dark:text-green-400' : 'text-slate-600'
             }
           >
             {paymentStatusLabel(o)}
-            {o.paid_at && ` lúc ${formatDateTime(o.paid_at)}`}
+            {o.paid_at && ` ${t('lúc {time}', { time: formatDateTime(o.paid_at) })}`}
           </p>
         </section>
       </div>
@@ -182,7 +194,7 @@ function OrderView() {
                     to={`/san-pham/${it.product_id}`}
                     className="line-clamp-2 hover:text-blue-700 dark:hover:text-blue-300"
                   >
-                    {it.products?.name ?? `Sản phẩm #${it.product_id}`}
+                    {it.products?.name ?? t('Sản phẩm #{id}', { id: it.product_id })}
                   </Link>
                   <span className="text-xs text-slate-500">
                     {formatPrice(it.unit_price)} × {it.quantity}
@@ -196,7 +208,7 @@ function OrderView() {
           })}
         </ul>
         <div className="flex items-baseline justify-between border-t border-slate-200 p-4">
-          <span className="font-medium">Tổng cộng</span>
+          <span className="font-medium">{t('Tổng cộng')}</span>
           <span className="text-xl font-bold text-red-600 dark:text-red-400">
             {formatPrice(o.total)}
           </span>
@@ -208,13 +220,13 @@ function OrderView() {
           to="/tai-khoan"
           className="inline-flex h-11 items-center justify-center rounded-lg border border-slate-300 bg-surface px-5 text-sm font-medium hover:bg-slate-50"
         >
-          Xem tất cả đơn hàng
+          {t('Xem tất cả đơn hàng')}
         </Link>
         <Link
           to="/san-pham"
           className="inline-flex h-11 items-center justify-center rounded-lg px-5 text-sm text-blue-700 dark:text-blue-300 hover:underline"
         >
-          Tiếp tục mua sắm
+          {t('Tiếp tục mua sắm')}
         </Link>
       </div>
     </div>

@@ -13,6 +13,7 @@ import PriceSection from '../features/price/PriceSection'
 import ReviewSection from '../features/reviews/ReviewSection'
 import QuestionSection from '../features/reviews/QuestionSection'
 import { formatRating } from '../features/reviews/reviews'
+import { t } from '../lib/i18n'
 
 // Trang chi tiết: ảnh, giá, tồn kho, bảng thông số, nút tải datasheet, lịch sử giá + cảnh báo giá,
 // đánh giá và hỏi đáp (F16), sản phẩm tương tự.
@@ -24,7 +25,7 @@ export default function ProductDetail() {
   if (product.error) {
     return (
       <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được sản phẩm: {product.error.message}
+        {t('Không tải được sản phẩm: {msg}', { msg: t(product.error.message) })}
       </p>
     )
   }
@@ -69,11 +70,11 @@ function DetailView({ product }) {
   return (
     <div className="space-y-8">
       {/* Đường dẫn: Trang chủ / Danh mục / Tên */}
-      <nav aria-label="Đường dẫn" className="text-sm text-slate-500">
+      <nav aria-label={t('Đường dẫn')} className="text-sm text-slate-500">
         <ol className="flex flex-wrap items-center gap-1">
           <li>
             <Link to="/" className="hover:text-blue-700 dark:hover:text-blue-300 hover:underline">
-              Trang chủ
+              {t('Trang chủ')}
             </Link>
           </li>
           {categories && (
@@ -82,7 +83,7 @@ function DetailView({ product }) {
                 to={`/danh-muc/${slug}`}
                 className="hover:text-blue-700 dark:hover:text-blue-300 hover:underline"
               >
-                {categories.name}
+                {t(categories.name)}
               </Link>
             </li>
           )}
@@ -115,7 +116,7 @@ function DetailView({ product }) {
                   key={url}
                   type="button"
                   onClick={() => setImageIndex(i)}
-                  aria-label={`Xem ảnh ${i + 1}`}
+                  aria-label={t('Xem ảnh {i}', { i: i + 1 })}
                   aria-pressed={i === imageIndex}
                   className={`h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 bg-white ${i === imageIndex ? 'border-blue-600' : 'border-slate-200'}`}
                 >
@@ -144,13 +145,13 @@ function DetailView({ product }) {
               href="#reviews-title"
               className="mt-1 inline-block text-sm text-slate-600 hover:underline"
             >
-              {rating ?? 'Chưa có đánh giá'}
+              {rating ?? t('Chưa có đánh giá')}
             </a>
             {/* F15: thương hiệu và shop bán, có link tới trang tương ứng */}
             <dl className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-sm">
               {brands && (
                 <div className="flex gap-1">
-                  <dt className="text-slate-500">Thương hiệu:</dt>
+                  <dt className="text-slate-500">{t('Thương hiệu:')}</dt>
                   <dd>
                     <Link
                       to={`/thuong-hieu/${brands.slug}`}
@@ -163,7 +164,7 @@ function DetailView({ product }) {
               )}
               {shops && (
                 <div className="flex gap-1">
-                  <dt className="text-slate-500">Bán bởi:</dt>
+                  <dt className="text-slate-500">{t('Bán bởi:')}</dt>
                   <dd>
                     <Link
                       to={`/shop/${shops.slug}`}
@@ -182,7 +183,7 @@ function DetailView({ product }) {
           <p
             className={`text-sm font-medium ${outOfStock ? 'text-slate-500' : 'text-green-700 dark:text-green-400'}`}
           >
-            {outOfStock ? 'Hết hàng' : `Còn hàng – ${stock} sản phẩm`}
+            {outOfStock ? t('Hết hàng') : t('Còn hàng – {n} sản phẩm', { n: stock })}
           </p>
 
           {/* Mô tả người bán nhập: hiện dạng chữ (React tự thoát HTML), giữ xuống dòng */}
@@ -202,11 +203,13 @@ function DetailView({ product }) {
                 className="inline-flex h-12 items-center justify-center rounded-lg border border-slate-300 bg-surface px-5 font-medium text-slate-700 hover:bg-slate-50"
               >
                 {/* Có hãng cho file PDF, có hãng chỉ có trang thông số trên web → ghi đúng để khách không bất ngờ */}
-                {/\.pdf($|\?)/i.test(datasheet_url) ? 'Tải datasheet (PDF)' : 'Xem thông số hãng ↗'}
+                {/\.pdf($|\?)/i.test(datasheet_url)
+                  ? t('Tải datasheet (PDF)')
+                  : t('Xem thông số hãng ↗')}
               </a>
             ) : (
               <span className="inline-flex h-12 items-center justify-center rounded-lg border border-dashed border-slate-300 px-5 text-sm text-slate-500">
-                Chưa có datasheet
+                {t('Chưa có datasheet')}
               </span>
             )}
           </div>
@@ -214,7 +217,7 @@ function DetailView({ product }) {
       </div>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Thông số kỹ thuật</h2>
+        <h2 className="mb-3 text-lg font-semibold">{t('Thông số kỹ thuật')}</h2>
         {rows.length ? (
           <table className="w-full overflow-hidden rounded-xl border border-slate-200 bg-surface text-sm">
             <tbody>
@@ -224,7 +227,7 @@ function DetailView({ product }) {
                   className="border-t border-slate-100 first:border-t-0 even:bg-slate-50"
                 >
                   <th scope="row" className="w-2/5 px-4 py-3 text-left font-medium text-slate-500">
-                    {r.label}
+                    {t(r.label)}
                   </th>
                   <td className="px-4 py-3 text-slate-900">{r.value}</td>
                 </tr>
@@ -232,7 +235,7 @@ function DetailView({ product }) {
             </tbody>
           </table>
         ) : (
-          <p className="text-sm text-slate-500">Chưa có thông số cho sản phẩm này.</p>
+          <p className="text-sm text-slate-500">{t('Chưa có thông số cho sản phẩm này.')}</p>
         )}
       </section>
 
@@ -259,8 +262,8 @@ function AddToCartButton({ product }) {
   // Báo "Đã thêm" trong 2 giây rồi trở lại bình thường.
   useEffect(() => {
     if (!added) return
-    const t = setTimeout(() => setAdded(false), 2000)
-    return () => clearTimeout(t)
+    const timer = setTimeout(() => setAdded(false), 2000)
+    return () => clearTimeout(timer)
   }, [added])
 
   if (outOfStock || full) {
@@ -271,14 +274,14 @@ function AddToCartButton({ product }) {
           disabled
           className="h-12 rounded-lg bg-blue-600 px-5 font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {outOfStock ? 'Hết hàng' : 'Đã đủ số lượng trong giỏ'}
+          {outOfStock ? t('Hết hàng') : t('Đã đủ số lượng trong giỏ')}
         </button>
         {!outOfStock && (
           <Link
             to="/gio-hang"
             className="text-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
-            Xem giỏ hàng ({inCart})
+            {t('Xem giỏ hàng ({n})', { n: inCart })}
           </Link>
         )}
       </div>
@@ -295,14 +298,14 @@ function AddToCartButton({ product }) {
         }}
         className="h-12 rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700"
       >
-        {added ? '✓ Đã thêm vào giỏ' : 'Thêm vào giỏ'}
+        {added ? t('✓ Đã thêm vào giỏ') : t('Thêm vào giỏ')}
       </button>
       {inCart > 0 && (
         <Link
           to="/gio-hang"
           className="text-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
         >
-          Trong giỏ: {inCart} · Xem giỏ hàng
+          {t('Trong giỏ: {n} · Xem giỏ hàng', { n: inCart })}
         </Link>
       )}
     </div>
@@ -318,7 +321,7 @@ function RelatedProducts({ categorySlug, excludeId }) {
   if (!related.loading && !related.error && !related.data?.length) return null
   return (
     <section>
-      <h2 className="mb-3 text-lg font-semibold">Sản phẩm tương tự</h2>
+      <h2 className="mb-3 text-lg font-semibold">{t('Sản phẩm tương tự')}</h2>
       <ProductGrid {...related} products={related.data} skeletonCount={4} />
     </section>
   )

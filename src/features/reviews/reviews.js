@@ -1,6 +1,7 @@
 // Đánh giá và hỏi đáp (F16), dạng HÀM THUẦN để test. Quy tắc độ dài, gộp dòng trống trùng với DB
 // (clean_ugc, guard_review_write, guard_comment_write trong migration 20261214000000).
 // Nội dung người dùng chỉ hiện bằng {text} của React (tự thoát HTML), không dùng dangerouslySetInnerHTML.
+import { t } from '../../lib/i18n'
 
 export const MAX_TEXT = 1000
 
@@ -29,17 +30,19 @@ export function formatRating(avg, count) {
 export function validateReview({ rating, comment }) {
   const errors = {}
   const r = Number(rating)
-  if (!Number.isInteger(r) || r < 1 || r > 5) errors.rating = 'Chọn số sao từ 1 đến 5.'
+  if (!Number.isInteger(r) || r < 1 || r > 5) errors.rating = t('Chọn số sao từ 1 đến 5.')
   const text = cleanText(comment)
-  if (textLength(text) > MAX_TEXT) errors.comment = `Nhận xét tối đa ${MAX_TEXT} ký tự.`
+  if (textLength(text) > MAX_TEXT)
+    errors.comment = t('Nhận xét tối đa {max} ký tự.', { max: MAX_TEXT })
   return { data: { rating: r, comment: text || null }, errors }
 }
 
 // Câu hỏi / câu trả lời: 1–1000 ký tự, khoảng trắng không tính.
 export function validateComment(body) {
   const text = cleanText(body)
-  if (!text) return { data: text, error: 'Nhập nội dung trước khi gửi.' }
-  if (textLength(text) > MAX_TEXT) return { data: text, error: `Tối đa ${MAX_TEXT} ký tự.` }
+  if (!text) return { data: text, error: t('Nhập nội dung trước khi gửi.') }
+  if (textLength(text) > MAX_TEXT)
+    return { data: text, error: t('Tối đa {max} ký tự.', { max: MAX_TEXT }) }
   return { data: text, error: null }
 }
 
@@ -60,8 +63,8 @@ export function groupThreads(comments) {
 
 // Lỗi từ DB đã là câu tiếng Việt (raise exception trong trigger); còn lại thì ghi chung.
 export function ugcErrorMessage(error) {
-  if (error?.code === '42501') return 'Bạn không có quyền thực hiện thao tác này.'
-  return error?.message || 'Lỗi không xác định.'
+  if (error?.code === '42501') return t('Bạn không có quyền thực hiện thao tác này.')
+  return t(error?.message || 'Lỗi không xác định.')
 }
 
 // Có được trả lời với nhãn "Người bán" không (chỉ để hiện đúng nút; DB kiểm tra lại trong guard_comment_write):

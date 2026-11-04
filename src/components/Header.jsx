@@ -6,7 +6,9 @@ import { useAuth } from '../hooks/useAuth'
 import { useCart } from '../hooks/useCart'
 import { roleShortcut } from '../lib/roles'
 import { useTheme } from '../hooks/useTheme'
+import { useLang } from '../hooks/useLang'
 import NotificationBell from '../features/notifications/NotificationBell'
+import { t } from '../lib/i18n'
 
 const navClass = ({ isActive }) =>
   // flex + min-h-11: vùng bấm cao tối thiểu 44px; whitespace-nowrap: chữ không bị ngắt 2 dòng.
@@ -32,8 +34,8 @@ function SearchForm({ className = '', onDone }) {
         type="search"
         value={q}
         onChange={(e) => setQ(e.target.value)}
-        placeholder="Tìm CPU, VGA, RAM..."
-        aria-label="Tìm sản phẩm"
+        placeholder={t('Tìm CPU, VGA, RAM...')}
+        aria-label={t('Tìm sản phẩm')}
         className="h-11 w-full rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm focus:border-blue-500 focus:bg-surface focus:outline-none"
       />
     </form>
@@ -47,7 +49,7 @@ function SearchForm({ className = '', onDone }) {
 function ThemeToggle({ withLabel = false, className = '' }) {
   const { theme, toggleTheme } = useTheme()
   const dark = theme === 'dark'
-  const label = dark ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'
+  const label = dark ? t('Chuyển sang giao diện sáng') : t('Chuyển sang giao diện tối')
   return (
     <button
       type="button"
@@ -84,6 +86,45 @@ function ThemeToggle({ withLabel = false, className = '' }) {
   )
 }
 
+// Chọn ngôn ngữ giao diện VI / EN (lib/i18n.js): hai nút liền nhau, nút đang chọn tô xanh.
+// Chữ VI / EN giữ nguyên ở cả hai ngôn ngữ để ai cũng nhận ra. withLabel: kèm chữ "Ngôn ngữ" (menu điện thoại).
+function LangToggle({ withLabel = false, className = '' }) {
+  const { lang, setLang } = useLang()
+  const options = [
+    { value: 'vi', label: 'VI', name: 'Tiếng Việt' },
+    { value: 'en', label: 'EN', name: 'English' },
+  ]
+  return (
+    <div
+      role="group"
+      aria-label={t('Ngôn ngữ')}
+      className={`shrink-0 items-center gap-2 ${
+        withLabel ? 'flex w-full px-2 py-1 text-sm font-medium text-slate-600' : ''
+      } ${className || 'inline-flex'}`}
+    >
+      {withLabel && <span className="mr-auto">{t('Ngôn ngữ')}</span>}
+      <span className="inline-flex rounded-md border border-slate-300 p-0.5">
+        {options.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            lang={o.value}
+            title={o.name}
+            aria-label={o.name}
+            aria-pressed={lang === o.value}
+            onClick={() => lang !== o.value && setLang(o.value)}
+            className={`inline-flex h-9 min-w-9 items-center justify-center rounded px-1.5 text-xs font-semibold ${
+              lang === o.value ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            {o.label}
+          </button>
+        ))}
+      </span>
+    </div>
+  )
+}
+
 export default function Header() {
   const [open, setOpen] = useState(false)
   const categories = useAsync(getCategories)
@@ -96,13 +137,13 @@ export default function Header() {
   // Đã đăng nhập: hiện tên (từ cuối của họ tên, vd "Nguyễn Văn An" → "An") và dẫn tới trang tài khoản.
   const firstName = profile?.full_name?.trim().split(/\s+/).pop()
   const account = user
-    ? { to: '/tai-khoan', label: firstName || 'Tài khoản' }
-    : { to: '/dang-nhap', label: 'Đăng nhập' }
+    ? { to: '/tai-khoan', label: firstName || t('Tài khoản') }
+    : { to: '/dang-nhap', label: t('Đăng nhập') }
   // Đang tải hồ sơ: ô xám giữ chỗ thay cho chữ "Tài khoản" rồi mới đổi thành tên (BUG-G2-04).
   const accountPlaceholder = (
     <span
       role="status"
-      aria-label="Đang tải tài khoản"
+      aria-label={t('Đang tải tài khoản')}
       className="mx-3 my-3 block h-5 w-20 animate-pulse rounded bg-slate-200"
     />
   )
@@ -115,7 +156,7 @@ export default function Header() {
         <button
           type="button"
           className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-md text-slate-600 hover:bg-slate-100 md:hidden"
-          aria-label="Mở menu danh mục"
+          aria-label={t('Mở menu danh mục')}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
         >
@@ -155,7 +196,7 @@ export default function Header() {
           <NavLink
             to="/gio-hang"
             className={(s) => `${navClass(s)} relative`}
-            aria-label={`Giỏ hàng, ${count} sản phẩm`}
+            aria-label={t('Giỏ hàng, {count} sản phẩm', { count })}
           >
             <svg
               className="sm:hidden"
@@ -173,7 +214,7 @@ export default function Header() {
               <circle cx="18" cy="20" r="1.5" />
               <path d="M2 3h3l2.7 12.4a1 1 0 0 0 1 .8h9.6a1 1 0 0 0 1-.8L21 7H6" />
             </svg>
-            <span className="hidden sm:inline">Giỏ hàng</span>
+            <span className="hidden sm:inline">{t('Giỏ hàng')}</span>
             {/* Điện thoại: số đè lên góc icon (như chuông) để thêm chuông mà header vẫn vừa 360px */}
             {count > 0 && (
               <span className="absolute top-1 right-0 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[11px] font-bold text-white sm:static sm:ml-1">
@@ -196,6 +237,7 @@ export default function Header() {
               <span className="truncate">{account.label}</span>
             </NavLink>
           )}
+          <LangToggle className="hidden md:inline-flex" />
           <ThemeToggle className="hidden md:inline-flex" />
         </nav>
       </div>
@@ -222,36 +264,39 @@ export default function Header() {
               </NavLink>
             )}
           </li>
+          <li className="md:hidden">
+            <LangToggle withLabel />
+          </li>
           <li className="border-b border-slate-100 pb-1 md:hidden">
             <ThemeToggle withLabel />
           </li>
           {/* Đang tải: chữ nhỏ; lỗi: báo gọn một dòng. Giữ cùng chiều cao để không vỡ thanh menu */}
           {categories.loading && (
             <li className="flex min-h-11 items-center px-3 text-xs text-slate-500">
-              Đang tải danh mục…
+              {t('Đang tải danh mục…')}
             </li>
           )}
           {categories.error && (
             <li className="flex min-h-11 items-center px-3 text-xs text-red-600 dark:text-red-400">
-              Không tải được danh mục
+              {t('Không tải được danh mục')}
             </li>
           )}
           {categories.data?.map((c) => (
             <li key={c.id} className="shrink-0">
               <NavLink to={`/danh-muc/${c.slug}`} className={navClass} onClick={close}>
-                {c.name}
+                {t(c.name)}
               </NavLink>
             </li>
           ))}
           {/* Giai đoạn 2: trang thương hiệu (F15) và gợi ý cấu hình theo ngân sách (F10) */}
           <li className="shrink-0 border-t border-slate-100 pt-1 md:ml-auto md:border-t-0 md:pt-0">
             <NavLink to="/thuong-hieu" className={navClass} onClick={close}>
-              Thương hiệu
+              {t('Thương hiệu')}
             </NavLink>
           </li>
           <li className="shrink-0">
             <NavLink to="/goi-y-cau-hinh" className={navClass} onClick={close}>
-              Gợi ý theo ngân sách
+              {t('Gợi ý theo ngân sách')}
             </NavLink>
           </li>
         </ul>

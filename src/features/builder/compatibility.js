@@ -1,6 +1,7 @@
 // Bộ quy tắc tương thích cho Build PC – xem docs/quy-tac-tuong-thich.md (R1–R9, W1–W5).
 // Đây là HÀM THUẦN: không gọi mạng, không đọc state React → dễ viết unit test.
 // Mỗi linh kiện là một dòng của bảng products (dùng product.specs); chưa chọn thì là null.
+import { t, tKey } from '../../lib/i18n'
 
 // Linh kiện bắt buộc để cấu hình "đủ". VGA chỉ bắt buộc khi CPU không có iGPU (R9).
 const REQUIRED_PARTS = ['cpu', 'mainboard', 'ram', 'ssd', 'psu', 'case', 'cooler']
@@ -8,18 +9,18 @@ const REQUIRED_PARTS = ['cpu', 'mainboard', 'ram', 'ssd', 'psu', 'case', 'cooler
 // Tên tiếng Việt của thông số, dùng trong thông báo W5.
 const SPEC_LABELS = {
   socket: 'socket',
-  ram_type: 'chuẩn RAM',
-  modules: 'số thanh RAM',
-  ram_slots: 'số khe RAM',
-  capacity_gb: 'dung lượng',
-  max_ram_gb: 'RAM tối đa',
-  form_factor: 'kích thước',
-  form_factors: 'kích thước mainboard hỗ trợ',
-  length_mm: 'chiều dài',
-  max_gpu_length_mm: 'chiều dài VGA tối đa',
-  sockets: 'socket hỗ trợ',
-  tdp_w: 'công suất (TDP)',
-  wattage_w: 'công suất',
+  ram_type: tKey('chuẩn RAM'),
+  modules: tKey('số thanh RAM'),
+  ram_slots: tKey('số khe RAM'),
+  capacity_gb: tKey('dung lượng'),
+  max_ram_gb: tKey('RAM tối đa'),
+  form_factor: tKey('kích thước'),
+  form_factors: tKey('kích thước mainboard hỗ trợ'),
+  length_mm: tKey('chiều dài'),
+  max_gpu_length_mm: tKey('chiều dài VGA tối đa'),
+  sockets: tKey('socket hỗ trợ'),
+  tdp_w: tKey('công suất (TDP)'),
+  wattage_w: tKey('công suất'),
 }
 
 // Mỗi quy tắc R1–R8: cần chọn những linh kiện nào (parts) và dùng thông số nào (specs: [linh kiện, trường]).
@@ -133,10 +134,14 @@ export function checkCompatibility(build = {}) {
 
   // R1: socket CPU = socket mainboard
   if (has('cpu', 'mainboard') && known(cpuS.socket, mbS.socket) && cpuS.socket !== mbS.socket) {
-    addError('R1', `CPU socket ${cpuS.socket} không lắp được mainboard socket ${mbS.socket}`, [
-      'cpu',
-      'mainboard',
-    ])
+    addError(
+      'R1',
+      t('CPU socket {socket} không lắp được mainboard socket {socket2}', {
+        socket: cpuS.socket,
+        socket2: mbS.socket,
+      }),
+      ['cpu', 'mainboard'],
+    )
   }
 
   // R2: chuẩn RAM = chuẩn mainboard hỗ trợ
@@ -145,20 +150,28 @@ export function checkCompatibility(build = {}) {
     known(ramS.ram_type, mbS.ram_type) &&
     ramS.ram_type !== mbS.ram_type
   ) {
-    addError('R2', `Mainboard chỉ nhận ${mbS.ram_type}, RAM đang chọn là ${ramS.ram_type}`, [
-      'ram',
-      'mainboard',
-    ])
+    addError(
+      'R2',
+      t('Mainboard chỉ nhận {ram_type}, RAM đang chọn là {ram_type2}', {
+        ram_type: mbS.ram_type,
+        ram_type2: ramS.ram_type,
+      }),
+      ['ram', 'mainboard'],
+    )
   }
 
   // R3: tổng số thanh RAM ≤ số khe
   if (has('ram', 'mainboard') && known(ramS.modules, mbS.ram_slots)) {
     const need = ramS.modules * ramQty
     if (need > mbS.ram_slots) {
-      addError('R3', `Cần ${need} khe RAM nhưng mainboard chỉ có ${mbS.ram_slots} khe`, [
-        'ram',
-        'mainboard',
-      ])
+      addError(
+        'R3',
+        t('Cần {need} khe RAM nhưng mainboard chỉ có {ram_slots} khe', {
+          need,
+          ram_slots: mbS.ram_slots,
+        }),
+        ['ram', 'mainboard'],
+      )
     }
   }
 
@@ -166,10 +179,14 @@ export function checkCompatibility(build = {}) {
   if (has('ram', 'mainboard') && known(ramS.capacity_gb, mbS.max_ram_gb)) {
     const total = ramS.capacity_gb * ramQty
     if (total > mbS.max_ram_gb) {
-      addError('R4', `Tổng ${total} GB vượt mức tối đa ${mbS.max_ram_gb} GB của mainboard`, [
-        'ram',
-        'mainboard',
-      ])
+      addError(
+        'R4',
+        t('Tổng {total} GB vượt mức tối đa {max_ram_gb} GB của mainboard', {
+          total,
+          max_ram_gb: mbS.max_ram_gb,
+        }),
+        ['ram', 'mainboard'],
+      )
     }
   }
 
@@ -181,7 +198,10 @@ export function checkCompatibility(build = {}) {
   ) {
     addError(
       'R5',
-      `Case ${caseS.case_type ?? pcCase.name} không vừa mainboard ${mbS.form_factor}`,
+      t('Case {case} không vừa mainboard {form_factor}', {
+        case: caseS.case_type ?? pcCase.name,
+        form_factor: mbS.form_factor,
+      }),
       ['mainboard', 'case'],
     )
   }
@@ -194,7 +214,10 @@ export function checkCompatibility(build = {}) {
   ) {
     addError(
       'R6',
-      `VGA dài ${vgaS.length_mm} mm, case chỉ chứa tối đa ${caseS.max_gpu_length_mm} mm`,
+      t('VGA dài {length_mm} mm, case chỉ chứa tối đa {max_gpu_length_mm} mm', {
+        length_mm: vgaS.length_mm,
+        max_gpu_length_mm: caseS.max_gpu_length_mm,
+      }),
       ['vga', 'case'],
     )
   }
@@ -205,23 +228,35 @@ export function checkCompatibility(build = {}) {
     known(cpuS.socket, coolerS.sockets) &&
     !coolerS.sockets.includes(cpuS.socket)
   ) {
-    addError('R7', `Tản nhiệt không hỗ trợ socket ${cpuS.socket}`, ['cpu', 'cooler'])
+    addError('R7', t('Tản nhiệt không hỗ trợ socket {socket}', { socket: cpuS.socket }), [
+      'cpu',
+      'cooler',
+    ])
   }
 
   // R8 + W1: công suất nguồn. Cần CPU và PSU (VGA không bắt buộc).
   if (has('cpu', 'psu') && known(cpuS.tdp_w, psuS.wattage_w)) {
     if (psuS.wattage_w < totalPowerW) {
-      addError('R8', `Nguồn ${psuS.wattage_w} W không đủ, cấu hình cần khoảng ${totalPowerW} W`, [
-        'psu',
-      ])
+      addError(
+        'R8',
+        t('Nguồn {wattage_w} W không đủ, cấu hình cần khoảng {totalPowerW} W', {
+          wattage_w: psuS.wattage_w,
+          totalPowerW,
+        }),
+        ['psu'],
+      )
     } else if (psuS.wattage_w < recommendedPsuW) {
-      addWarning('W1', `Nguồn đủ nhưng sát mức, nên chọn từ ${recommendedPsuW} W`, ['psu'])
+      addWarning(
+        'W1',
+        t('Nguồn đủ nhưng sát mức, nên chọn từ {recommendedPsuW} W', { recommendedPsuW }),
+        ['psu'],
+      )
     }
   }
 
   // R9: CPU không có iGPU thì phải có VGA
   if (cpu && cpuS.igpu === false && !vga) {
-    addError('R9', 'CPU không có nhân đồ họa, cần chọn VGA để xuất hình', ['cpu', 'vga'])
+    addError('R9', t('CPU không có nhân đồ họa, cần chọn VGA để xuất hình'), ['cpu', 'vga'])
   }
 
   // ---------- Quy tắc cảnh báo ----------
@@ -229,12 +264,12 @@ export function checkCompatibility(build = {}) {
 
   // W2: nguồn SFX trong case không phải Mini ITX
   if (has('psu', 'case') && psuS.form_factor === 'SFX' && !caseType.startsWith('Mini ITX')) {
-    addWarning('W2', 'Nguồn SFX cần thêm bracket chuyển sang ATX', ['psu', 'case'])
+    addWarning('W2', t('Nguồn SFX cần thêm bracket chuyển sang ATX'), ['psu', 'case'])
   }
 
   // W3: nguồn ATX trong case Mini ITX Tower
   if (has('psu', 'case') && psuS.form_factor === 'ATX' && caseType === 'Mini ITX Tower') {
-    addWarning('W3', 'Kiểm tra case có hỗ trợ nguồn ATX không', ['psu', 'case'])
+    addWarning('W3', t('Kiểm tra case có hỗ trợ nguồn ATX không'), ['psu', 'case'])
   }
 
   // W4: két nước 360 mm trong case nhỏ
@@ -243,10 +278,13 @@ export function checkCompatibility(build = {}) {
     coolerS.radiator_mm >= 360 &&
     (caseType.startsWith('MicroATX') || caseType.startsWith('Mini ITX'))
   ) {
-    addWarning('W4', `Kiểm tra case có chỗ lắp két nước ${coolerS.radiator_mm} mm không`, [
-      'cooler',
-      'case',
-    ])
+    addWarning(
+      'W4',
+      t('Kiểm tra case có chỗ lắp két nước {radiator_mm} mm không', {
+        radiator_mm: coolerS.radiator_mm,
+      }),
+      ['cooler', 'case'],
+    )
   }
 
   // W5: thông số cần cho R1–R8 bị thiếu hoặc đang ước lượng.
@@ -267,7 +305,15 @@ export function checkCompatibility(build = {}) {
         const label = SPEC_LABELS[field] ?? field
         addWarning(
           'W5',
-          `Thông số ${label} của ${build[part].name ?? part} ${missing ? 'chưa có' : 'là ước lượng'}, hãy kiểm tra trang hãng`,
+          t(
+            missing
+              ? 'Thông số {label} của {name} chưa có, hãy kiểm tra trang hãng'
+              : 'Thông số {label} của {name} là ước lượng, hãy kiểm tra trang hãng',
+            {
+              label: t(label),
+              name: build[part].name ?? part,
+            },
+          ),
           [part],
         )
       }

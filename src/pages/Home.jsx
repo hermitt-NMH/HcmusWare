@@ -3,6 +3,7 @@ import ProductGrid from '../components/ProductGrid'
 import { getCategories, getProducts } from '../lib/api'
 import { useAsync } from '../hooks/useAsync'
 import { categoryBg, categoryImage } from '../lib/images'
+import { t } from '../lib/i18n'
 
 export default function Home() {
   const categories = useAsync(getCategories)
@@ -11,21 +12,22 @@ export default function Home() {
   return (
     <div className="space-y-8">
       <section className="rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 px-6 py-10 text-white sm:px-10">
-        <h1 className="text-2xl font-bold sm:text-3xl">Tự build PC, không lo lắp sai</h1>
+        <h1 className="text-2xl font-bold sm:text-3xl">{t('Tự build PC, không lo lắp sai')}</h1>
         <p className="mt-2 max-w-xl text-blue-100">
-          Chọn đủ 8 linh kiện, hệ thống tự kiểm tra socket, chuẩn RAM, kích thước và công suất
-          nguồn.
+          {t(
+            'Chọn đủ 8 linh kiện, hệ thống tự kiểm tra socket, chuẩn RAM, kích thước và công suất nguồn.',
+          )}
         </p>
         <Link
           to="/build-pc"
           className="mt-5 inline-block rounded-lg bg-white px-5 py-2.5 font-semibold text-blue-700 hover:bg-blue-100"
         >
-          Bắt đầu build
+          {t('Bắt đầu build')}
         </Link>
       </section>
 
       <section>
-        <h2 className="mb-3 text-lg font-semibold">Danh mục</h2>
+        <h2 className="mb-3 text-lg font-semibold">{t('Danh mục')}</h2>
         {/* 3 trạng thái giống ProductGrid: đang tải (8 ô xám), lỗi, có dữ liệu */}
         {categories.loading ? (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -35,10 +37,10 @@ export default function Home() {
           </div>
         ) : categories.error ? (
           <p className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-            Không tải được danh mục: {categories.error.message}
+            {t('Không tải được danh mục: {msg}', { msg: t(categories.error.message) })}
           </p>
         ) : !categories.data?.length ? (
-          <p className="p-4 text-sm text-slate-500">Chưa có danh mục nào.</p>
+          <p className="p-4 text-sm text-slate-500">{t('Chưa có danh mục nào.')}</p>
         ) : (
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {categories.data.map((c) => (
@@ -56,7 +58,7 @@ export default function Home() {
                     className="h-14 w-14 transition duration-300 group-hover:scale-110"
                   />
                 </span>
-                {c.name}
+                {t(c.name)}
               </Link>
             ))}
           </div>
@@ -65,12 +67,12 @@ export default function Home() {
 
       <section>
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-lg font-semibold">Sản phẩm mới</h2>
+          <h2 className="text-lg font-semibold">{t('Sản phẩm mới')}</h2>
           <Link
             to="/san-pham"
             className="inline-flex min-h-11 items-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
-            Xem tất cả
+            {t('Xem tất cả')}
           </Link>
         </div>
         <ProductGrid {...products} products={products.data} />

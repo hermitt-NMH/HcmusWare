@@ -13,6 +13,7 @@ import {
   ugcErrorMessage,
   validateComment,
 } from './reviews'
+import { t } from '../../lib/i18n'
 
 // Mục "Hỏi đáp" trên trang sản phẩm (F16 – US-16.2, US-16.3, US-16.4, US-16.5).
 // shopSlug: shop bán sản phẩm, để biết người đang xem có trả lời với nhãn "Người bán" được không.
@@ -38,16 +39,17 @@ export default function QuestionSection({ productId, shopSlug }) {
   return (
     <section aria-labelledby="questions-title" className="space-y-3">
       <h2 id="questions-title" className="text-lg font-semibold">
-        Hỏi đáp {threads.length > 0 && <span className="text-slate-500">({threads.length})</span>}
+        {t('Hỏi đáp')}{' '}
+        {threads.length > 0 && <span className="text-slate-500">({threads.length})</span>}
       </h2>
 
       <div className="rounded-xl border border-slate-200 bg-surface p-4">
         {user ? (
           <CommentForm
             productId={productId}
-            label="Câu hỏi của bạn"
-            placeholder="Ví dụ: Sản phẩm này có hỗ trợ mainboard B650 không?"
-            submitText="Gửi câu hỏi"
+            label={t('Câu hỏi của bạn')}
+            placeholder={t('Ví dụ: Sản phẩm này có hỗ trợ mainboard B650 không?')}
+            submitText={t('Gửi câu hỏi')}
             onSent={() => {
               setLimit(QUESTIONS_PAGE)
               refresh()
@@ -58,7 +60,7 @@ export default function QuestionSection({ productId, shopSlug }) {
             to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`}
             className="inline-flex h-11 items-center rounded-lg bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700"
           >
-            Đăng nhập để hỏi
+            {t('Đăng nhập để hỏi')}
           </Link>
         )}
       </div>
@@ -66,11 +68,11 @@ export default function QuestionSection({ productId, shopSlug }) {
       {comments.loading && <div className="h-24 animate-pulse rounded-xl bg-slate-100" />}
       {comments.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được hỏi đáp: {comments.error.message}
+          {t('Không tải được hỏi đáp: {msg}', { msg: t(comments.error.message) })}
         </p>
       )}
       {!comments.loading && !comments.error && threads.length === 0 && (
-        <p className="text-sm text-slate-500">Chưa có câu hỏi nào cho sản phẩm này.</p>
+        <p className="text-sm text-slate-500">{t('Chưa có câu hỏi nào cho sản phẩm này.')}</p>
       )}
       {visible.length > 0 && (
         <ul className="space-y-3">
@@ -93,7 +95,7 @@ export default function QuestionSection({ productId, shopSlug }) {
           onClick={() => setLimit((n) => n + QUESTIONS_PAGE)}
           className="h-11 w-full rounded-lg border border-slate-300 text-sm font-medium hover:bg-slate-50"
         >
-          Xem thêm {Math.min(QUESTIONS_PAGE, threads.length - limit)} câu hỏi
+          {t('Xem thêm {n} câu hỏi', { n: Math.min(QUESTIONS_PAGE, threads.length - limit) })}
         </button>
       )}
     </section>
@@ -125,8 +127,8 @@ function QuestionItem({ question, productId, canReply, asSeller, isAdmin, onChan
               productId={productId}
               parentId={question.id}
               isSeller={asSeller}
-              label={asSeller ? 'Trả lời với tư cách người bán' : 'Câu trả lời của bạn'}
-              submitText="Gửi trả lời"
+              label={asSeller ? t('Trả lời với tư cách người bán') : t('Câu trả lời của bạn')}
+              submitText={t('Gửi trả lời')}
               autoFocus
               onCancel={() => setReplying(false)}
               onSent={() => {
@@ -141,7 +143,7 @@ function QuestionItem({ question, productId, canReply, asSeller, isAdmin, onChan
             onClick={() => setReplying(true)}
             className="mt-2 inline-flex h-11 items-center text-sm font-medium text-blue-700 hover:underline dark:text-blue-300"
           >
-            Trả lời
+            {t('Trả lời')}
           </button>
         ))}
     </li>
@@ -171,12 +173,12 @@ function CommentBody({ comment, isAdmin, onChanged }) {
         <span className="font-semibold text-slate-800">{comment.author_name}</span>
         {comment.is_seller && (
           <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-800">
-            Người bán
+            {t('Người bán')}
           </span>
         )}
         {comment.hidden && (
           <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-700">
-            Đã ẩn
+            {t('Đã ẩn')}
           </span>
         )}
         <span className="text-slate-500">· {formatDateTime(comment.created_at)}</span>
@@ -190,7 +192,7 @@ function CommentBody({ comment, isAdmin, onChanged }) {
           disabled={busy}
           className="inline-flex h-11 items-center rounded-lg border border-slate-300 px-3 text-sm font-medium hover:bg-slate-50 disabled:opacity-50"
         >
-          {comment.hidden ? 'Hiện lại' : 'Ẩn'}
+          {comment.hidden ? t('Hiện lại') : t('Ẩn')}
         </button>
       )}
       {error && <p className="text-sm text-red-700">{error}</p>}
@@ -255,7 +257,7 @@ export function CommentForm({
             disabled={sending}
             className="h-11 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {sending ? 'Đang gửi…' : submitText}
+            {sending ? t('Đang gửi…') : submitText}
           </button>
           {onCancel && (
             <button
@@ -263,7 +265,7 @@ export function CommentForm({
               onClick={onCancel}
               className="h-11 rounded-lg border border-slate-300 px-4 text-sm font-medium hover:bg-slate-50"
             >
-              Hủy
+              {t('Hủy')}
             </button>
           )}
         </div>

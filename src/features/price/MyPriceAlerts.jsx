@@ -4,6 +4,7 @@ import { useAsync } from '../../hooks/useAsync'
 import { deletePriceAlert, getMyPriceAlerts } from '../../lib/api'
 import { formatPrice } from '../../lib/format'
 import { ALERTS_CHANGED } from './price'
+import { t } from '../../lib/i18n'
 
 // Danh sách cảnh báo giá trong trang tài khoản. Sửa giá mong muốn ở trang sản phẩm.
 export default function MyPriceAlerts({ userId }) {
@@ -18,7 +19,7 @@ export default function MyPriceAlerts({ userId }) {
       setDeleted((d) => [...d, id])
       window.dispatchEvent(new Event(ALERTS_CHANGED))
     } catch (err) {
-      setError(`Không xóa được: ${err.message}`)
+      setError(t('Không xóa được: {msg}', { msg: t(err.message) }))
     }
   }
 
@@ -29,18 +30,19 @@ export default function MyPriceAlerts({ userId }) {
       id="canh-bao-gia"
       className="scroll-mt-36 space-y-3 rounded-2xl border border-slate-200 bg-surface p-5 sm:p-6"
     >
-      <h2 className="text-lg font-semibold">Cảnh báo giá</h2>
-      {alerts.loading && <p className="text-sm text-slate-500">Đang tải…</p>}
+      <h2 className="text-lg font-semibold">{t('Cảnh báo giá')}</h2>
+      {alerts.loading && <p className="text-sm text-slate-500">{t('Đang tải…')}</p>}
       {alerts.error && (
         <p className="text-sm text-red-600 dark:text-red-400">
-          Không tải được: {alerts.error.message}
+          {t('Không tải được: {msg}', { msg: t(alerts.error.message) })}
         </p>
       )}
       {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
       {!alerts.loading && !alerts.error && !list.length && (
         <p className="text-sm text-slate-500">
-          Chưa có cảnh báo nào. Mở trang một sản phẩm và đặt "giá mong muốn" để được báo khi giảm
-          giá.
+          {t(
+            'Chưa có cảnh báo nào. Mở trang một sản phẩm và đặt "giá mong muốn" để được báo khi giảm giá.',
+          )}
         </p>
       )}
       <ul className="divide-y divide-slate-100">
@@ -56,12 +58,14 @@ export default function MyPriceAlerts({ userId }) {
                   {a.products.name}
                 </Link>
                 <p className="text-xs text-slate-500">
-                  Hiện tại {formatPrice(a.products.price)} · mong muốn ≤{' '}
-                  {formatPrice(a.target_price)}
+                  {t('Hiện tại {now} · mong muốn ≤ {target}', {
+                    now: formatPrice(a.products.price),
+                    target: formatPrice(a.target_price),
+                  })}
                 </p>
                 {reached && (
                   <p className="text-xs font-medium text-green-700 dark:text-green-400">
-                    ✓ Đã đạt giá
+                    {t('✓ Đã đạt giá')}
                   </p>
                 )}
               </div>
@@ -70,7 +74,7 @@ export default function MyPriceAlerts({ userId }) {
                 onClick={() => remove(a.id)}
                 className="inline-flex h-10 shrink-0 items-center rounded-lg px-3 text-slate-500 hover:bg-slate-100 hover:text-red-600 dark:hover:text-red-400"
               >
-                Xóa
+                {t('Xóa')}
               </button>
             </li>
           )

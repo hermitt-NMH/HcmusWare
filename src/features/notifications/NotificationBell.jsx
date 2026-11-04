@@ -8,6 +8,7 @@ import {
 } from '../../lib/api'
 import { ALERTS_CHANGED } from '../price/price'
 import { markReadLocally, notificationIcon, safeLink, timeAgo, unreadBadge } from './notifications'
+import { t } from '../../lib/i18n'
 
 // Chuông thông báo trên Header (F12 – US-12.1, US-12.2), thay thanh "Giá đã giảm" (PriceAlertNotifier).
 // Không cần thời gian thực: tải lại khi chuyển trang, quay lại tab, mở chuông, hoặc vừa đặt cảnh báo giá.
@@ -53,7 +54,7 @@ export default function NotificationBell() {
         setError('')
         setLoaded(true)
       })
-      .catch(() => !cancelled && setError('Không tải được thông báo. Thử lại sau.'))
+      .catch(() => !cancelled && setError(t('Không tải được thông báo. Thử lại sau.')))
     return () => {
       cancelled = true
     }
@@ -93,7 +94,7 @@ export default function NotificationBell() {
   }
 
   const badge = unreadBadge(unread)
-  const label = unread > 0 ? `Thông báo, ${unread} chưa đọc` : 'Thông báo'
+  const label = unread > 0 ? t('Thông báo, {n} chưa đọc', { n: unread }) : t('Thông báo')
 
   return (
     <div ref={wrapRef} className="md:relative">
@@ -101,7 +102,7 @@ export default function NotificationBell() {
         type="button"
         onClick={toggle}
         aria-label={label}
-        title="Thông báo"
+        title={t('Thông báo')}
         aria-expanded={open}
         aria-haspopup="true"
         className={`relative inline-flex h-11 w-9 shrink-0 items-center justify-center rounded-md sm:w-11 ${
@@ -132,18 +133,18 @@ export default function NotificationBell() {
       {open && (
         <div
           role="region"
-          aria-label="Danh sách thông báo"
+          aria-label={t('Danh sách thông báo')}
           className="absolute inset-x-0 top-full z-30 border-y border-slate-200 bg-surface shadow-lg md:inset-x-auto md:right-0 md:mt-1 md:w-96 md:rounded-xl md:border"
         >
           <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-2">
-            <h2 className="font-semibold text-slate-900">Thông báo</h2>
+            <h2 className="font-semibold text-slate-900">{t('Thông báo')}</h2>
             <button
               type="button"
               onClick={() => markRead(null)}
               disabled={!list.some((n) => !n.read_at) && unread === 0}
               className="inline-flex min-h-11 items-center rounded-md px-2 text-sm font-medium text-blue-700 hover:bg-slate-100 disabled:text-slate-400 disabled:hover:bg-transparent dark:text-blue-300 dark:disabled:text-slate-400"
             >
-              Đánh dấu tất cả đã đọc
+              {t('Đánh dấu tất cả đã đọc')}
             </button>
           </div>
 
@@ -154,11 +155,13 @@ export default function NotificationBell() {
               </p>
             )}
             {!error && !loaded && (
-              <p className="px-4 py-6 text-center text-sm text-slate-500">Đang tải…</p>
+              <p className="px-4 py-6 text-center text-sm text-slate-500">{t('Đang tải…')}</p>
             )}
             {loaded && !list.length && (
               <p className="px-4 py-6 text-center text-sm text-slate-500">
-                Chưa có thông báo nào. Đặt giá mong muốn ở trang sản phẩm để được báo khi giảm giá.
+                {t(
+                  'Chưa có thông báo nào. Đặt giá mong muốn ở trang sản phẩm để được báo khi giảm giá.',
+                )}
               </p>
             )}
             <ul className="divide-y divide-slate-100">
@@ -182,7 +185,7 @@ export default function NotificationBell() {
               className="inline-flex min-h-11 items-center text-slate-600 hover:text-blue-700 dark:hover:text-blue-300"
               onClick={() => setOpen(false)}
             >
-              Quản lý cảnh báo giá
+              {t('Quản lý cảnh báo giá')}
             </Link>
           </div>
         </div>
@@ -208,7 +211,7 @@ function NotificationItem({ n, onOpen }) {
         {n.body && <span className="mt-0.5 line-clamp-3 break-words text-slate-600">{n.body}</span>}
         <span className="mt-0.5 block text-xs text-slate-600">
           {timeAgo(n.created_at)}
-          {unread && <span className="sr-only"> · chưa đọc</span>}
+          {unread && <span className="sr-only"> {t('· chưa đọc')}</span>}
         </span>
       </span>
       {unread && (

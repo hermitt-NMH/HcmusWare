@@ -1,13 +1,14 @@
 import { useState } from 'react'
+import { t, tKey } from '../lib/i18n'
 
 // Các khoảng giá chọn nhanh (VNĐ). max null = không giới hạn.
 const PRICE_RANGES = [
-  { label: 'Mọi mức giá', min: null, max: null },
-  { label: 'Dưới 2 triệu', min: null, max: 2_000_000 },
-  { label: '2 – 5 triệu', min: 2_000_000, max: 5_000_000 },
-  { label: '5 – 10 triệu', min: 5_000_000, max: 10_000_000 },
-  { label: '10 – 20 triệu', min: 10_000_000, max: 20_000_000 },
-  { label: 'Trên 20 triệu', min: 20_000_000, max: null },
+  { label: tKey('Mọi mức giá'), min: null, max: null },
+  { label: tKey('Dưới 2 triệu'), min: null, max: 2_000_000 },
+  { label: tKey('2 – 5 triệu'), min: 2_000_000, max: 5_000_000 },
+  { label: tKey('5 – 10 triệu'), min: 5_000_000, max: 10_000_000 },
+  { label: tKey('10 – 20 triệu'), min: 10_000_000, max: 20_000_000 },
+  { label: tKey('Trên 20 triệu'), min: 20_000_000, max: null },
 ]
 
 const MILLION = 1_000_000
@@ -69,8 +70,8 @@ function PriceInputs({ min, max, onApply }) {
         inputMode="decimal"
         min="0"
         step="0.1"
-        placeholder="Từ"
-        aria-label="Giá từ (triệu đồng)"
+        placeholder={t('Từ')}
+        aria-label={t('Giá từ (triệu đồng)')}
         value={draft.min}
         onChange={(e) => setDraft({ ...draft, min: e.target.value })}
         className={inputClass}
@@ -81,8 +82,8 @@ function PriceInputs({ min, max, onApply }) {
         inputMode="decimal"
         min="0"
         step="0.1"
-        placeholder="Đến"
-        aria-label="Giá đến (triệu đồng)"
+        placeholder={t('Đến')}
+        aria-label={t('Giá đến (triệu đồng)')}
         value={draft.max}
         onChange={(e) => setDraft({ ...draft, max: e.target.value })}
         className={inputClass}
@@ -91,7 +92,7 @@ function PriceInputs({ min, max, onApply }) {
         type="submit"
         className="h-11 shrink-0 rounded-md bg-gray-800 px-3 text-sm font-medium text-white hover:bg-gray-700"
       >
-        Áp dụng
+        {t('Áp dụng')}
       </button>
     </form>
   )
@@ -114,27 +115,27 @@ export default function ProductFilters({
   return (
     <div>
       <div className="mb-3 flex items-center justify-between px-2">
-        <h2 className="font-semibold">Bộ lọc</h2>
+        <h2 className="font-semibold">{t('Bộ lọc')}</h2>
         {activeCount > 0 && (
           <button
             type="button"
             onClick={onClear}
             className="min-h-11 text-sm text-blue-700 dark:text-blue-300 hover:underline"
           >
-            Xóa tất cả ({activeCount})
+            {t('Xóa tất cả ({n})', { n: activeCount })}
           </button>
         )}
       </div>
 
-      <Group title="Tình trạng">
+      <Group title={t('Tình trạng')}>
         <CheckOption
           checked={filters.inStock}
           onChange={(e) => onStock(e.target.checked)}
-          label="Chỉ hiện còn hàng"
+          label={t('Chỉ hiện còn hàng')}
         />
       </Group>
 
-      <Group title="Khoảng giá">
+      <Group title={t('Khoảng giá')}>
         {PRICE_RANGES.map((r) => (
           <CheckOption
             key={r.label}
@@ -142,7 +143,7 @@ export default function ProductFilters({
             name="price-range"
             checked={isRange(r)}
             onChange={() => onPrice(r.min, r.max)}
-            label={r.label}
+            label={t(r.label)}
           />
         ))}
         <PriceInputs min={filters.min} max={filters.max} onApply={onPrice} />
@@ -150,8 +151,13 @@ export default function ProductFilters({
 
       {/* Nhóm chỉ có 1 lựa chọn thì lọc cũng vô nghĩa → ẩn. key: tên tham số trên URL */}
       {[
-        { title: 'Danh mục', key: 'cat', options: facets.categories, selected: filters.categories },
-        { title: 'Thương hiệu', key: 'brand', options: facets.brands, selected: filters.brands },
+        {
+          title: t('Danh mục'),
+          key: 'cat',
+          options: facets.categories,
+          selected: filters.categories,
+        },
+        { title: t('Thương hiệu'), key: 'brand', options: facets.brands, selected: filters.brands },
         { title: 'Shop', key: 'shop', options: facets.shops, selected: filters.shops },
       ]
         .filter((g) => g.options?.length > 1)
@@ -162,7 +168,7 @@ export default function ProductFilters({
                 key={o.value}
                 checked={g.selected.includes(o.value)}
                 onChange={() => onToggle(g.key, o.value)}
-                label={o.label}
+                label={t(o.label)}
                 count={o.count}
               />
             ))}
@@ -170,13 +176,13 @@ export default function ProductFilters({
         ))}
 
       {facets.specs.map((group) => (
-        <Group key={group.key} title={group.label}>
+        <Group key={group.key} title={t(group.label)}>
           {group.options.map((o) => (
             <CheckOption
               key={o.value}
               checked={(filters.specs[group.key] ?? []).includes(o.value)}
               onChange={() => onToggle(`s_${group.key}`, o.value)}
-              label={o.label}
+              label={t(o.label)}
               count={o.count}
             />
           ))}

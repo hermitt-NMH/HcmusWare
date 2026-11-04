@@ -12,6 +12,8 @@
 //   với VGA rất mạnh). source = nguồn của fps, cpuSource = nguồn của cpuFps (id trong sources).
 //
 // Bảng còn trống thì Builder hiện "Chưa có số liệu ước tính" (estimatePerformance trả status 'no-data').
+import { tKey } from '../../lib/i18n'
+
 export const PERF_DATA = {
   // Hệ thống test VGA của TechPowerUp (GPU 2025.2): Ryzen 7 9800X3D + DDR5-6200.
   // VGA gốc là RTX 5060 Ti 16 GB (không phải RTX 5060 8 GB): bản 8 GB thiếu VRAM ở 4K (Stalker 2 chỉ 4 FPS),
@@ -22,37 +24,45 @@ export const PERF_DATA = {
       id: 's1',
       name: 'TechPowerUp – MSI GeForce RTX 5060 Gaming OC Review (07/2025)',
       url: 'https://www.techpowerup.com/review/msi-geforce-rtx-5060-gaming-oc/',
-      note: 'FPS từng game của RTX 5060 Ti 16 GB; điểm VGA theo biểu đồ Relative Performance 2560x1440',
+      note: tKey(
+        'FPS từng game của RTX 5060 Ti 16 GB; điểm VGA theo biểu đồ Relative Performance 2560x1440',
+      ),
     },
     {
       id: 's2',
       name: 'TechPowerUp – AMD Ryzen 7 9800X3D Review (11/2024)',
       url: 'https://www.techpowerup.com/review/amd-ryzen-7-9800x3d/',
-      note: 'Điểm CPU theo Relative Performance Games 1280x720 (RTX 4090); FPS CPU Hogwarts Legacy, Elden Ring',
+      note: tKey(
+        'Điểm CPU theo Relative Performance Games 1280x720 (RTX 4090); FPS CPU Hogwarts Legacy, Elden Ring',
+      ),
     },
     {
       id: 's3',
       name: 'TechPowerUp – AMD Ryzen 9 9950X3D Review (03/2025)',
       url: 'https://www.techpowerup.com/review/amd-ryzen-9-9950x3d/',
-      note: 'Điểm Ryzen 9 9950X3D so với 9800X3D (Games 1280x720, RTX 5090)',
+      note: tKey('Điểm Ryzen 9 9950X3D so với 9800X3D (Games 1280x720, RTX 5090)'),
     },
     {
       id: 's4',
       name: 'TechPowerUp – Intel Core Ultra 5 250K Plus Review (2026)',
       url: 'https://www.techpowerup.com/review/intel-core-ultra-5-250k-plus/',
-      note: 'FPS CPU của Ryzen 7 9800X3D ở 1280x720 cho 8 game',
+      note: tKey('FPS CPU của Ryzen 7 9800X3D ở 1280x720 cho 8 game'),
     },
     {
       id: 's5',
       name: 'TechPowerUp – NVIDIA GeForce RTX 4070 Founders Edition Review (04/2023)',
       url: 'https://www.techpowerup.com/review/nvidia-geforce-rtx-4070-founders-edition/',
-      note: 'RTX 3080 Ti, RX 6600 XT, RX 6500 XT (s1 không có), quy đổi qua RTX 3080 và RTX 3060 12 GB',
+      note: tKey(
+        'RTX 3080 Ti, RX 6600 XT, RX 6500 XT (s1 không có), quy đổi qua RTX 3080 và RTX 3060 12 GB',
+      ),
     },
     {
       id: 's6',
-      name: 'TechPowerUp News – Ryzen 5 7600X3D Beats Ryzen 7 9700X at Gaming (09/2024, số liệu PCGH)',
+      name: tKey(
+        'TechPowerUp News – Ryzen 5 7600X3D Beats Ryzen 7 9700X at Gaming (09/2024, số liệu PCGH)',
+      ),
       url: 'https://www.techpowerup.com/326342/amd-ryzen-5-7600x3d-beats-ryzen-7-9700x-zen-5-at-gaming',
-      note: '7600X3D chậm hơn 7800X3D khoảng 9% trong game',
+      note: tKey('7600X3D chậm hơn 7800X3D khoảng 9% trong game'),
     },
     {
       id: 's7',
@@ -64,13 +74,17 @@ export const PERF_DATA = {
       id: 's8',
       name: 'ComputerBase – Intel Core i5-14400F und i5-14500 im Test (02/2024)',
       url: 'https://www.computerbase.de/artikel/prozessoren/intel-core-i5-14400f-14500-cpu-test.86571/seite-3',
-      note: 'Leistungsrating FPS, RTX 4090: i5-14500 (offen) 73%, i5-12600K 70%, cùng DDR5-4800',
+      note: tKey(
+        'Leistungsrating FPS, RTX 4090: i5-14500 (offen) 73%, i5-12600K 70%, cùng DDR5-4800',
+      ),
     },
     {
       id: 's9',
       name: 'ComputerBase – AMD Ryzen 3200G & 3400G im Test (07/2019)',
       url: 'https://www.computerbase.de/2019-07/amd-ryzen-3200g-3400g-test/2/',
-      note: 'Performancerating Spiele 1080p, VGA rời: Ryzen 3 3200G 73 FPS, Ryzen 5 3600 106 FPS',
+      note: tKey(
+        'Performancerating Spiele 1080p, VGA rời: Ryzen 3 3200G 73 FPS, Ryzen 5 3600 106 FPS',
+      ),
     },
   ],
   // Gốc: Ryzen 7 9800X3D = 100 (s2). Bản F/KF dùng số của bản cùng chip trong bài test (xem tài liệu).
@@ -115,7 +129,7 @@ export const PERF_DATA = {
     {
       id: 'cs2',
       name: 'Counter-Strike 2',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 303.7, '1440p': 204.1, '4k': 106.8 },
@@ -124,7 +138,7 @@ export const PERF_DATA = {
     {
       id: 'cyberpunk-2077',
       name: 'Cyberpunk 2077',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 114.1, '1440p': 76.8, '4k': 35.1 },
@@ -133,7 +147,7 @@ export const PERF_DATA = {
     {
       id: 'elden-ring',
       name: 'Elden Ring',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's2',
       fps: { '1080p': 146.7, '1440p': 109.5, '4k': 61.7 },
@@ -142,7 +156,7 @@ export const PERF_DATA = {
     {
       id: 'baldurs-gate-3',
       name: "Baldur's Gate 3",
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 136.7, '1440p': 100.0, '4k': 52.8 },
@@ -151,7 +165,7 @@ export const PERF_DATA = {
     {
       id: 'hogwarts-legacy',
       name: 'Hogwarts Legacy',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's2',
       fps: { '1080p': 84.6, '1440p': 60.5, '4k': 33.6 },
@@ -160,7 +174,7 @@ export const PERF_DATA = {
     {
       id: 'spider-man-2',
       name: "Marvel's Spider-Man 2",
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 104.1, '1440p': 73.0, '4k': 38.9 },
@@ -169,7 +183,7 @@ export const PERF_DATA = {
     {
       id: 'kingdom-come-2',
       name: 'Kingdom Come: Deliverance II',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 104.2, '1440p': 71.8, '4k': 37.6 },
@@ -178,7 +192,7 @@ export const PERF_DATA = {
     {
       id: 'alan-wake-2',
       name: 'Alan Wake 2',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 75.0, '1440p': 54.1, '4k': 30.5 },
@@ -187,7 +201,7 @@ export const PERF_DATA = {
     {
       id: 'starfield',
       name: 'Starfield',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 73.6, '1440p': 57.8, '4k': 35.4 },
@@ -196,7 +210,7 @@ export const PERF_DATA = {
     {
       id: 'stalker-2',
       name: 'S.T.A.L.K.E.R. 2',
-      preset: 'Cao nhất',
+      preset: tKey('Cao nhất'),
       source: 's1',
       cpuSource: 's4',
       fps: { '1080p': 69.1, '1440p': 49.6, '4k': 27.8 },

@@ -9,6 +9,7 @@ import {
   productToForm,
   validateProductForm,
 } from '../../features/admin/productForm'
+import { t } from '../../lib/i18n'
 
 // Quản lý sản phẩm: tìm, lọc theo danh mục, thêm / sửa / xóa.
 // Đổi giá → trigger log_price_change trong DB tự ghi vào price_history (biểu đồ giá cập nhật).
@@ -22,10 +23,10 @@ export default function AdminProducts() {
   const [message, setMessage] = useState(null)
 
   const remove = async (p) => {
-    if (!window.confirm(`Xóa "${p.name}"? Không hoàn tác được.`)) return
+    if (!window.confirm(t('Xóa "{name}"? Không hoàn tác được.', p))) return
     try {
       await deleteProduct(p.id)
-      setMessage({ type: 'success', text: `Đã xóa "${p.name}".` })
+      setMessage({ type: 'success', text: t('Đã xóa "{name}".', p) })
       setReload((n) => n + 1)
     } catch (err) {
       setMessage({ type: 'error', text: productErrorMessage(err) })
@@ -46,20 +47,20 @@ export default function AdminProducts() {
           type="search"
           value={q}
           onChange={(e) => setQ(e.target.value)}
-          placeholder="Tìm theo tên, hãng…"
-          aria-label="Tìm sản phẩm"
+          placeholder={t('Tìm theo tên, hãng…')}
+          aria-label={t('Tìm sản phẩm')}
           className="h-11 flex-1 rounded-lg border border-slate-300 px-3 text-sm focus:border-blue-500 focus:outline-none"
         />
         <select
           value={cat}
           onChange={(e) => setCat(e.target.value)}
-          aria-label="Lọc theo danh mục"
+          aria-label={t('Lọc theo danh mục')}
           className="h-11 rounded-lg border border-slate-300 bg-surface px-3 text-sm"
         >
-          <option value="">Tất cả danh mục</option>
+          <option value="">{t('Tất cả danh mục')}</option>
           {categories.data?.map((c) => (
             <option key={c.id} value={c.slug}>
-              {c.name}
+              {t(c.name)}
             </option>
           ))}
         </select>
@@ -69,7 +70,7 @@ export default function AdminProducts() {
           disabled={!categories.data}
           className="h-11 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
         >
-          + Thêm sản phẩm
+          {t('+ Thêm sản phẩm')}
         </button>
       </div>
 
@@ -81,15 +82,17 @@ export default function AdminProducts() {
           {message.text}
         </p>
       )}
-      {products.loading && <p className="py-8 text-center text-slate-500">Đang tải sản phẩm…</p>}
+      {products.loading && (
+        <p className="py-8 text-center text-slate-500">{t('Đang tải sản phẩm…')}</p>
+      )}
       {products.error && (
         <p className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          Không tải được: {products.error.message}
+          {t('Không tải được: {msg}', { msg: t(products.error.message) })}
         </p>
       )}
       {products.data && (
         <p className="text-sm text-slate-500">
-          {list.length} / {products.data.length} sản phẩm
+          {t('{shown} / {n} sản phẩm', { shown: list.length, n: products.data.length })}
         </p>
       )}
 
@@ -111,7 +114,7 @@ export default function AdminProducts() {
                 {p.name}
               </Link>
               <p className="text-xs text-slate-500">
-                #{p.id} · {p.categories?.name} · {p.brand ?? '—'}
+                #{p.id} · {t(p.categories?.name)} · {p.brand ?? '—'}
               </p>
               <p className="text-sm">
                 <span className="font-semibold text-red-600 dark:text-red-400">
@@ -120,7 +123,7 @@ export default function AdminProducts() {
                 <span
                   className={`ml-2 text-xs ${p.stock <= 0 ? 'font-medium text-red-600 dark:text-red-400' : 'text-slate-500'}`}
                 >
-                  Kho: {p.stock}
+                  {t('Kho: {n}', { n: p.stock })}
                 </span>
               </p>
             </div>
@@ -130,14 +133,14 @@ export default function AdminProducts() {
                 onClick={() => setEditing(p)}
                 className="inline-flex h-10 items-center justify-center rounded-lg border border-slate-300 px-3 text-sm font-medium hover:bg-slate-50"
               >
-                Sửa
+                {t('Sửa')}
               </button>
               <button
                 type="button"
                 onClick={() => remove(p)}
                 className="inline-flex h-10 items-center justify-center rounded-lg px-3 text-sm text-slate-500 hover:bg-red-50 hover:text-red-600 dark:hover:text-red-400"
               >
-                Xóa
+                {t('Xóa')}
               </button>
             </div>
           </li>
@@ -192,8 +195,10 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
       const priceChanged = product && product.price !== data.price
       onSaved(
         product
-          ? `Đã lưu "${data.name}".${priceChanged ? ' Giá mới đã được ghi vào lịch sử giá.' : ''}`
-          : `Đã thêm "${data.name}".`,
+          ? priceChanged
+            ? t('Đã lưu "{name}". Giá mới đã được ghi vào lịch sử giá.', data)
+            : t('Đã lưu "{name}".', data)
+          : t('Đã thêm "{name}".', data),
       )
     } catch (err) {
       setSaveError(productErrorMessage(err))
@@ -223,12 +228,12 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
       <form onSubmit={submit} noValidate className="flex max-h-[90vh] flex-col">
         <div className="flex items-center justify-between border-b border-slate-100 px-5 py-3">
           <h2 id="product-dialog-title" className="text-lg font-semibold">
-            {product ? `Sửa sản phẩm #${product.id}` : 'Thêm sản phẩm'}
+            {product ? t('Sửa sản phẩm #{id}', product) : t('Thêm sản phẩm')}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Đóng"
+            aria-label={t('Đóng')}
             className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100"
           >
             ✕
@@ -238,7 +243,7 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
         <div className="space-y-3 overflow-y-auto p-5">
           {field(
             'category_id',
-            'Danh mục',
+            t('Danh mục'),
             <select
               value={form.category_id}
               onChange={set('category_id')}
@@ -246,14 +251,14 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
             >
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.name}
+                  {t(c.name)}
                 </option>
               ))}
             </select>,
           )}
           {field(
             'name',
-            'Tên sản phẩm',
+            t('Tên sản phẩm'),
             <input
               value={form.name}
               onChange={set('name')}
@@ -263,7 +268,7 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
           <div className="grid gap-3 sm:grid-cols-3">
             {field(
               'brand',
-              'Hãng',
+              t('Hãng'),
               <input
                 value={form.brand}
                 onChange={set('brand')}
@@ -272,18 +277,18 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
             )}
             {field(
               'price',
-              'Giá (VNĐ)',
+              t('Giá (VNĐ)'),
               <input
                 inputMode="numeric"
                 value={form.price}
                 onChange={set('price')}
                 className={`${inputClass} h-11 ${border('price')}`}
               />,
-              product ? 'Đổi giá sẽ ghi vào lịch sử giá' : null,
+              product ? t('Đổi giá sẽ ghi vào lịch sử giá') : null,
             )}
             {field(
               'stock',
-              'Tồn kho',
+              t('Tồn kho'),
               <input
                 type="number"
                 min="0"
@@ -296,11 +301,11 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
           </div>
           {field(
             'image_url',
-            'Ảnh',
+            t('Ảnh'),
             <input
               value={form.image_url}
               onChange={set('image_url')}
-              placeholder="/images/products/... hoặc https://..."
+              placeholder={t('/images/products/... hoặc https://...')}
               className={`${inputClass} h-11 ${border('image_url')}`}
             />,
           )}
@@ -316,7 +321,7 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
           )}
           {field(
             'description',
-            'Mô tả',
+            t('Mô tả'),
             <textarea
               rows={2}
               value={form.description}
@@ -326,7 +331,7 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
           )}
           {field(
             'specs',
-            'Thông số (JSON)',
+            t('Thông số (JSON)'),
             <textarea
               rows={6}
               value={form.specs}
@@ -334,7 +339,9 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
               spellCheck={false}
               className={`${inputClass} py-2 font-mono text-xs ${border('specs')}`}
             />,
-            'Builder dùng các khóa này để kiểm tra tương thích (socket, ram_type, tdp_w...). Xem docs/quy-tac-tuong-thich.md.',
+            t(
+              'Builder dùng các khóa này để kiểm tra tương thích (socket, ram_type, tdp_w...). Xem docs/quy-tac-tuong-thich.md.',
+            ),
           )}
           {saveError && (
             <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
@@ -349,14 +356,14 @@ function ProductDialog({ product, categories, onClose, onSaved }) {
             onClick={onClose}
             className="h-11 rounded-lg px-4 text-sm text-slate-600 hover:bg-slate-100"
           >
-            Hủy
+            {t('Hủy')}
           </button>
           <button
             type="submit"
             disabled={saving}
             className="h-11 rounded-lg bg-blue-600 px-5 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
           >
-            {saving ? 'Đang lưu…' : 'Lưu'}
+            {saving ? t('Đang lưu…') : t('Lưu')}
           </button>
         </div>
       </form>

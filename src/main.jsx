@@ -6,6 +6,7 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { watchTheme } from './lib/theme'
+import { initLang } from './lib/i18n'
 import { LAZY_GLOBAL, SsrDataContext } from './lib/ssrData'
 import { preloadLazy } from './lib/lazyPage'
 
@@ -31,12 +32,15 @@ const app = (
 // Có ?query (bộ lọc, mã chia sẻ...) hoặc HTML là trang khác (máy chủ trả index.html cho mọi đường dẫn)
 // thì vẽ lại từ đầu như SPA thường.
 // Tải xong code các trang/khối lazy mà HTML đã dùng rồi mới hydrate (lib/lazyPage.js); tải lỗi vẫn hydrate.
+// HTML vẽ sẵn là tiếng Việt: đã chọn tiếng Anh thì cũng vẽ lại từ đầu (lib/i18n.js).
 const root = document.getElementById('root')
-if (root.dataset.prerendered === location.pathname && !location.search)
-  Promise.allSettled((window[LAZY_GLOBAL] ?? []).map(preloadLazy)).then(() =>
-    hydrateRoot(root, app),
-  )
-else {
-  root.textContent = ''
-  createRoot(root).render(app)
-}
+initLang().then((lang) => {
+  if (lang === 'vi' && root.dataset.prerendered === location.pathname && !location.search)
+    Promise.allSettled((window[LAZY_GLOBAL] ?? []).map(preloadLazy)).then(() =>
+      hydrateRoot(root, app),
+    )
+  else {
+    root.textContent = ''
+    createRoot(root).render(app)
+  }
+})

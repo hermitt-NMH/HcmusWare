@@ -3,6 +3,7 @@ import { useAsync } from '../../hooks/useAsync'
 import { loadAdminUnits } from './adminUnits'
 import { provincesOf, wardsOf } from './address'
 import UnitCombobox from './UnitCombobox'
+import { t } from '../../lib/i18n'
 
 const inputClass =
   'h-11 w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -22,7 +23,7 @@ export default function AddressFields({ form, errors = {}, onChange, idPrefix = 
   return (
     <div className="space-y-4">
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Họ tên người nhận" error={errors.recipient_name}>
+        <Field label={t('Họ tên người nhận')} error={errors.recipient_name}>
           <input
             className={`${inputClass} ${errors.recipient_name ? 'border-red-400' : 'border-slate-300'}`}
             autoComplete="name"
@@ -32,7 +33,7 @@ export default function AddressFields({ form, errors = {}, onChange, idPrefix = 
             aria-invalid={Boolean(errors.recipient_name)}
           />
         </Field>
-        <Field label="Số điện thoại" error={errors.phone}>
+        <Field label={t('Số điện thoại')} error={errors.phone}>
           <input
             className={`${inputClass} ${errors.phone ? 'border-red-400' : 'border-slate-300'}`}
             type="tel"
@@ -48,13 +49,13 @@ export default function AddressFields({ form, errors = {}, onChange, idPrefix = 
 
       {units.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">
-          {units.error.message}. Kiểm tra kết nối mạng rồi tải lại trang.
+          {t('{msg}. Kiểm tra kết nối mạng rồi tải lại trang.', { msg: t(units.error.message) })}
         </p>
       )}
       <div className="grid gap-4 sm:grid-cols-2">
         <UnitCombobox
           id={`${idPrefix}-tinh`}
-          label="Tỉnh/Thành"
+          label={t('Tỉnh/Thành')}
           units={provinces}
           value={form.province}
           // Đổi tỉnh → xóa phường/xã đã chọn (phường/xã thuộc tỉnh cũ).
@@ -62,28 +63,28 @@ export default function AddressFields({ form, errors = {}, onChange, idPrefix = 
             onChange(province?.[0] === form.province?.[0] ? { province } : { province, ward: null })
           }
           disabled={!ready}
-          placeholder={ready ? 'Gõ tên, vd: ho chi minh' : 'Đang tải danh sách…'}
+          placeholder={ready ? t('Gõ tên, vd: ho chi minh') : t('Đang tải danh sách…')}
           error={errors.province}
-          notFoundMessage="Chọn Tỉnh/Thành trong danh sách gợi ý"
+          notFoundMessage={t('Chọn Tỉnh/Thành trong danh sách gợi ý')}
         />
         <UnitCombobox
           id={`${idPrefix}-xa`}
-          label="Phường/Xã"
+          label={t('Phường/Xã')}
           units={wards}
           value={form.ward}
           onChange={(ward) => onChange({ ward })}
           disabled={!ready || !form.province}
-          placeholder={form.province ? 'Gõ tên, vd: ben thanh' : 'Chọn Tỉnh/Thành trước'}
+          placeholder={form.province ? t('Gõ tên, vd: ben thanh') : t('Chọn Tỉnh/Thành trước')}
           error={errors.ward}
-          notFoundMessage="Chọn Phường/Xã trong danh sách gợi ý"
+          notFoundMessage={t('Chọn Phường/Xã trong danh sách gợi ý')}
         />
       </div>
 
-      <Field label="Số nhà và đường" error={errors.street}>
+      <Field label={t('Số nhà và đường')} error={errors.street}>
         <input
           className={`${inputClass} ${errors.street ? 'border-red-400' : 'border-slate-300'}`}
           autoComplete="address-line1"
-          placeholder="Vd: 227 Nguyễn Văn Cừ"
+          placeholder={t('Vd: 227 Nguyễn Văn Cừ')}
           maxLength={200}
           value={form.street}
           onChange={text('street')}

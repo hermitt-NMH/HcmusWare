@@ -18,6 +18,7 @@ import {
   sameBuild,
   serializeBuild,
 } from '../features/builder/builder'
+import { t } from '../lib/i18n'
 
 const MILLION = 1_000_000
 const QUICK_BUDGETS = [10, 15, 20, 30, 50]
@@ -53,10 +54,11 @@ export default function BudgetSuggest() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="text-xl font-bold sm:text-2xl">Gợi ý cấu hình theo ngân sách</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">{t('Gợi ý cấu hình theo ngân sách')}</h1>
         <p className="mt-1 text-sm text-slate-500">
-          Nhập số tiền và nhu cầu, web chọn sẵn 2–3 cấu hình lắp được với nhau (đã kiểm tra socket,
-          RAM, kích thước, công suất nguồn) từ hàng đang bán.
+          {t(
+            'Nhập số tiền và nhu cầu, web chọn sẵn 2–3 cấu hình lắp được với nhau (đã kiểm tra socket, RAM, kích thước, công suất nguồn) từ hàng đang bán.',
+          )}
         </p>
       </div>
 
@@ -69,11 +71,11 @@ export default function BudgetSuggest() {
       />
 
       {products.loading && query.budget != null && (
-        <p className="py-8 text-center text-slate-500">Đang tải linh kiện…</p>
+        <p className="py-8 text-center text-slate-500">{t('Đang tải linh kiện…')}</p>
       )}
       {products.error && (
         <p role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-          Không tải được linh kiện: {products.error.message}
+          {t('Không tải được linh kiện: {msg}', { msg: t(products.error.message) })}
         </p>
       )}
       {result?.error && (
@@ -95,7 +97,12 @@ function BudgetForm({ initial, onSubmit }) {
     e.preventDefault()
     const budget = Math.round(Number(millions.replace(',', '.')) * MILLION)
     if (!Number.isFinite(budget) || budget < MIN_BUDGET || budget > MAX_BUDGET) {
-      setError(`Ngân sách từ ${MIN_BUDGET / MILLION} đến ${MAX_BUDGET / MILLION} triệu đồng.`)
+      setError(
+        t('Ngân sách từ {min} đến {max} triệu đồng.', {
+          min: MIN_BUDGET / MILLION,
+          max: MAX_BUDGET / MILLION,
+        }),
+      )
       return
     }
     setError('')
@@ -110,7 +117,7 @@ function BudgetForm({ initial, onSubmit }) {
     >
       <div>
         <label htmlFor="budget" className="mb-1 block text-sm font-medium text-slate-700">
-          Ngân sách (triệu đồng)
+          {t('Ngân sách (triệu đồng)')}
         </label>
         <div className="flex flex-wrap gap-2">
           <input
@@ -144,7 +151,7 @@ function BudgetForm({ initial, onSubmit }) {
                   : 'border-slate-300 hover:bg-slate-50'
               }`}
             >
-              {m} tr
+              {t('{v} tr', { v: m })}
             </button>
           ))}
         </div>
@@ -156,7 +163,7 @@ function BudgetForm({ initial, onSubmit }) {
       </div>
 
       <fieldset>
-        <legend className="mb-1 text-sm font-medium text-slate-700">Nhu cầu chính</legend>
+        <legend className="mb-1 text-sm font-medium text-slate-700">{t('Nhu cầu chính')}</legend>
         <div className="grid gap-2 sm:grid-cols-3">
           {Object.entries(PURPOSES).map(([key, p]) => (
             <label
@@ -173,7 +180,7 @@ function BudgetForm({ initial, onSubmit }) {
                 onChange={() => setPurpose(key)}
                 className="h-4 w-4 accent-blue-600"
               />
-              {p.label}
+              {t(p.label)}
             </label>
           ))}
         </div>
@@ -183,7 +190,7 @@ function BudgetForm({ initial, onSubmit }) {
         type="submit"
         className="h-11 w-full rounded-lg bg-blue-600 px-6 font-semibold text-white hover:bg-blue-700 sm:w-auto"
       >
-        Gợi ý cấu hình
+        {t('Gợi ý cấu hình')}
       </button>
     </form>
   )
@@ -197,11 +204,13 @@ function Results({ result, budget }) {
     return (
       <div className="rounded-xl border border-dashed border-slate-300 bg-surface p-6 text-center text-sm">
         <p className="text-slate-700">
-          Không tìm được cấu hình hợp lệ trong {formatPrice(budget)}.
+          {t('Không tìm được cấu hình hợp lệ trong {price}.', { price: formatPrice(budget) })}
         </p>
         {minTotal != null && (
           <p className="mt-1 text-slate-500">
-            Với nhu cầu này, cấu hình rẻ nhất đang có giá {formatPrice(minTotal)}.
+            {t('Với nhu cầu này, cấu hình rẻ nhất đang có giá {price}.', {
+              price: formatPrice(minTotal),
+            })}
           </p>
         )}
       </div>
@@ -216,7 +225,7 @@ function Results({ result, budget }) {
       if (
         hasCurrent &&
         !sameBuild(current, next) &&
-        !window.confirm('Thay cấu hình đang build dở trong Build PC bằng gợi ý này?')
+        !window.confirm(t('Thay cấu hình đang build dở trong Build PC bằng gợi ý này?'))
       )
         return
       localStorage.setItem(STORAGE_KEY, serializeBuild(next.ids, next.ramQty))
@@ -231,19 +240,19 @@ function Results({ result, budget }) {
 
   return (
     <section className="space-y-3">
-      <h2 className="text-lg font-semibold">{builds.length} cấu hình gợi ý</h2>
+      <h2 className="text-lg font-semibold">{t('{n} cấu hình gợi ý', { n: builds.length })}</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {builds.map((b) => (
           <article
             key={b.tier}
             className="flex flex-col rounded-2xl border border-slate-200 bg-surface p-4"
           >
-            <h3 className="font-semibold">{b.label}</h3>
+            <h3 className="font-semibold">{t(b.label)}</h3>
             <p className="text-2xl font-bold text-red-600 dark:text-red-400">
               {formatPrice(b.total)}
             </p>
             <p className="text-xs text-slate-500">
-              {Math.round((b.total / budget) * 100)}% ngân sách
+              {t('{pct}% ngân sách', { pct: Math.round((b.total / budget) * 100) })}
             </p>
             <ul className="my-3 flex-1 divide-y divide-slate-100 text-sm">
               {BUILDER_SLOTS.map(({ slug, label }) => {
@@ -273,7 +282,7 @@ function Results({ result, budget }) {
                           {part.name}
                         </Link>
                       ) : (
-                        <p className="text-slate-500">Dùng đồ họa tích hợp của CPU</p>
+                        <p className="text-slate-500">{t('Dùng đồ họa tích hợp của CPU')}</p>
                       )}
                     </div>
                     {part && (
@@ -297,14 +306,15 @@ function Results({ result, budget }) {
               onClick={() => openInBuilder(b)}
               className="h-11 rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white hover:bg-blue-700"
             >
-              Mở trong Build PC
+              {t('Mở trong Build PC')}
             </button>
           </article>
         ))}
       </div>
       <p className="text-xs text-slate-500">
-        Gợi ý tự động từ hàng còn trong kho; xếp hạng sức mạnh CPU/VGA là ước lượng tương đối. Mở
-        trong Build PC để đổi từng linh kiện.
+        {t(
+          'Gợi ý tự động từ hàng còn trong kho; xếp hạng sức mạnh CPU/VGA là ước lượng tương đối. Mở trong Build PC để đổi từng linh kiện.',
+        )}
       </p>
     </section>
   )

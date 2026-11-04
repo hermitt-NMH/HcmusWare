@@ -6,6 +6,7 @@ import ProductBrowser from '../components/ProductBrowser'
 import ProductGrid from '../components/ProductGrid'
 import LogoBadge from '../components/LogoBadge'
 import NotFound from './NotFound'
+import { dateLocale, t } from '../lib/i18n'
 
 // /shop/:slug (US-15.3): thông tin shop + sản phẩm đang bán.
 // Chỉ shop đang hoạt động mới xem được; shop chờ duyệt / bị khóa → 404 (không lộ là shop tồn tại).
@@ -32,13 +33,13 @@ export default function ShopPage() {
   if (shop.error)
     return (
       <p role="alert" className="rounded-lg bg-red-50 p-4 text-sm text-red-700">
-        Không tải được shop: {shop.error.message}
+        {t('Không tải được shop: {msg}', { msg: t(shop.error.message) })}
       </p>
     )
   if (!shop.data) return <NotFound />
 
   const s = shop.data
-  const joined = new Date(s.created_at).toLocaleDateString('vi-VN', {
+  const joined = new Date(s.created_at).toLocaleDateString(dateLocale(), {
     month: '2-digit',
     year: 'numeric',
   })
@@ -50,21 +51,21 @@ export default function ShopPage() {
           <h1 className="text-xl font-bold sm:text-2xl">{s.name}</h1>
           <dl className="flex flex-wrap gap-x-5 gap-y-1 text-sm text-slate-600">
             <div>
-              <dt className="sr-only">Đánh giá</dt>
+              <dt className="sr-only">{t('Đánh giá')}</dt>
               {/* Điểm trung bình mọi đánh giá (không bị ẩn) trên sản phẩm của shop – F16 */}
               <dd className="font-medium text-slate-800">
                 {rating.loading
                   ? '…'
                   : (formatRating(rating.data?.rating_avg, rating.data?.rating_count) ??
-                    'Chưa có đánh giá')}
+                    t('Chưa có đánh giá'))}
               </dd>
             </div>
             <div className="flex gap-1">
-              <dt>Sản phẩm:</dt>
+              <dt>{t('Sản phẩm:')}</dt>
               <dd className="font-medium text-slate-800">{products.data?.length ?? '…'}</dd>
             </div>
             <div className="flex gap-1">
-              <dt>Tham gia từ tháng</dt>
+              <dt>{t('Tham gia từ tháng')}</dt>
               <dd className="font-medium text-slate-800">{joined}</dd>
             </div>
           </dl>

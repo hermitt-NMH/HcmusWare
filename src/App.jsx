@@ -9,6 +9,8 @@ import NotFound from './pages/NotFound'
 import RoleRoute from './components/RoleRoute'
 import { AREA_ROLES } from './lib/roles'
 import { lazyPage } from './lib/lazyPage'
+import { t } from './lib/i18n'
+import { useLang } from './hooks/useLang'
 
 // Trang ít người mở ngay từ đầu thì tải sau (lazy): mở trang chủ không phải tải code của chúng.
 // Thêm trang mới (Builder, admin...) cũng nên khai báo kiểu này. lazyPage thay React.lazy để trang
@@ -31,10 +33,11 @@ const ShopPage = lazyPage('ShopPage', () => import('./pages/ShopPage'))
 const BudgetSuggest = lazyPage('BudgetSuggest', () => import('./pages/BudgetSuggest'))
 const Unsubscribe = lazyPage('Unsubscribe', () => import('./pages/Unsubscribe'))
 
-// Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
-const PageLoading = <p className="py-16 text-center text-slate-500">Đang tải…</p>
-
 export default function App() {
+  // Theo dõi ngôn ngữ ở gốc: đổi VI/EN thì cả cây vẽ lại với chữ mới (lib/i18n.js)
+  useLang()
+  // Hiện trong lúc tải code của trang lazy (thường chỉ chớp nhoáng).
+  const PageLoading = <p className="py-16 text-center text-slate-500">{t('Đang tải…')}</p>
   return (
     <div className="flex min-h-screen flex-col">
       <Header />

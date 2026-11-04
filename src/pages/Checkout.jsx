@@ -21,6 +21,7 @@ import {
   formatAddress,
   validateAddress,
 } from '../features/address/address'
+import { t } from '../lib/i18n'
 
 const inputClass =
   'h-11 w-full rounded-lg border bg-surface px-3 text-sm focus:border-blue-500 focus:outline-none'
@@ -35,10 +36,11 @@ export default function Checkout() {
   // trang ở chế độ "transition", chạy SAU lần cập nhật giỏ) → không được chuyển về /gio-hang.
   const [placed, setPlaced] = useState(false)
 
-  if (loading) return <p className="py-16 text-center text-slate-500">Đang kiểm tra đăng nhập…</p>
+  if (loading)
+    return <p className="py-16 text-center text-slate-500">{t('Đang kiểm tra đăng nhập…')}</p>
   if (!user)
     return <Navigate to={`/dang-nhap?next=${encodeURIComponent(location.pathname)}`} replace />
-  if (placed) return <p className="py-16 text-center text-slate-500">Đang mở đơn hàng…</p>
+  if (placed) return <p className="py-16 text-center text-slate-500">{t('Đang mở đơn hàng…')}</p>
   if (!items.length) return <Navigate to="/gio-hang" replace />
 
   return <CheckoutForm onPlaced={() => setPlaced(true)} />
@@ -151,7 +153,7 @@ function CheckoutForm({ onPlaced }) {
       return
     }
     const orderItems = cartToOrderItems(items)
-    if (!orderItems.length) return setSubmitError('Không có sản phẩm nào còn hàng để đặt.')
+    if (!orderItems.length) return setSubmitError(t('Không có sản phẩm nào còn hàng để đặt.'))
 
     setSubmitting(true)
     try {
@@ -180,12 +182,12 @@ function CheckoutForm({ onPlaced }) {
   return (
     <form onSubmit={handleSubmit} noValidate className="space-y-4">
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-xl font-bold sm:text-2xl">Thanh toán</h1>
+        <h1 className="text-xl font-bold sm:text-2xl">{t('Thanh toán')}</h1>
         <Link
           to="/gio-hang"
           className="inline-flex min-h-11 items-center text-sm text-blue-700 dark:text-blue-300 hover:underline"
         >
-          ← Sửa giỏ hàng
+          {t('← Sửa giỏ hàng')}
         </Link>
       </div>
 
@@ -193,19 +195,19 @@ function CheckoutForm({ onPlaced }) {
         <div className="space-y-4">
           <section className="space-y-4 rounded-xl border border-slate-200 bg-surface p-4 sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-lg font-semibold">Thông tin giao hàng</h2>
+              <h2 className="text-lg font-semibold">{t('Thông tin giao hàng')}</h2>
               {addresses.length > 0 && (
                 <Link
                   to="/tai-khoan/dia-chi"
                   className="inline-flex min-h-11 items-center text-sm text-blue-700 hover:underline dark:text-blue-300"
                 >
-                  Quản lý sổ địa chỉ
+                  {t('Quản lý sổ địa chỉ')}
                 </Link>
               )}
             </div>
 
             {!bookReady ? (
-              <p className="text-sm text-slate-500">Đang tải sổ địa chỉ…</p>
+              <p className="text-sm text-slate-500">{t('Đang tải sổ địa chỉ…')}</p>
             ) : picking ? (
               <AddressPicker
                 addresses={addresses}
@@ -228,7 +230,7 @@ function CheckoutForm({ onPlaced }) {
                   onClick={() => setPicking(true)}
                   className="inline-flex h-10 items-center rounded-lg px-3 font-medium text-blue-700 hover:bg-surface dark:text-blue-300"
                 >
-                  Đổi địa chỉ
+                  {t('Đổi địa chỉ')}
                 </button>
               </div>
             ) : (
@@ -239,7 +241,7 @@ function CheckoutForm({ onPlaced }) {
                     onClick={() => setPicking(true)}
                     className="inline-flex min-h-11 items-center text-sm text-blue-700 hover:underline dark:text-blue-300"
                   >
-                    ← Chọn địa chỉ trong sổ
+                    {t('← Chọn địa chỉ trong sổ')}
                   </button>
                 )}
                 <AddressFields
@@ -257,16 +259,18 @@ function CheckoutForm({ onPlaced }) {
                     className="h-5 w-5 accent-blue-600"
                   />
                   {bookFull
-                    ? `Sổ địa chỉ đã đủ ${MAX_ADDRESSES} địa chỉ, không lưu thêm được`
-                    : 'Lưu vào sổ địa chỉ'}
+                    ? t('Sổ địa chỉ đã đủ {max} địa chỉ, không lưu thêm được', {
+                        max: MAX_ADDRESSES,
+                      })
+                    : t('Lưu vào sổ địa chỉ')}
                 </label>
               </>
             )}
 
-            <Field label="Ghi chú (không bắt buộc)" error={errors.note}>
+            <Field label={t('Ghi chú (không bắt buộc)')} error={errors.note}>
               <input
                 className={`${inputClass} border-slate-300`}
-                placeholder="Vd: giao giờ hành chính"
+                placeholder={t('Vd: giao giờ hành chính')}
                 maxLength={500}
                 value={form.note}
                 onChange={set('note')}
@@ -275,7 +279,7 @@ function CheckoutForm({ onPlaced }) {
           </section>
 
           <fieldset className="space-y-2 rounded-xl border border-slate-200 bg-surface p-4 sm:p-5">
-            <legend className="px-1 text-lg font-semibold">Phương thức thanh toán</legend>
+            <legend className="px-1 text-lg font-semibold">{t('Phương thức thanh toán')}</legend>
             {Object.entries(PAYMENT_METHODS).map(([value, m]) => (
               <label
                 key={value}
@@ -292,11 +296,11 @@ function CheckoutForm({ onPlaced }) {
                   className="mt-0.5 h-5 w-5 accent-blue-600"
                 />
                 <span>
-                  <span className="block font-medium">{m.label}</span>
+                  <span className="block font-medium">{t(m.label)}</span>
                   <span className="block text-xs text-slate-500">
                     {value === 'cod'
-                      ? 'Trả tiền mặt cho nhân viên giao hàng.'
-                      : 'Chuyển sang cổng thanh toán thử nghiệm, không trừ tiền thật.'}
+                      ? t('Trả tiền mặt cho nhân viên giao hàng.')
+                      : t('Chuyển sang cổng thanh toán thử nghiệm, không trừ tiền thật.')}
                   </span>
                 </span>
               </label>
@@ -308,7 +312,7 @@ function CheckoutForm({ onPlaced }) {
         </div>
 
         <aside className="space-y-3 rounded-xl border border-slate-200 bg-surface p-4 lg:sticky lg:top-36">
-          <h2 className="font-semibold">Đơn hàng ({buyable.length} sản phẩm)</h2>
+          <h2 className="font-semibold">{t('Đơn hàng ({n} sản phẩm)', { n: buyable.length })}</h2>
           <ul className="max-h-72 space-y-3 overflow-y-auto">
             {buyable.map((it) => (
               <li key={it.id} className="flex gap-3 text-sm">
@@ -328,26 +332,30 @@ function CheckoutForm({ onPlaced }) {
           </ul>
           {shops.length > 1 && (
             <p className="rounded-md bg-blue-50 p-2 text-xs text-blue-800">
-              Giỏ có hàng của {shops.length} shop ({shops.join(', ')}): mỗi shop là một đơn riêng,
-              giao riêng, nhưng bạn chỉ thanh toán một lần.
+              {t(
+                'Giỏ có hàng của {n} shop ({list}): mỗi shop là một đơn riêng, giao riêng, nhưng bạn chỉ thanh toán một lần.',
+                { n: shops.length, list: shops.join(', ') },
+              )}
             </p>
           )}
           {skipped > 0 && (
             <p className="rounded-md bg-amber-50 p-2 text-xs text-amber-800">
-              {skipped} sản phẩm hết hàng / ngừng bán không được đặt và vẫn nằm trong giỏ.
+              {t('{n} sản phẩm hết hàng / ngừng bán không được đặt và vẫn nằm trong giỏ.', {
+                n: skipped,
+              })}
             </p>
           )}
           <dl className="space-y-1 border-t border-slate-100 pt-3 text-sm">
             <div className="flex justify-between">
-              <dt className="text-slate-600">Tạm tính</dt>
+              <dt className="text-slate-600">{t('Tạm tính')}</dt>
               <dd>{formatPrice(subtotal)}</dd>
             </div>
             <div className="flex justify-between">
-              <dt className="text-slate-600">Phí giao hàng</dt>
-              <dd className="text-green-700 dark:text-green-400">Miễn phí</dd>
+              <dt className="text-slate-600">{t('Phí giao hàng')}</dt>
+              <dd className="text-green-700 dark:text-green-400">{t('Miễn phí')}</dd>
             </div>
             <div className="flex items-baseline justify-between pt-1">
-              <dt className="font-medium">Tổng cộng</dt>
+              <dt className="font-medium">{t('Tổng cộng')}</dt>
               <dd className="text-xl font-bold text-red-600 dark:text-red-400">
                 {formatPrice(subtotal)}
               </dd>
@@ -365,13 +373,13 @@ function CheckoutForm({ onPlaced }) {
             className="h-12 w-full rounded-lg bg-blue-600 font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting
-              ? 'Đang đặt hàng…'
+              ? t('Đang đặt hàng…')
               : form.payment === 'mock_online'
-                ? 'Đặt hàng và thanh toán'
-                : 'Đặt hàng'}
+                ? t('Đặt hàng và thanh toán')
+                : t('Đặt hàng')}
           </button>
           <p className="text-center text-xs text-slate-500">
-            Giá cuối cùng được xác nhận khi đặt hàng.
+            {t('Giá cuối cùng được xác nhận khi đặt hàng.')}
           </p>
         </aside>
       </div>
@@ -392,7 +400,7 @@ function Field({ label, error, children }) {
 // Chọn một địa chỉ trong sổ, hoặc "Giao đến địa chỉ khác" (onPick(null) → nhập địa chỉ mới).
 function AddressPicker({ addresses, selectedId, onPick }) {
   return (
-    <div role="radiogroup" aria-label="Chọn địa chỉ giao hàng" className="space-y-2">
+    <div role="radiogroup" aria-label={t('Chọn địa chỉ giao hàng')} className="space-y-2">
       {addresses.map((a) => (
         <button
           key={a.id}
@@ -408,7 +416,7 @@ function AddressPicker({ addresses, selectedId, onPick }) {
             {a.recipient_name} · {a.phone}
             {a.is_default && (
               <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-800">
-                Mặc định
+                {t('Mặc định')}
               </span>
             )}
           </span>
@@ -422,7 +430,7 @@ function AddressPicker({ addresses, selectedId, onPick }) {
         onClick={() => onPick(null)}
         className="flex min-h-11 w-full items-center rounded-lg border border-dashed border-slate-300 px-3 text-sm font-medium text-blue-700 hover:bg-slate-50 dark:text-blue-300"
       >
-        + Giao đến địa chỉ khác
+        {t('+ Giao đến địa chỉ khác')}
       </button>
     </div>
   )
